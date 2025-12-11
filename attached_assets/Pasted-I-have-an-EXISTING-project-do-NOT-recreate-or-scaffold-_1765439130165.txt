@@ -1,0 +1,115 @@
+I have an EXISTING project (do NOT recreate or scaffold anything).  
+Your task is to refine UI/UX, layout, spacing, responsiveness, theme behavior, 
+AND reorganize components + fix PageHeader structure according to the following full specification:
+
+====================================================
+GLOBAL LAYOUT, SPACING, AND RESPONSIVENESS
+====================================================
+
+1) Fix all excessive spacing:
+   - Remove the large empty space above the “StarLight Quran” title on the homepage.
+   - Normalize padding/margin across all pages using a consistent spacing scale.
+   - Fix header spacing so it is even and visually balanced.
+
+2) Make the entire interface MOBILE-FIRST:
+   - Ensure perfect scaling on iPhone screens, then tablets, then desktop.
+   - Fix overflow issues, text touching edges, and inconsistent paddings.
+   - Use fluid responsive typography and containers (rem, %, clamp()).
+
+3) Apply proper UI / UX principles:
+   - Clear visual hierarchy
+   - Consistent spacing rhythm
+   - Proper tap target sizes (44px min)
+   - Smooth transitions for colors and theme switching
+   - Minimal, calm, modern design language
+   - Remove unnecessary visual noise
+
+====================================================
+GLOBAL THEME SYSTEM (LIGHT / DARK)
+====================================================
+
+4) Do NOT rebuild the theme system — just refine it:
+   - Keep light & dark modes working globally from the layout.
+   - Smooth transitions between themes (CSS transitions).
+   - Save theme in localStorage + default to system preference.
+   - Theme toggle must be a lightweight sun/moon icon button.
+
+====================================================
+PAGE HEADER REFACTOR (VERY IMPORTANT)
+====================================================
+
+5) In PageHeader (or the current header file):
+   **Split the header functionality into TWO independent components:**
+      • BackToggle.jsx  → back button  
+      • LightModeToggle.jsx  → theme toggle  
+
+   - These MUST be separate files.  
+   - Do NOT merge them into one component.  
+   - PageHeader should import and arrange them side-by-side.
+
+6) Organize the layout of PageHeader so:
+   - BackToggle appears on the left (or where it belongs in your design).
+   - LightModeToggle appears top-right, small, clean, minimal.
+   - Header spacing looks refined and consistent.
+
+====================================================
+COMPONENTS FOLDER CLEANUP & IMPORT FIXES
+====================================================
+
+7) The components folder is currently messy.  
+   Clean and restructure it by:
+
+   - Moving ALL component-related imports inside the `/components` directory.
+   - Deleting unused imports.
+   - Reordering imports cleanly (React → libs → components → styles).
+   - Updating all import paths in every file that needs modification.
+   - Ensuring components import each other via short & clean relative paths.
+
+8) After cleanup:
+   - Provide the NEW `/components` folder structure.
+   - Show updated imports across affected files.
+
+====================================================
+QURAN READER PAGE (SPECIAL CHANGES)
+====================================================
+
+9) Remove the OLD "Back to Home" back button (or old BackToggle) inside the Quran Reader page.
+   - Completely delete it.
+   - Replace it with the NEW BackToggle component created in the header refactor.
+
+10) NIGHT MODE (Dark):
+   - Replace the current white circles in the Quran Reader background with star patterns.
+   - Stars must be subtle, soft, and non-distracting.
+   - Keep the reading area clean and peaceful.
+
+11) LIGHT MODE:
+   - Remove ALL leaf decorations.
+   - Leaves appear ONLY in dark mode (night theme).
+   - Must switch smoothly when toggling themes.
+
+====================================================
+ADDITIONAL REQUIREMENTS (From previous prompt)
+====================================================
+
+12) Apply spacing + UI fixes globally:
+   - Adjust header padding
+   - Unify margins/paddings across all screens
+   - Ensure no weird gaps at the top of pages
+
+13) Smooth everything:
+   - Smooth page transitions
+   - Smooth theme switching
+   - Smooth icon interactions
+
+====================================================
+DELIVERABLES
+====================================================
+
+Return the following:
+
+1. List of ALL edited files  
+2. Full code changes or diffs for each file  
+3. Updated imports and cleaned file structure  
+4. New `/components` folder layout  
+5. Short explanation of what was changed and why  
+6. Optional improvements or warnings if needed  
