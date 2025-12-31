@@ -27,6 +27,7 @@ export default function VerseSpeedDial({
   const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const longPressTimer = useRef<number | null>(null);
+  const [isPressed, setIsPressed] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -43,11 +44,12 @@ export default function VerseSpeedDial({
 
     const start = (clientX: number, clientY: number) => {
       if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
-      // 600ms long-press
+      setIsPressed(true);
+      // 350ms long-press
       longPressTimer.current = window.setTimeout(() => {
         setMenuPos({ x: clientX, y: clientY });
         setMenuVisible(true);
-      }, 600);
+      }, 350);
     };
 
     const cancel = () => {
@@ -55,6 +57,7 @@ export default function VerseSpeedDial({
         window.clearTimeout(longPressTimer.current);
         longPressTimer.current = null;
       }
+      setIsPressed(false);
     };
 
     const onMouseDown = (e: MouseEvent) => start(e.clientX, e.clientY);
@@ -81,6 +84,30 @@ export default function VerseSpeedDial({
       el.removeEventListener("touchend", onTouchEnd);
     };
   }, [verseId]);
+
+  // Apply hover style to verse element when pressed
+  useEffect(() => {
+    const id = `verse-${verseId}`;
+    const el = document.getElementById(id);
+    if (!el) return;
+    
+    if (isPressed) {
+      el.style.opacity = "0.7";
+      el.style.boxShadow = "0 0 0 2px rgba(100, 100, 255, 0.3) inset";
+      el.style.borderRadius = "4px";
+      el.style.transition = "opacity 0.2s, box-shadow 0.2s";
+    } else {
+      el.style.opacity = "1";
+      el.style.boxShadow = "none";
+      el.style.borderRadius = "0";
+    }
+    
+    return () => {
+      el.style.opacity = "1";
+      el.style.boxShadow = "none";
+      el.style.borderRadius = "0";
+    };
+  }, [isPressed, verseId]);
 
   // click outside to hide menu
   useEffect(() => {
