@@ -1,0 +1,74 @@
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px 16px;
+  color: var(--accent-color-2);
+  font-family: 'KoGaliModern', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+}
+
+.backButton:hover {
+  background: var(--button-gradient);
+  color: white;
+  border-color: transparent;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.backButton:active {
+  transform: translateY(0);
+}
+
+.backButton svg {
+  transition: transform var(--transition-base);
+  flex-shrink: 0;
+}
+
+.backButton:hover svg {
+  transform: translateX(3px);
+}
+
+.backText {
+  display: inline;
+}
+
+:global(.darkMode) .backButton {
+  background: var(--dark-card-bg);
+  border-color: rgba(58, 123, 213, 0.3);
+  color: var(--dark-highlight-color);
+}
+
+:global(.darkMode) .backButton:hover {
+  background: var(--dark-button-gradient);
+  color: white;
+  border-color: transparent;
+}
+
+@media (max-width: 480px) {
+  .backButton {
+    padding: 10px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .backText {
+    display: none;
+  }
+  
+  .backButton svg {
+    width: 20px;
+    height: 20px;
+  }
+}
