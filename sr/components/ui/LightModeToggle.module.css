@@ -1,0 +1,86 @@
+.toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  color: var(--text-primary);
+}
+
+.toggle:hover {
+  transform: scale(1.05);
+  border-color: var(--accent-color-2);
+  box-shadow: var(--shadow-md);
+  background: var(--secondary-bg-color);
+}
+
+.toggle:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-color-2);
+}
+
+.toggle:focus:not(:focus-visible) {
+  box-shadow: none;
+}
+
+.toggle:focus-visible {
+  box-shadow: 0 0 0 2px var(--accent-color-2);
+}
+
+.toggle:active {
+  transform: scale(0.95);
+}
+
+:global(.darkMode) .toggle {
+  background: var(--dark-card-bg);
+  border-color: rgba(58, 123, 213, 0.3);
+  color: var(--dark-text-primary);
+}
+
+:global(.darkMode) .toggle:hover {
+  border-color: var(--dark-highlight-color);
+  background: var(--dark-bg-secondary);
+}
+
+.icon {
+  position: absolute;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.sunIcon {
+  color: #f59e0b;
+}
+
+.moonIcon {
+  color: #6366f1;
+}
+
+:global(.darkMode) .sunIcon {
+  color: #fbbf24;
+}
+
+:global(.darkMode) .moonIcon {
+  color: #818cf8;
+}
+
+.hidden {
+  opacity: 0;
+  transform: scale(0.5) rotate(90deg);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle {
+    transition: none;
+  }
+  
+  .icon {
+    transition: none;
+  }
+}

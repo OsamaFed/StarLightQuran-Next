@@ -1,0 +1,47 @@
+.scrollToTop {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--button-gradient);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  transition: box-shadow 0.3s ease;
+}
+
+.scrollToTop:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+}
+
+.darkMode {
+  background: var(--dark-button-gradient);
+  box-shadow: 0 4px 16px rgba(58, 123, 213, 0.3);
+}
+
+.darkMode:hover {
+  box-shadow: 0 6px 24px rgba(58, 123, 213, 0.4);
+}
+
+@media (max-width: 768px) {
+  .scrollToTop {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .scrollToTop {
+    bottom: 1rem;
+    right: 1rem;
+  }
+}
