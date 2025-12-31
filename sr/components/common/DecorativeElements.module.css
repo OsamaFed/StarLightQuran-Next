@@ -1,0 +1,235 @@
+.decorativeElements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.planet {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle at 30% 30%, #ffd700, #ff8c00);
+  border-radius: 50%;
+  box-shadow: 
+    0 0 50px rgba(255, 215, 0, 0.5),
+    inset -8px -8px 16px rgba(255, 140, 0, 0.4);
+  opacity: 0.9;
+  animation: float 4s ease-in-out infinite alternate;
+  transition: all 0.5s ease;
+}
+
+.planet::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  right: -12px;
+  bottom: -12px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 215, 0, 0.2);
+  animation: rotate 20s linear infinite;
+}
+
+.planet::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70px;
+  height: 20px;
+  border: 2px solid var(--highlight-color);
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+:global(.darkMode) .planet {
+  background: #ffffff;
+  box-shadow: 
+    0 0 30px rgba(255, 255, 255, 0.5),
+    inset -8px -8px 16px rgba(0, 0, 0, 0.2);
+  width: 70px;
+  height: 70px;
+}
+
+:global(.darkMode) .planet::before {
+  display: none;
+}
+
+:global(.darkMode) .planet::after {
+  display: none;
+}
+
+.moonCrater {
+  position: absolute;
+  background: rgba(169, 169, 169, 0.3);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+:global(.darkMode) .moonCrater {
+  opacity: 0;
+}
+
+.saturnRing {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  width: 120px;
+  height: 50px;
+  border: 6px solid #d946ef;
+  border-radius: 50%;
+  transition: all 0.5s ease;
+  opacity: 0;
+  display: none;
+}
+
+:global(.darkMode) .saturnRing {
+  opacity: 0;
+  display: none;
+}
+
+.crater1 {
+  width: 15px;
+  height: 15px;
+  top: 15px;
+  left: 15px;
+}
+
+.crater2 {
+  width: 10px;
+  height: 10px;
+  top: 35px;
+  left: 40px;
+}
+
+.crater3 {
+  width: 8px;
+  height: 8px;
+  top: 20px;
+  left: 50px;
+}
+
+.star {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.8);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  transition: all 0.5s ease;
+  opacity: 0.3;
+}
+
+:global(.darkMode) .star {
+  opacity: 1;
+  animation: twinkle 2s infinite alternate;
+}
+
+.leaf {
+  position: absolute;
+  width: 28px;
+  height: 70px;
+  background: linear-gradient(145deg, #6b8e4e, var(--leaf-color, #4a5d3f));
+  opacity: 0.35;
+  border-radius: 50% 50% 0% 50%;
+  transform-origin: bottom center;
+  box-shadow: 
+    inset -2px -2px 4px rgba(0,0,0,0.15),
+    0 3px 6px rgba(0,0,0,0.08);
+  animation: leafWave 3s ease-in-out infinite alternate;
+}
+
+.leaf::before {
+  content: '';
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 60%;
+  height: 2px;
+  background: rgba(255,255,255,0.25);
+  transform: rotate(-45deg);
+  border-radius: 2px;
+}
+
+:global(.darkMode) .leaf {
+  opacity: 0.3;
+  filter: brightness(0.75);
+}
+
+.cloud {
+  position: absolute;
+  background: #ffffff;
+  border-radius: 50px;
+  opacity: 0.5;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+  animation: floatCloud 35s linear infinite;
+}
+
+.cloud::before,
+.cloud::after {
+  content: '';
+  position: absolute;
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+.cloud::before {
+  width: 40px;
+  height: 40px;
+  top: -18px;
+  left: 10px;
+}
+
+.cloud::after {
+  width: 50px;
+  height: 50px;
+  top: -25px;
+  right: 10px;
+}
+
+:global(.darkMode) .cloud {
+  display: none;
+}
+
+@keyframes float {
+  0% { transform: translateX(-50%) translateY(0); }
+  100% { transform: translateX(-50%) translateY(-8px); }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes twinkle {
+  0%, 100% { 
+    transform: scale(0.8); 
+    opacity: 0.5;
+  }
+  50% { 
+    transform: scale(1); 
+    opacity: 1;
+  }
+}
+
+@keyframes leafWave {
+  0% { transform: rotate(var(--leaf-rotate, 45deg)); }
+  100% { transform: rotate(calc(var(--leaf-rotate, 45deg) + 8deg)); }
+}
+
+@keyframes floatCloud {
+  from { transform: translateX(-150%); }
+  to { transform: translateX(calc(100vw + 150%)); }
+}
+
+@keyframes rotateSaturn {
+  from { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(0deg); }
+  to { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(360deg); }
+}

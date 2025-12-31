@@ -4,8 +4,8 @@ import { useEffect, useState, useMemo, memo } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useTheme } from "@/hooks/useTheme";
-import PageHeader from "@/components/PageHeader";
-import ScrollToTop from "@/components/ScrollToTop";
+import PageHeader from "@/components/layout/PageHeader";
+import ScrollToTop from "@/components/common/ScrollToTop";
 import styles from "./azkar.module.css";
 
 interface AdhkarCategory {

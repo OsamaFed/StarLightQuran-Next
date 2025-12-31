@@ -3,9 +3,9 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/hooks/useTheme";
-import OptionCard from "@/components/OptionCard";
-import LightModeToggle from "@/components/LightModeToggle";
-import PrayerTimes from "@/components/PrayerTimes";
+import OptionCard from "@/components/layout/OptionCard";
+import LightModeToggle from "@/components/ui/LightModeToggle";
+import PrayerTimes from "@/components/features/PrayerTimes";
 import styles from "./page.module.css";
 
 export default function Home() {

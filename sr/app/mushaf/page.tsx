@@ -1,4 +1,4 @@
-import QuranReader from "@/components/QuranReader";
+import QuranReader from "@/components/features/QuranReader";
 
 export default function Home() {
   return <QuranReader />;
