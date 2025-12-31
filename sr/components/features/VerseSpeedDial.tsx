@@ -1,13 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import SpeedDial from "@mui/material/SpeedDial";
-import SpeedDialAction from "@mui/material/SpeedDialAction";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ShareIcon from "@mui/icons-material/Share";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
-
-const speedDialRegistry = new Map<string, () => void>();
 
 interface VerseSpeedDialProps {
   verseId: string;
@@ -24,125 +22,225 @@ export default function VerseSpeedDial({
 }: VerseSpeedDialProps) {
   const [open, setOpen] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastObjectUrlRef = useRef<string | null>(null);
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const longPressTimer = useRef<number | null>(null);
 
   useEffect(() => {
-    const unregister = () => setOpen(false);
-    speedDialRegistry.set(verseId, unregister);
-
     return () => {
-      speedDialRegistry.delete(verseId);
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
     };
   }, [verseId]);
 
-  const handleOpen = () => {
-    speedDialRegistry.forEach((closeOther, id) => {
-      if (id !== verseId) closeOther();
-    });
+  // long-press handlers: attach to verse element
+  useEffect(() => {
+    const id = `verse-${verseId}`;
+    const el = document.getElementById(id);
+    if (!el) return;
 
-    setOpen(true);
+    const start = (clientX: number, clientY: number) => {
+      if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
+      // 600ms long-press
+      longPressTimer.current = window.setTimeout(() => {
+        setMenuPos({ x: clientX, y: clientY });
+        setMenuVisible(true);
+      }, 600);
+    };
 
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => setOpen(false), 10000);
-  };
+    const cancel = () => {
+      if (longPressTimer.current) {
+        window.clearTimeout(longPressTimer.current);
+        longPressTimer.current = null;
+      }
+    };
 
-  const handleClose = () => {
-    setOpen(false);
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-  };
+    const onMouseDown = (e: MouseEvent) => start(e.clientX, e.clientY);
+    const onMouseUp = () => cancel();
+    const onMouseLeave = () => cancel();
+    const onTouchStart = (e: TouchEvent) => {
+      const t = e.touches && e.touches[0];
+      if (t) start(t.clientX, t.clientY);
+    };
+    const onTouchEnd = () => cancel();
 
-  const handleAction = (callback: () => void) => {
-    callback();
-    handleClose();
-  };
+    el.addEventListener("mousedown", onMouseDown);
+    el.addEventListener("mouseup", onMouseUp);
+    el.addEventListener("mouseleave", onMouseLeave);
+    el.addEventListener("touchstart", onTouchStart);
+    el.addEventListener("touchend", onTouchEnd);
+
+    return () => {
+      cancel();
+      el.removeEventListener("mousedown", onMouseDown);
+      el.removeEventListener("mouseup", onMouseUp);
+      el.removeEventListener("mouseleave", onMouseLeave);
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchend", onTouchEnd);
+    };
+  }, [verseId]);
+
+  // click outside to hide menu
+  useEffect(() => {
+    const handler = (e: Event) => {
+      if (!menuVisible) return;
+      const target = e.target as Node | null;
+      if (menuRef.current && target && menuRef.current.contains(target)) return;
+      setMenuVisible(false);
+    };
+
+    document.addEventListener("mousedown", handler);
+    document.addEventListener("touchstart", handler);
+    return () => {
+      document.removeEventListener("mousedown", handler);
+      document.removeEventListener("touchstart", handler);
+    };
+  }, [menuVisible]);
 
   const handleCopy = () => {
-    const text = `${verseText}\n\n${surahName}:${verseNumber}`;
-    navigator.clipboard.writeText(text);
+    try {
+      const text = `${verseText}\n\n${surahName}:${verseNumber}`;
+      navigator.clipboard?.writeText(text).catch(() => {});
+    } catch (err) {
+      console.error("Copy failed:", err);
+    }
   };
 
   const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `${surahName}:${verseNumber}`,
-          text: verseText,
-        });
-      } catch (err) {
-        console.error("Error sharing:", err);
+    try {
+      const verseElement = document.getElementById(`verse-${verseId}`);
+      if (verseElement && typeof navigator !== "undefined" && "share" in navigator) {
+        try {
+          const html2canvas = (await import("html2canvas")).default;
+          const canvas = await html2canvas(verseElement, { backgroundColor: null, scale: 2 });
+          const blob: Blob | null = await new Promise((resolve) => canvas.toBlob((b) => resolve(b)));
+          if (blob) {
+            const file = new File([blob], `${surahName}_${verseNumber}.png`, { type: blob.type });
+            if ((navigator as any).canShare && navigator.canShare({ files: [file] })) {
+              await (navigator as any).share({ title: `${surahName}:${verseNumber}`, text: verseText, files: [file] });
+              return;
+            }
+          }
+        } catch (innerErr) {
+          console.warn("dom-to-image-more failed, falling back to text share:", innerErr);
+        }
       }
+      if (navigator.share) {
+        await navigator.share({ title: `${surahName}:${verseNumber}`, text: verseText });
+      }
+    } catch (err) {
+      console.error("Error sharing:", err);
     }
   };
 
   const handleSavePhoto = () => {
-    import("html2canvas").then((html2canvas) => {
-      const verseElement = document.getElementById(`verse-${verseId}`);
-      if (verseElement) {
-        html2canvas.default(verseElement, { backgroundColor: null, scale: 2 }).then((canvas) => {
+    (async () => {
+      try {
+        const html2canvas = (await import("html2canvas")).default;
+        const verseElement = document.getElementById(`verse-${verseId}`);
+        if (!verseElement) return;
+
+        // revoke previous object URL if any
+        if (lastObjectUrlRef.current) {
+          try {
+            URL.revokeObjectURL(lastObjectUrlRef.current);
+          } catch {}
+          lastObjectUrlRef.current = null;
+        }
+
+        const canvas = await html2canvas(verseElement, { backgroundColor: null, scale: 2 });
+        const blob: Blob | null = await new Promise((resolve) => canvas.toBlob((b) => resolve(b)));
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        lastObjectUrlRef.current = url;
+
+        try {
           const link = document.createElement("a");
-          link.href = canvas.toDataURL();
+          link.href = url;
           link.download = `${surahName}_${verseNumber}.png`;
+          document.body.appendChild(link);
           link.click();
-        });
+          link.remove();
+        } catch (err) {
+          console.error("Download failed:", err);
+        }
+
+        // revoke after a short delay to ensure download started
+        setTimeout(() => {
+          if (lastObjectUrlRef.current) {
+            try {
+              URL.revokeObjectURL(lastObjectUrlRef.current);
+            } catch {}
+            lastObjectUrlRef.current = null;
+          }
+        }, 1500);
+      } catch (err) {
+        console.error("Error saving photo:", err);
       }
-    });
+    })();
   };
 
   return (
-    <SpeedDial
-      ariaLabel="Verse actions"
-      direction="right"
-      open={open}
-      onOpen={handleOpen}
-      onClose={handleClose}
-      icon={<span style={{ fontSize: "1.5rem" }}>💡</span>}
-      sx={{
-        position: "absolute",
-        bottom: 14,
-        left: 14,
-        color: "inherit",
-        direction: "ltr",
-        "& .MuiFab-root": {
-          backgroundColor: "transparent !important",
-          boxShadow: "none",
-          "&:hover": { backgroundColor: "transparent" },
-        },
-        "& .MuiSpeedDial-actions": {
-          gap: "2px !important",
-          display: "flex !important",
-          flexDirection: "row !important",
-          marginRight: "120px !important",
-          paddingRight: "0 !important",
-        },
-        "& .MuiSpeedDialAction-fab": {
-          backgroundColor: "transparent !important",
-          boxShadow: "none !important",
-          "&:hover": { backgroundColor: "transparent !important" },
-          margin: "0 2px !important",
-          padding: "0 !important",
-        },
-        "& .MuiSpeedDialAction-staticTooltip": {
-          right: "auto !important",
-        },
-        "& .MuiTouchRipple-root": { display: "none !important" },
-        "& .MuiSvgIcon-root": { color: "inherit !important" },
-      }}
-    >
-      <SpeedDialAction
-        icon={<ContentCopyIcon />}
-        tooltipTitle="نسخ"
-        onClick={() => handleAction(handleCopy)}
-      />
-      <SpeedDialAction
-        icon={<ShareIcon />}
-        tooltipTitle="مشاركة"
-        onClick={() => handleAction(handleShare)}
-      />
-      <SpeedDialAction
-        icon={<SaveAltIcon />}
-        tooltipTitle="حفظ صورة"
-        onClick={() => handleAction(handleSavePhoto)}
-      />
-    </SpeedDial>
+    <>
+      {menuVisible && menuPos && (
+        <div
+          ref={menuRef}
+          role="dialog"
+          aria-label="verse actions"
+          style={{
+            position: "fixed",
+            top: Math.min(menuPos.y + 8, window.innerHeight - 64),
+            left: Math.min(menuPos.x + 8, window.innerWidth - 160),
+            zIndex: 2000,
+            display: "flex",
+            gap: 8,
+            background: "rgba(0,0,0,0.72)",
+            padding: 6,
+            borderRadius: 10,
+            alignItems: "center",
+            boxShadow: "0 6px 18px rgba(0,0,0,0.3)",
+          }}
+        >
+          <Tooltip title="نسخ">
+            <IconButton
+              size="small"
+              onClick={() => {
+                handleCopy();
+                setMenuVisible(false);
+              }}
+              sx={{ color: "white" }}
+            >
+              <ContentCopyIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="مشاركة">
+            <IconButton
+              size="small"
+              onClick={async () => {
+                await handleShare();
+                setMenuVisible(false);
+              }}
+              sx={{ color: "white" }}
+            >
+              <ShareIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="حفظ صورة">
+            <IconButton
+              size="small"
+              onClick={() => {
+                handleSavePhoto();
+                setMenuVisible(false);
+              }}
+              sx={{ color: "white" }}
+            >
+              <SaveAltIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+      )}
+    </>
   );
 }
