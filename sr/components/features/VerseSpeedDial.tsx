@@ -28,26 +28,48 @@ export default function VerseSpeedDial({
   const menuRef = useRef<HTMLDivElement | null>(null);
   const longPressTimer = useRef<number | null>(null);
   const [isPressed, setIsPressed] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     };
   }, [verseId]);
 
+  // Scroll detection
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolling(true);
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      scrollTimeoutRef.current = setTimeout(() => {
+        setIsScrolling(false);
+      }, 150); // Adjust delay as needed
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    };
+  }, []);
+
   // long-press handlers: attach to verse element
   useEffect(() => {
-    const id = `verse-${verseId}`;
+    const id = verseId;
     const el = document.getElementById(id);
     if (!el) return;
 
     const start = (clientX: number, clientY: number) => {
+      if (isScrolling) return; // Don't start if scrolling
       if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
       setIsPressed(true);
       // 350ms long-press
       longPressTimer.current = window.setTimeout(() => {
-        setMenuPos({ x: clientX, y: clientY });
+        const rect = el.getBoundingClientRect();
+        setMenuPos({ x: rect.left, y: rect.bottom });
         setMenuVisible(true);
       }, 350);
     };
@@ -68,12 +90,16 @@ export default function VerseSpeedDial({
       if (t) start(t.clientX, t.clientY);
     };
     const onTouchEnd = () => cancel();
+    const onTouchCancel = () => cancel();
+    const onTouchMove = () => cancel();
 
     el.addEventListener("mousedown", onMouseDown);
     el.addEventListener("mouseup", onMouseUp);
     el.addEventListener("mouseleave", onMouseLeave);
     el.addEventListener("touchstart", onTouchStart);
     el.addEventListener("touchend", onTouchEnd);
+    el.addEventListener("touchcancel", onTouchCancel);
+    el.addEventListener("touchmove", onTouchMove);
 
     return () => {
       cancel();
@@ -82,32 +108,37 @@ export default function VerseSpeedDial({
       el.removeEventListener("mouseleave", onMouseLeave);
       el.removeEventListener("touchstart", onTouchStart);
       el.removeEventListener("touchend", onTouchEnd);
+      el.removeEventListener("touchcancel", onTouchCancel);
+      el.removeEventListener("touchmove", onTouchMove);
     };
   }, [verseId]);
 
   // Apply hover style to verse element when pressed
   useEffect(() => {
-    const id = `verse-${verseId}`;
+    const id = verseId;
     const el = document.getElementById(id);
     if (!el) return;
     
-    if (isPressed) {
-      el.style.opacity = "0.7";
-      el.style.boxShadow = "0 0 0 2px rgba(100, 100, 255, 0.3) inset";
-      el.style.borderRadius = "4px";
-      el.style.transition = "opacity 0.2s, box-shadow 0.2s";
+    if (isPressed && !isScrolling) {
+      el.style.opacity = "0.8";
+      el.style.transform = "scale(0.98)";
+      el.style.boxShadow = "0 0 0 3px rgba(100, 100, 255, 0.4) inset";
+      el.style.borderRadius = "8px";
+      el.style.transition = "all 0.15s ease";
     } else {
       el.style.opacity = "1";
+      el.style.transform = "scale(1)";
       el.style.boxShadow = "none";
       el.style.borderRadius = "0";
     }
     
     return () => {
       el.style.opacity = "1";
+      el.style.transform = "scale(1)";
       el.style.boxShadow = "none";
       el.style.borderRadius = "0";
     };
-  }, [isPressed, verseId]);
+  }, [isPressed, verseId, isScrolling]);
 
   // click outside to hide menu
   useEffect(() => {
@@ -115,6 +146,9 @@ export default function VerseSpeedDial({
       if (!menuVisible) return;
       const target = e.target as Node | null;
       if (menuRef.current && target && menuRef.current.contains(target)) return;
+      // Also don't close if clicking on the verse itself
+      const verseEl = document.getElementById(verseId);
+      if (verseEl && target && verseEl.contains(target)) return;
       setMenuVisible(false);
     };
 
@@ -137,7 +171,7 @@ export default function VerseSpeedDial({
 
   const handleShare = async () => {
     try {
-      const verseElement = document.getElementById(`verse-${verseId}`);
+      const verseElement = document.getElementById(verseId);
       if (verseElement && typeof navigator !== "undefined" && "share" in navigator) {
         try {
           const html2canvas = (await import("html2canvas")).default;
@@ -166,7 +200,7 @@ export default function VerseSpeedDial({
     (async () => {
       try {
         const html2canvas = (await import("html2canvas")).default;
-        const verseElement = document.getElementById(`verse-${verseId}`);
+        const verseElement = document.getElementById(verseId);
         if (!verseElement) return;
 
         // revoke previous object URL if any
@@ -218,8 +252,8 @@ export default function VerseSpeedDial({
           aria-label="verse actions"
           style={{
             position: "fixed",
-            top: Math.min(menuPos.y + 8, window.innerHeight - 64),
-            left: Math.min(menuPos.x + 8, window.innerWidth - 160),
+            top: Math.min(menuPos.y, window.innerHeight - 64),
+            left: Math.max(menuPos.x, 8),
             zIndex: 2000,
             display: "flex",
             gap: 8,
