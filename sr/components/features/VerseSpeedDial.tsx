@@ -256,7 +256,7 @@ export default function VerseSpeedDial({
             left: 20,
             zIndex: 2000,
             display: "flex",
-            flexDirection: "column",
+            flexDirection: "row",
             gap: 8,
             background: "rgba(0,0,0,0.72)",
             padding: 8,
