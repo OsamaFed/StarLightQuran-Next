@@ -252,16 +252,18 @@ export default function VerseSpeedDial({
           aria-label="verse actions"
           style={{
             position: "fixed",
-            top: Math.min(menuPos.y, window.innerHeight - 64),
-            left: Math.max(menuPos.x, 8),
+            top: 20,
+            left: 20,
             zIndex: 2000,
             display: "flex",
+            flexDirection: "column",
             gap: 8,
             background: "rgba(0,0,0,0.72)",
-            padding: 6,
-            borderRadius: 10,
+            padding: 8,
+            borderRadius: 12,
             alignItems: "center",
-            boxShadow: "0 6px 18px rgba(0,0,0,0.3)",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+            backdropFilter: "blur(8px)",
           }}
         >
           <Tooltip title="نسخ">
