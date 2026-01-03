@@ -1,11 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import ShareIcon from "@mui/icons-material/Share";
-import SaveAltIcon from "@mui/icons-material/SaveAlt";
+import SharingOptions from "@/components/common/SharingOptions";
 
 interface VerseSpeedDialProps {
   verseId: string;
@@ -66,12 +62,13 @@ export default function VerseSpeedDial({
       if (isScrolling) return; // Don't start if scrolling
       if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
       setIsPressed(true);
-      // 350ms long-press
+      // 1.2s long-press on phone as requested
       longPressTimer.current = window.setTimeout(() => {
-        const rect = el.getBoundingClientRect();
-        setMenuPos({ x: rect.left, y: rect.bottom });
+        // Use actual press coordinates so the menu appears where the user tapped
+        // small offset to move menu slightly below the finger
+        setMenuPos({ x: clientX, y: clientY + 6 });
         setMenuVisible(true);
-      }, 350);
+      }, 1200);
     };
 
     const cancel = () => {
@@ -160,6 +157,32 @@ export default function VerseSpeedDial({
     };
   }, [menuVisible]);
 
+  // listen for external open requests (e.g., options button in VerseCard)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      try {
+        const ev = e as CustomEvent<{ verseId: string; x?: number; y?: number }>;
+        if (!ev?.detail || ev.detail.verseId !== verseId) return;
+        const el = document.getElementById(verseId);
+        if (!el) return;
+        // If caller provided coordinates (e.g., options button), use them.
+        if (typeof ev.detail.x === "number" && typeof ev.detail.y === "number") {
+          setMenuPos({ x: ev.detail.x, y: ev.detail.y + 6 });
+        } else {
+          const rect = el.getBoundingClientRect();
+          // fallback to element position (use right edge for better alignment in RTL)
+          setMenuPos({ x: rect.right - 8, y: rect.bottom });
+        }
+        setMenuVisible(true);
+      } catch (err) {
+        // ignore
+      }
+    };
+
+    document.addEventListener("open-verse-menu", handler as EventListener);
+    return () => document.removeEventListener("open-verse-menu", handler as EventListener);
+  }, [verseId]);
+
   const handleCopy = () => {
     try {
       const text = `${verseText}\n\n${surahName}:${verseNumber}`;
@@ -245,63 +268,14 @@ export default function VerseSpeedDial({
 
   return (
     <>
-      {menuVisible && menuPos && (
-        <div
-          ref={menuRef}
-          role="dialog"
-          aria-label="verse actions"
-          style={{
-            position: "fixed",
-            top: Math.min(menuPos.y, window.innerHeight - 64),
-            left: Math.max(menuPos.x, 8),
-            zIndex: 2000,
-            display: "flex",
-            gap: 8,
-            background: "rgba(0,0,0,0.72)",
-            padding: 6,
-            borderRadius: 10,
-            alignItems: "center",
-            boxShadow: "0 6px 18px rgba(0,0,0,0.3)",
-          }}
-        >
-          <Tooltip title="نسخ">
-            <IconButton
-              size="small"
-              onClick={() => {
-                handleCopy();
-                setMenuVisible(false);
-              }}
-              sx={{ color: "white" }}
-            >
-              <ContentCopyIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="مشاركة">
-            <IconButton
-              size="small"
-              onClick={async () => {
-                await handleShare();
-                setMenuVisible(false);
-              }}
-              sx={{ color: "white" }}
-            >
-              <ShareIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="حفظ صورة">
-            <IconButton
-              size="small"
-              onClick={() => {
-                handleSavePhoto();
-                setMenuVisible(false);
-              }}
-              sx={{ color: "white" }}
-            >
-              <SaveAltIcon />
-            </IconButton>
-          </Tooltip>
-        </div>
-      )}
+      <SharingOptions
+        visible={menuVisible}
+        pos={menuPos}
+        onClose={() => setMenuVisible(false)}
+        onCopy={handleCopy}
+        onShare={handleShare}
+        onSave={handleSavePhoto}
+      />
     </>
   );
 }
