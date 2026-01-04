@@ -84,21 +84,6 @@ export default function QuranReader() {
           <DecorativeElements />
 
           <div className={styles.quranContent} style={{ fontSize: `${fontSize}px` }}>
-            <div className={styles.waqfDropdownContainer}>
-              <button 
-                className={styles.waqfDropdownBtn}
-                onClick={() => setShowWaqfGuide(!showWaqfGuide)}
-              >
-                <span>علامات الوقوف</span>
-                <span className={`${styles.dropdownArrow} ${showWaqfGuide ? styles.arrowUp : ""}`}>▼</span>
-              </button>
-              {showWaqfGuide && (
-                <div className={styles.waqfDropdownContent}>
-                  <WaqfGuide />
-                </div>
-              )}
-            </div>
-
             <div className={styles.versesContainer}>
               {loading && <p className={styles.loadingText}>جاري تحميل السورة...</p>}
               {error && <p className={styles.errorText}>{error}</p>}
@@ -111,6 +96,20 @@ export default function QuranReader() {
               )}
               {currentSurah && (
                 <>
+                  <div className={styles.waqfDropdownContainer}>
+                    <button 
+                      className={styles.waqfDropdownBtn}
+                      onClick={() => setShowWaqfGuide(!showWaqfGuide)}
+                    >
+                      <span>علامات الوقوف</span>
+                      <span className={`${styles.dropdownArrow} ${showWaqfGuide ? styles.arrowUp : ""}`}>▼</span>
+                    </button>
+                    {showWaqfGuide && (
+                      <div className={styles.waqfDropdownContent}>
+                        <WaqfGuide />
+                      </div>
+                    )}
+                  </div>
                   <div className={styles.surahIndicator}>
                     <span className={styles.surahName}>{currentSurah.name.replace(/\s+/g, ' ')}</span>
                   </div>
