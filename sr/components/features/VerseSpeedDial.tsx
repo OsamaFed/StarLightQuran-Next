@@ -6,6 +6,8 @@ import Tooltip from "@mui/material/Tooltip";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ShareIcon from "@mui/icons-material/Share";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
+import CheckIcon from "@mui/icons-material/Check";
+import CircularProgress from "@mui/material/CircularProgress";
 
 interface VerseSpeedDialProps {
   verseId: string;
@@ -14,64 +16,81 @@ interface VerseSpeedDialProps {
   surahName: string;
 }
 
-export default function VerseSpeedDial({
-  verseId,
-  verseText,
-  verseNumber,
-  surahName,
-}: VerseSpeedDialProps) {
-  const [open, setOpen] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
+  const html2canvas = (await import("html2canvas")).default;
+  const clone = el.cloneNode(true) as HTMLElement;
+  clone.setAttribute("dir", "rtl");
+  clone.style.direction = "rtl";
+  const rect = el.getBoundingClientRect();
+  clone.style.width = `${rect.width}px`;
+  clone.style.boxSizing = "border-box";
+  const container = document.createElement("div");
+  container.style.position = "fixed";
+  container.style.left = "-9999px";
+  container.style.top = "0";
+  container.style.zIndex = "2147483647";
+  container.appendChild(clone);
+  document.body.appendChild(container);
+  try {
+    const canvas = await html2canvas(clone, { backgroundColor: null, scale: 2, useCORS: true });
+    const blob: Blob | null = await new Promise((resolve) => canvas.toBlob((b) => resolve(b)));
+    return blob;
+  } finally {
+    container.remove();
+  }
+}
+
+export default function VerseSpeedDial({ verseId, verseText, verseNumber, surahName }: VerseSpeedDialProps) {
   const lastObjectUrlRef = useRef<string | null>(null);
   const [menuVisible, setMenuVisible] = useState(false);
-  const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null);
+  const [isCopying, setIsCopying] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const longPressTimer = useRef<number | null>(null);
   const [isPressed, setIsPressed] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const scrollTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (lastObjectUrlRef.current) {
+        try {
+          URL.revokeObjectURL(lastObjectUrlRef.current);
+        } catch {}
+        lastObjectUrlRef.current = null;
+      }
       if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
-      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current);
     };
   }, [verseId]);
 
-  // Scroll detection
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolling(true);
-      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-      scrollTimeoutRef.current = setTimeout(() => {
+      if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current);
+      scrollTimeoutRef.current = window.setTimeout(() => {
         setIsScrolling(false);
-      }, 150); // Adjust delay as needed
+      }, 150) as unknown as number;
     };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current);
     };
   }, []);
 
-  // long-press handlers: attach to verse element
   useEffect(() => {
     const id = verseId;
     const el = document.getElementById(id);
     if (!el) return;
 
-    const start = (clientX: number, clientY: number) => {
-      if (isScrolling) return; // Don't start if scrolling
+    const start = () => {
+      if (isScrolling) return;
       if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
       setIsPressed(true);
-      // 350ms long-press
       longPressTimer.current = window.setTimeout(() => {
-        const rect = el.getBoundingClientRect();
-        setMenuPos({ x: rect.left, y: rect.bottom });
         setMenuVisible(true);
-      }, 350);
+      }, 350) as unknown as number;
     };
 
     const cancel = () => {
@@ -82,12 +101,12 @@ export default function VerseSpeedDial({
       setIsPressed(false);
     };
 
-    const onMouseDown = (e: MouseEvent) => start(e.clientX, e.clientY);
+    const onMouseDown = (e: MouseEvent) => start();
     const onMouseUp = () => cancel();
     const onMouseLeave = () => cancel();
     const onTouchStart = (e: TouchEvent) => {
       const t = e.touches && e.touches[0];
-      if (t) start(t.clientX, t.clientY);
+      if (t) start();
     };
     const onTouchEnd = () => cancel();
     const onTouchCancel = () => cancel();
@@ -111,195 +130,167 @@ export default function VerseSpeedDial({
       el.removeEventListener("touchcancel", onTouchCancel);
       el.removeEventListener("touchmove", onTouchMove);
     };
-  }, [verseId]);
+  }, [verseId, isScrolling]);
 
-  // Apply hover style to verse element when pressed
   useEffect(() => {
-    const id = verseId;
-    const el = document.getElementById(id);
+    const el = document.getElementById(verseId);
     if (!el) return;
-    
     if (isPressed && !isScrolling) {
-      el.style.opacity = "0.8";
-      el.style.transform = "scale(0.98)";
-      el.style.boxShadow = "0 0 0 3px rgba(100, 100, 255, 0.4) inset";
+      el.style.opacity = "0.9";
+      el.style.transform = "scale(0.99)";
+      el.style.boxShadow = "0 0 0 3px rgba(0,0,0,0.06) inset";
       el.style.borderRadius = "8px";
-      el.style.transition = "all 0.15s ease";
+      el.style.transition = "all 0.12s ease";
     } else {
       el.style.opacity = "1";
       el.style.transform = "scale(1)";
       el.style.boxShadow = "none";
       el.style.borderRadius = "0";
     }
-    
     return () => {
       el.style.opacity = "1";
       el.style.transform = "scale(1)";
       el.style.boxShadow = "none";
       el.style.borderRadius = "0";
     };
-  }, [isPressed, verseId, isScrolling]);
+  }, [isPressed, isScrolling, verseId]);
 
-  // click outside to hide menu
   useEffect(() => {
     const handler = (e: Event) => {
       if (!menuVisible) return;
       const target = e.target as Node | null;
       if (menuRef.current && target && menuRef.current.contains(target)) return;
-      // Also don't close if clicking on the verse itself
       const verseEl = document.getElementById(verseId);
       if (verseEl && target && verseEl.contains(target)) return;
       setMenuVisible(false);
     };
-
     document.addEventListener("mousedown", handler);
     document.addEventListener("touchstart", handler);
     return () => {
       document.removeEventListener("mousedown", handler);
       document.removeEventListener("touchstart", handler);
     };
-  }, [menuVisible]);
+  }, [menuVisible, verseId]);
 
   const handleCopy = () => {
     try {
       const text = `${verseText}\n\n${surahName}:${verseNumber}`;
-      navigator.clipboard?.writeText(text).catch(() => {});
+      navigator.clipboard?.writeText(text).then(() => {
+        setIsCopying(true);
+        setTimeout(() => {
+          setIsCopying(false);
+          setMenuVisible(false);
+        }, 1000);
+      }).catch(() => {
+        setMenuVisible(false);
+      });
     } catch (err) {
       console.error("Copy failed:", err);
+      setMenuVisible(false);
     }
   };
 
   const handleShare = async () => {
     try {
-      const verseElement = document.getElementById(verseId);
+      const verseElement = document.getElementById(verseId) as HTMLElement | null;
       if (verseElement && typeof navigator !== "undefined" && "share" in navigator) {
         try {
-          const html2canvas = (await import("html2canvas")).default;
-          const canvas = await html2canvas(verseElement, { backgroundColor: null, scale: 2 });
-          const blob: Blob | null = await new Promise((resolve) => canvas.toBlob((b) => resolve(b)));
+          const blob = await captureElementAsBlob(verseElement);
           if (blob) {
             const file = new File([blob], `${surahName}_${verseNumber}.png`, { type: blob.type });
             if ((navigator as any).canShare && navigator.canShare({ files: [file] })) {
               await (navigator as any).share({ title: `${surahName}:${verseNumber}`, text: verseText, files: [file] });
+              setMenuVisible(false);
               return;
             }
           }
         } catch (innerErr) {
-          console.warn("dom-to-image-more failed, falling back to text share:", innerErr);
+          console.warn("share capture failed, falling back to text:", innerErr);
         }
       }
-      if (navigator.share) {
-        await navigator.share({ title: `${surahName}:${verseNumber}`, text: verseText });
+      if ((navigator as any).share) {
+        await (navigator as any).share({ title: `${surahName}:${verseNumber}`, text: verseText });
       }
     } catch (err) {
       console.error("Error sharing:", err);
     }
+    setMenuVisible(false);
   };
 
-  const handleSavePhoto = () => {
-    (async () => {
+  const handleSavePhoto = async () => {
+    try {
+      setIsDownloading(true);
+      const verseElement = document.getElementById(verseId) as HTMLElement | null;
+      if (!verseElement) return;
+      if (lastObjectUrlRef.current) {
+        try {
+          URL.revokeObjectURL(lastObjectUrlRef.current);
+        } catch {}
+        lastObjectUrlRef.current = null;
+      }
+      const blob = await captureElementAsBlob(verseElement);
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      lastObjectUrlRef.current = url;
       try {
-        const html2canvas = (await import("html2canvas")).default;
-        const verseElement = document.getElementById(verseId);
-        if (!verseElement) return;
-
-        // revoke previous object URL if any
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${surahName}_${verseNumber}.png`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } catch (err) {
+        console.error("Download failed:", err);
+      }
+      setTimeout(() => {
         if (lastObjectUrlRef.current) {
           try {
             URL.revokeObjectURL(lastObjectUrlRef.current);
           } catch {}
           lastObjectUrlRef.current = null;
         }
-
-        const canvas = await html2canvas(verseElement, { backgroundColor: null, scale: 2 });
-        const blob: Blob | null = await new Promise((resolve) => canvas.toBlob((b) => resolve(b)));
-        if (!blob) return;
-        const url = URL.createObjectURL(blob);
-        lastObjectUrlRef.current = url;
-
-        try {
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = `${surahName}_${verseNumber}.png`;
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-        } catch (err) {
-          console.error("Download failed:", err);
-        }
-
-        // revoke after a short delay to ensure download started
-        setTimeout(() => {
-          if (lastObjectUrlRef.current) {
-            try {
-              URL.revokeObjectURL(lastObjectUrlRef.current);
-            } catch {}
-            lastObjectUrlRef.current = null;
-          }
-        }, 1500);
-      } catch (err) {
-        console.error("Error saving photo:", err);
-      }
-    })();
+      }, 1500);
+    } catch (err) {
+      console.error("Error saving photo:", err);
+    } finally {
+      setIsDownloading(false);
+      setMenuVisible(false);
+    }
   };
 
   return (
     <>
-      {menuVisible && menuPos && (
+      {menuVisible && (
         <div
           ref={menuRef}
           role="dialog"
           aria-label="verse actions"
           style={{
             position: "fixed",
-            top: 20,
+            bottom: 20,
             left: 20,
             zIndex: 2000,
             display: "flex",
             flexDirection: "row",
             gap: 8,
-            background: "rgba(0,0,0,0.72)",
             padding: 8,
             borderRadius: 12,
             alignItems: "center",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
-            backdropFilter: "blur(8px)",
           }}
         >
           <Tooltip title="نسخ">
-            <IconButton
-              size="small"
-              onClick={() => {
-                handleCopy();
-                setMenuVisible(false);
-              }}
-              sx={{ color: "white" }}
-            >
-              <ContentCopyIcon />
+            <IconButton size="small" onClick={handleCopy} sx={{ color: "white" }}>
+              {isCopying ? <CheckIcon sx={{ color: "#4caf50" }} /> : <ContentCopyIcon />}
             </IconButton>
           </Tooltip>
           <Tooltip title="مشاركة">
-            <IconButton
-              size="small"
-              onClick={async () => {
-                await handleShare();
-                setMenuVisible(false);
-              }}
-              sx={{ color: "white" }}
-            >
+            <IconButton size="small" onClick={handleShare} sx={{ color: "white" }}>
               <ShareIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="حفظ صورة">
-            <IconButton
-              size="small"
-              onClick={() => {
-                handleSavePhoto();
-                setMenuVisible(false);
-              }}
-              sx={{ color: "white" }}
-            >
-              <SaveAltIcon />
+            <IconButton size="small" onClick={handleSavePhoto} sx={{ color: "white" }}>
+              {isDownloading ? <CircularProgress size={20} color="inherit" /> : <SaveAltIcon />}
             </IconButton>
           </Tooltip>
         </div>
