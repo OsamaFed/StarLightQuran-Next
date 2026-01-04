@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import SharingOptions from "@/components/common/SharingOptions";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import CircularProgress from "@mui/material/CircularProgress";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import ShareIcon from "@mui/icons-material/Share";
+import SaveIcon from "@mui/icons-material/Save";
 
 interface VerseSpeedDialProps {
   verseId: string;
@@ -10,65 +15,84 @@ interface VerseSpeedDialProps {
   surahName: string;
 }
 
-export default function VerseSpeedDial({
-  verseId,
-  verseText,
-  verseNumber,
-  surahName,
-}: VerseSpeedDialProps) {
-  const [open, setOpen] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
+  const html2canvas = (await import("html2canvas")).default;
+  const clone = el.cloneNode(true) as HTMLElement;
+  clone.setAttribute("dir", "rtl");
+  clone.style.direction = "rtl";
+  const rect = el.getBoundingClientRect();
+  clone.style.width = `${rect.width}px`;
+  clone.style.boxSizing = "border-box";
+  const container = document.createElement("div");
+  container.style.position = "fixed";
+  container.style.left = "-9999px";
+  container.style.top = "0";
+  container.style.zIndex = "2147483647";
+  container.appendChild(clone);
+  document.body.appendChild(container);
+  try {
+    const canvas = await html2canvas(clone, { backgroundColor: null, scale: 2, useCORS: true });
+    const blob: Blob | null = await new Promise((resolve) => canvas.toBlob((b) => resolve(b)));
+    return blob;
+  } finally {
+    container.remove();
+  }
+}
+
+export default function VerseSpeedDial({ verseId, verseText, verseNumber, surahName }: VerseSpeedDialProps) {
   const lastObjectUrlRef = useRef<string | null>(null);
   const [menuVisible, setMenuVisible] = useState(false);
-  const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null);
+  const [menuPos, setMenuPos] = useState<{ left: number; top: number } | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const longPressTimer = useRef<number | null>(null);
   const [isPressed, setIsPressed] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const scrollTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (lastObjectUrlRef.current) {
+        try {
+          URL.revokeObjectURL(lastObjectUrlRef.current);
+        } catch {}
+        lastObjectUrlRef.current = null;
+      }
       if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
-      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current);
     };
   }, [verseId]);
 
-  // Scroll detection
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolling(true);
-      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-      scrollTimeoutRef.current = setTimeout(() => {
+      if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current);
+      scrollTimeoutRef.current = window.setTimeout(() => {
         setIsScrolling(false);
-      }, 150); // Adjust delay as needed
+      }, 150) as unknown as number;
     };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current);
     };
   }, []);
 
-  // long-press handlers: attach to verse element
   useEffect(() => {
     const id = verseId;
     const el = document.getElementById(id);
     if (!el) return;
 
-    const start = (clientX: number, clientY: number) => {
-      if (isScrolling) return; // Don't start if scrolling
+    const start = () => {
+      if (isScrolling) return;
       if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
       setIsPressed(true);
-      // 1.2s long-press on phone as requested
       longPressTimer.current = window.setTimeout(() => {
-        // Use actual press coordinates so the menu appears where the user tapped
-        // small offset to move menu slightly below the finger
-        setMenuPos({ x: clientX, y: clientY + 6 });
+        const rect = el.getBoundingClientRect();
+        const left = Math.max(8, rect.left);
+        const top = Math.max(8, rect.top - 72); // place above verse to avoid overlapping tafseer
+        setMenuPos({ left, top });
         setMenuVisible(true);
-      }, 1200);
+      }, 350) as unknown as number;
     };
 
     const cancel = () => {
@@ -79,12 +103,12 @@ export default function VerseSpeedDial({
       setIsPressed(false);
     };
 
-    const onMouseDown = (e: MouseEvent) => start(e.clientX, e.clientY);
+    const onMouseDown = (e: MouseEvent) => start();
     const onMouseUp = () => cancel();
     const onMouseLeave = () => cancel();
     const onTouchStart = (e: TouchEvent) => {
       const t = e.touches && e.touches[0];
-      if (t) start(t.clientX, t.clientY);
+      if (t) start();
     };
     const onTouchEnd = () => cancel();
     const onTouchCancel = () => cancel();
@@ -108,80 +132,47 @@ export default function VerseSpeedDial({
       el.removeEventListener("touchcancel", onTouchCancel);
       el.removeEventListener("touchmove", onTouchMove);
     };
-  }, [verseId]);
+  }, [verseId, isScrolling]);
 
-  // Apply hover style to verse element when pressed
   useEffect(() => {
-    const id = verseId;
-    const el = document.getElementById(id);
+    const el = document.getElementById(verseId);
     if (!el) return;
-    
     if (isPressed && !isScrolling) {
-      el.style.opacity = "0.8";
-      el.style.transform = "scale(0.98)";
-      el.style.boxShadow = "0 0 0 3px rgba(100, 100, 255, 0.4) inset";
+      el.style.opacity = "0.9";
+      el.style.transform = "scale(0.99)";
+      el.style.boxShadow = "0 0 0 3px rgba(0,0,0,0.06) inset";
       el.style.borderRadius = "8px";
-      el.style.transition = "all 0.15s ease";
+      el.style.transition = "all 0.12s ease";
     } else {
       el.style.opacity = "1";
       el.style.transform = "scale(1)";
       el.style.boxShadow = "none";
       el.style.borderRadius = "0";
     }
-    
     return () => {
       el.style.opacity = "1";
       el.style.transform = "scale(1)";
       el.style.boxShadow = "none";
       el.style.borderRadius = "0";
     };
-  }, [isPressed, verseId, isScrolling]);
+  }, [isPressed, isScrolling, verseId]);
 
-  // click outside to hide menu
   useEffect(() => {
     const handler = (e: Event) => {
       if (!menuVisible) return;
       const target = e.target as Node | null;
       if (menuRef.current && target && menuRef.current.contains(target)) return;
-      // Also don't close if clicking on the verse itself
       const verseEl = document.getElementById(verseId);
       if (verseEl && target && verseEl.contains(target)) return;
       setMenuVisible(false);
     };
-
     document.addEventListener("mousedown", handler);
     document.addEventListener("touchstart", handler);
     return () => {
       document.removeEventListener("mousedown", handler);
       document.removeEventListener("touchstart", handler);
     };
-  }, [menuVisible]);
-
-  // listen for external open requests (e.g., options button in VerseCard)
-  useEffect(() => {
-    const handler = (e: Event) => {
-      try {
-        const ev = e as CustomEvent<{ verseId: string; x?: number; y?: number }>;
-        if (!ev?.detail || ev.detail.verseId !== verseId) return;
-        const el = document.getElementById(verseId);
-        if (!el) return;
-        // If caller provided coordinates (e.g., options button), use them.
-        if (typeof ev.detail.x === "number" && typeof ev.detail.y === "number") {
-          setMenuPos({ x: ev.detail.x, y: ev.detail.y + 6 });
-        } else {
-          const rect = el.getBoundingClientRect();
-          // fallback to element position (use right edge for better alignment in RTL)
-          setMenuPos({ x: rect.right - 8, y: rect.bottom });
-        }
-        setMenuVisible(true);
-      } catch (err) {
-        // ignore
-      }
-    };
-
-    document.addEventListener("open-verse-menu", handler as EventListener);
-    return () => document.removeEventListener("open-verse-menu", handler as EventListener);
-  }, [verseId]);
+  }, [menuVisible, verseId]);
 
   const handleCopy = () => {
     try {
@@ -190,92 +181,120 @@ export default function VerseSpeedDial({
     } catch (err) {
       console.error("Copy failed:", err);
     }
+    setMenuVisible(false);
   };
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleShare = async () => {
     try {
-      const verseElement = document.getElementById(verseId);
+      setIsLoading(true);
+      const verseElement = document.getElementById(verseId) as HTMLElement | null;
       if (verseElement && typeof navigator !== "undefined" && "share" in navigator) {
         try {
-          const html2canvas = (await import("html2canvas")).default;
-          const canvas = await html2canvas(verseElement, { backgroundColor: null, scale: 2 });
-          const blob: Blob | null = await new Promise((resolve) => canvas.toBlob((b) => resolve(b)));
+          const blob = await captureElementAsBlob(verseElement);
           if (blob) {
             const file = new File([blob], `${surahName}_${verseNumber}.png`, { type: blob.type });
             if ((navigator as any).canShare && navigator.canShare({ files: [file] })) {
               await (navigator as any).share({ title: `${surahName}:${verseNumber}`, text: verseText, files: [file] });
+              setMenuVisible(false);
+              setIsLoading(false);
               return;
             }
           }
         } catch (innerErr) {
-          console.warn("dom-to-image-more failed, falling back to text share:", innerErr);
+          console.warn("share capture failed, falling back to text:", innerErr);
         }
       }
-      if (navigator.share) {
-        await navigator.share({ title: `${surahName}:${verseNumber}`, text: verseText });
+      if ((navigator as any).share) {
+        await (navigator as any).share({ title: `${surahName}:${verseNumber}`, text: verseText });
       }
     } catch (err) {
       console.error("Error sharing:", err);
     }
+    setIsLoading(false);
+    setMenuVisible(false);
   };
 
-  const handleSavePhoto = () => {
-    (async () => {
+  const handleSavePhoto = async () => {
+    try {
+      setIsLoading(true);
+      const verseElement = document.getElementById(verseId) as HTMLElement | null;
+      if (!verseElement) return;
+      if (lastObjectUrlRef.current) {
+        try {
+          URL.revokeObjectURL(lastObjectUrlRef.current);
+        } catch {}
+        lastObjectUrlRef.current = null;
+      }
+      const blob = await captureElementAsBlob(verseElement);
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      lastObjectUrlRef.current = url;
       try {
-        const html2canvas = (await import("html2canvas")).default;
-        const verseElement = document.getElementById(verseId);
-        if (!verseElement) return;
-
-        // revoke previous object URL if any
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${surahName}_${verseNumber}.png`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } catch (err) {
+        console.error("Download failed:", err);
+      }
+      setTimeout(() => {
         if (lastObjectUrlRef.current) {
           try {
             URL.revokeObjectURL(lastObjectUrlRef.current);
           } catch {}
           lastObjectUrlRef.current = null;
         }
-
-        const canvas = await html2canvas(verseElement, { backgroundColor: null, scale: 2 });
-        const blob: Blob | null = await new Promise((resolve) => canvas.toBlob((b) => resolve(b)));
-        if (!blob) return;
-        const url = URL.createObjectURL(blob);
-        lastObjectUrlRef.current = url;
-
-        try {
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = `${surahName}_${verseNumber}.png`;
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-        } catch (err) {
-          console.error("Download failed:", err);
-        }
-
-        // revoke after a short delay to ensure download started
-        setTimeout(() => {
-          if (lastObjectUrlRef.current) {
-            try {
-              URL.revokeObjectURL(lastObjectUrlRef.current);
-            } catch {}
-            lastObjectUrlRef.current = null;
-          }
-        }, 1500);
-      } catch (err) {
-        console.error("Error saving photo:", err);
-      }
-    })();
+      }, 1500);
+    } catch (err) {
+      console.error("Error saving photo:", err);
+    }
+    setIsLoading(false);
+    setMenuVisible(false);
   };
 
   return (
     <>
-      <SharingOptions
-        visible={menuVisible}
-        pos={menuPos}
-        onClose={() => setMenuVisible(false)}
-        onCopy={handleCopy}
-        onShare={handleShare}
-        onSave={handleSavePhoto}
-      />
+      {menuVisible && (
+        <div
+          ref={menuRef}
+          role="dialog"
+          aria-label="verse actions"
+          style={{
+            position: "fixed",
+            bottom: 20,
+            left: 20,
+            zIndex: 2000,
+            display: "flex",
+            flexDirection: "row",
+            gap: 8,
+            padding: 8,
+            borderRadius: 12,
+            alignItems: "center",
+          }}
+        >
+          <Tooltip title="نسخ">
+            <IconButton size="small" onClick={handleCopy} sx={{ color: "white" }}>
+              <ContentCopyIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="مشاركة">
+            <IconButton size="small" onClick={handleShare} sx={{ color: "white" }}>
+              <ShareIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="حفظ صورة">
+            <span>
+              <IconButton size="small" onClick={handleSavePhoto} sx={{ color: "white" }} disabled={isLoading}>
+                {isLoading ? <CircularProgress size={18} color="inherit" /> : <SaveIcon />}
+              </IconButton>
+            </span>
+          </Tooltip>
+        </div>
+      )}
     </>
   );
 }
