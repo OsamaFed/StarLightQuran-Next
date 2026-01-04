@@ -162,7 +162,7 @@ export default function DuaCategoryPage() {
                 className={styles.backLink}
                 style={{ display: "flex", alignItems: "center", gap: "6px" }}
               >
-                <span>←</span>
+                <span>→</span>
                 <span>{prevCategory.category}</span>
               </Link>
             )}
@@ -174,7 +174,7 @@ export default function DuaCategoryPage() {
                 style={{ display: "flex", alignItems: "center", gap: "6px" }}
               >
                 <span>{nextCategory.category}</span>
-                <span>→</span>
+                <span>←</span>
               </Link>
             )}
           </motion.div>

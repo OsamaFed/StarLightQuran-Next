@@ -15,6 +15,7 @@ import styles from "./QuranReader.module.css";
 import DarkModeToggle from "../ui/DarkModeToggle";
 import WaqfGuide from "../common/WaqfGuide";
 
+
 export default function QuranReader() {
   const { isDarkMode, toggleDarkMode } = useTheme();
   const {
@@ -103,7 +104,6 @@ export default function QuranReader() {
               {error && <p className={styles.errorText}>{error}</p>}
               {!loading && !error && !currentSurah && (
                 <>
-                  <WaqfGuide className={styles.waqfGuideWelcome} />
                   <div>
                     <p>اضغط على أي آية لتحميلها كصورة أو نسخها أو مشاركتها</p>
                   </div>
