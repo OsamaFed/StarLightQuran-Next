@@ -6,6 +6,7 @@ import { useTheme } from "@/hooks/useTheme";
 import OptionCard from "@/components/layout/OptionCard";
 import LightModeToggle from "@/components/ui/LightModeToggle";
 import PrayerTimes from "@/components/features/PrayerTimes";
+import { Aurora } from "@/components/ui";
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -41,6 +42,13 @@ export default function Home() {
       className={`${styles.pageWrapper} ${isDarkMode ? styles.darkMode : ""}`}
       data-theme={isDarkMode ? "dark" : "light"}
     >
+      <div className={styles.auroraBg}>
+        <Aurora
+          colorStops={isDarkMode ? ['#000000', '#1a1a2e', '#16213e'] : ['#f0f4f8', '#d9e2ec', '#bcccdc']}
+          blend={0.5}
+          amplitude={1.0}
+        />
+      </div>
       <div className={styles.toggleWrapper}>
         <LightModeToggle isDarkMode={isDarkMode} onToggle={toggleDarkMode} />
       </div>
