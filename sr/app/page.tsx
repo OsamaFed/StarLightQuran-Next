@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/hooks/useTheme";
 import OptionCard from "@/components/layout/OptionCard";
@@ -8,13 +8,40 @@ import LightModeToggle from "@/components/ui/LightModeToggle";
 import PrayerTimes from "@/components/features/PrayerTimes";
 import { Aurora } from "@/components/ui";
 import styles from "./page.module.css";
+import gsap from "gsap";
 
 export default function Home() {
   const router = useRouter();
   const { isDarkMode, toggleDarkMode } = useTheme();
+  const headerRef = useRef(null);
+  const cardsRef = useRef(null);
+  const prayerRef = useRef(null);
 
   useEffect(() => {
-  }, [router]);
+    const ctx = gsap.context(() => {
+      // Intro Animation
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      
+      tl.from(headerRef.current, {
+        y: -50,
+        autoAlpha: 0,
+        duration: 1.2
+      })
+      .from(prayerRef.current, {
+        scale: 0.9,
+        autoAlpha: 0,
+        duration: 1
+      }, "-=0.8")
+      .from(".option-card-anim", {
+        y: 30,
+        autoAlpha: 0,
+        duration: 0.8,
+        stagger: 0.2
+      }, "-=0.5");
+    });
+
+    return () => ctx.revert();
+  }, []);
 
   const sections = [
     {
@@ -54,24 +81,27 @@ export default function Home() {
       </div>
 
       <div className={styles.container}>
-        <header className={styles.header}>
+        <header className={styles.header} ref={headerRef}>
           <h1 className={styles.title}>StarLight Quran</h1>
           <p className={styles.subtitle}>
             منصتك الأولى للوصول إلى القرآن الكريم، والأذكار اليومية، والأدعية الصحيحة بسهولة
           </p>
         </header>
 
-        <PrayerTimes isDarkMode={isDarkMode} />
+        <div ref={prayerRef}>
+          <PrayerTimes isDarkMode={isDarkMode} />
+        </div>
 
-        <div className={styles.cardsGrid}>
+        <div className={styles.cardsGrid} ref={cardsRef}>
           {sections.map((section, index) => (
-            <OptionCard
-              key={index}
-              title={section.title}
-              description={section.description}
-              href={section.href}
-              emoji={section.emoji}
-            />
+            <div key={index} className="option-card-anim">
+              <OptionCard
+                title={section.title}
+                description={section.description}
+                href={section.href}
+                emoji={section.emoji}
+              />
+            </div>
           ))}
         </div>
 
