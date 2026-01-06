@@ -8,6 +8,8 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ShareIcon from "@mui/icons-material/Share";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import CheckIcon from "@mui/icons-material/Check";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
 
 interface VerseSpeedDialProps {
   verseId: string;
@@ -18,31 +20,40 @@ interface VerseSpeedDialProps {
 
 async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
   const html2canvas = (await import("html2canvas")).default;
-  const clone = el.cloneNode(true) as HTMLElement;
-  clone.setAttribute("dir", "rtl");
-  clone.style.direction = "rtl";
-  const rect = el.getBoundingClientRect();
-  clone.style.width = `${rect.width}px`;
-  clone.style.boxSizing = "border-box";
-
+  
+  // Create a clean container for capturing
   const container = document.createElement("div");
   container.style.position = "fixed";
   container.style.left = "-9999px";
   container.style.top = "0";
-  container.style.zIndex = "2147483647";
+  container.style.width = "600px"; // Standard width for sharing
+  container.style.padding = "40px";
+  container.style.background = getComputedStyle(document.body).getPropertyValue('--bg-primary') || '#ffffff';
+  container.dir = "rtl";
+
+  const clone = el.cloneNode(true) as HTMLElement;
+  
+  // REMOVE the menu from the clone before capturing
+  const menuInClone = clone.querySelector('[data-verse-menu="true"]');
+  if (menuInClone) menuInClone.remove();
+  
+  // Style the clone for the image
+  clone.style.width = "100%";
+  clone.style.margin = "0";
+  clone.style.boxShadow = "none";
+  clone.style.transform = "none";
+
   container.appendChild(clone);
   document.body.appendChild(container);
 
   try {
-    const canvas = await html2canvas(clone, {
-      backgroundColor: null,
+    const canvas = await html2canvas(container, {
+      backgroundColor: container.style.background,
       scale: 2,
       useCORS: true,
+      logging: false,
     });
-    const blob: Blob | null = await new Promise((resolve) =>
-      canvas.toBlob((b) => resolve(b))
-    );
-    return blob;
+    return await new Promise((resolve) => canvas.toBlob(resolve, 'image/png', 1.0));
   } finally {
     container.remove();
   }
@@ -90,8 +101,6 @@ export default function VerseSpeedDial({
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      if (scrollTimeoutRef.current)
-        window.clearTimeout(scrollTimeoutRef.current);
     };
   }, []);
 
@@ -99,14 +108,17 @@ export default function VerseSpeedDial({
     const el = document.getElementById(verseId);
     if (!el) return;
 
-    const start = () => {
+    const start = (e: Event) => {
       if (isScrolling) return;
-      if (longPressTimer.current)
-        window.clearTimeout(longPressTimer.current);
       setIsPressed(true);
+      
+      if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
+      
       longPressTimer.current = window.setTimeout(() => {
         setMenuVisible(true);
-      }, 350) as unknown as number;
+        // Play a very light vibration if supported
+        if ('vibrate' in navigator) navigator.vibrate(10);
+      }, 500) as unknown as number;
     };
 
     const cancel = () => {
@@ -120,24 +132,37 @@ export default function VerseSpeedDial({
     el.addEventListener("mousedown", start);
     el.addEventListener("mouseup", cancel);
     el.addEventListener("mouseleave", cancel);
-    el.addEventListener("touchstart", start);
+    el.addEventListener("touchstart", start, { passive: true });
     el.addEventListener("touchend", cancel);
     el.addEventListener("touchcancel", cancel);
-    el.addEventListener("touchmove", cancel);
+    el.addEventListener("touchmove", () => {
+      if (isPressed) cancel();
+    }, { passive: true });
 
     return () => {
-      cancel();
       el.removeEventListener("mousedown", start);
       el.removeEventListener("mouseup", cancel);
       el.removeEventListener("mouseleave", cancel);
       el.removeEventListener("touchstart", start);
       el.removeEventListener("touchend", cancel);
       el.removeEventListener("touchcancel", cancel);
-      el.removeEventListener("touchmove", cancel);
     };
-  }, [verseId, isScrolling]);
+  }, [verseId, isScrolling, isPressed]);
 
-  const handleCopy = () => {
+  // Close menu when clicking outside
+  useEffect(() => {
+    if (!menuVisible) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuVisible(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [menuVisible]);
+
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const text = `${verseText}\n\n${surahName}:${verseNumber}`;
     navigator.clipboard?.writeText(text).then(() => {
       setIsCopying(true);
@@ -148,22 +173,23 @@ export default function VerseSpeedDial({
     });
   };
 
-  const handleShare = async () => {
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     try {
-      const verseElement = document.getElementById(verseId);
-      if (verseElement && "share" in navigator) {
+      if ("share" in navigator) {
         await (navigator as any).share({
           title: `${surahName}:${verseNumber}`,
-          text: verseText,
+          text: `${verseText}\n\n${surahName}:${verseNumber}`,
         });
       }
     } catch (err) {
-      console.error(err);
+      if ((err as Error).name !== 'AbortError') console.error(err);
     }
     setMenuVisible(false);
   };
 
-  const handleSavePhoto = async () => {
+  const handleSavePhoto = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     try {
       setIsDownloading(true);
       const verseElement = document.getElementById(verseId);
@@ -173,14 +199,13 @@ export default function VerseSpeedDial({
       if (!blob) return;
 
       const url = URL.createObjectURL(blob);
-      lastObjectUrlRef.current = url;
-
       const link = document.createElement("a");
       link.href = url;
       link.download = `${surahName}_${verseNumber}.png`;
       document.body.appendChild(link);
       link.click();
       link.remove();
+      URL.revokeObjectURL(url);
     } catch (err) {
       console.error(err);
     } finally {
@@ -192,45 +217,67 @@ export default function VerseSpeedDial({
   return (
     <>
       {menuVisible && (
-        <div
+        <Paper
           ref={menuRef}
-          style={{
+          data-verse-menu="true"
+          elevation={8}
+          sx={{
             position: "fixed",
-            bottom: 20,
-            left: 20,
-            zIndex: 2000,
+            bottom: { xs: 40, md: 60 },
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 9999,
             display: "flex",
-            gap: 8,
-            padding: 8,
-            borderRadius: 12,
+            gap: 1.5,
+            p: 1.5,
+            borderRadius: 4,
+            bgcolor: "rgba(0, 0, 0, 0.85)",
+            backdropFilter: "blur(10px)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            animation: "fadeInUp 0.3s ease-out",
+            "@keyframes fadeInUp": {
+              from: { opacity: 0, transform: "translateX(-50%) translateY(20px)" },
+              to: { opacity: 1, transform: "translateX(-50%) translateY(0)" }
+            }
           }}
         >
           <Tooltip title="نسخ">
-            <IconButton onClick={handleCopy} sx={{ color: "white" }}>
-              {isCopying ? (
-                <CheckIcon sx={{ color: "#4caf50" }} />
-              ) : (
-                <ContentCopyIcon />
-              )}
+            <IconButton onClick={handleCopy} sx={{ color: "#fff", bgcolor: "rgba(255,255,255,0.05)", '&:hover': { bgcolor: "rgba(255,255,255,0.15)" } }}>
+              {isCopying ? <CheckIcon sx={{ color: "#4caf50" }} /> : <ContentCopyIcon />}
             </IconButton>
           </Tooltip>
 
           <Tooltip title="مشاركة">
-            <IconButton onClick={handleShare} sx={{ color: "white" }}>
+            <IconButton onClick={handleShare} sx={{ color: "#fff", bgcolor: "rgba(255,255,255,0.05)", '&:hover': { bgcolor: "rgba(255,255,255,0.15)" } }}>
               <ShareIcon />
             </IconButton>
           </Tooltip>
 
           <Tooltip title="حفظ صورة">
-            <IconButton onClick={handleSavePhoto} sx={{ color: "white" }}>
-              {isDownloading ? (
-                <CircularProgress size={20} color="inherit" />
-              ) : (
-                <SaveAltIcon />
-              )}
+            <IconButton onClick={handleSavePhoto} sx={{ color: "#fff", bgcolor: "rgba(255,255,255,0.05)", '&:hover': { bgcolor: "rgba(255,255,255,0.15)" } }}>
+              {isDownloading ? <CircularProgress size={24} color="inherit" /> : <SaveAltIcon />}
             </IconButton>
           </Tooltip>
-        </div>
+        </Paper>
+      )}
+      
+      {/* Visual indicator for long press */}
+      {isPressed && !menuVisible && (
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            bgcolor: "rgba(212, 163, 115, 0.1)",
+            borderRadius: "inherit",
+            pointerEvents: "none",
+            animation: "pulse 0.5s ease-in-out infinite",
+            "@keyframes pulse": {
+              "0%": { opacity: 0.3 },
+              "50%": { opacity: 0.6 },
+              "100%": { opacity: 0.3 }
+            }
+          }}
+        />
       )}
     </>
   );
