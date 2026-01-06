@@ -96,17 +96,21 @@ void main() {
   vec3 rampColor;
   COLOR_RAMP(colors, uv.x, rampColor);
 
-  float height = snoise(vec2(uv.x * 2.0 + uTime * 0.1, uTime * 0.25)) * 0.5 * uAmplitude;
+  float height = snoise(vec2(uv.x * 1.5 + uTime * 0.1, uv.y * 1.5 + uTime * 0.15)) * 0.5 * uAmplitude;
   height = exp(height);
-  height = (uv.y * 2.0 - height + 0.2);
-  float intensity = 0.6 * height;
+  
+  // Create a more distributed pattern
+  float n1 = snoise(uv * 1.5 + uTime * 0.05);
+  float n2 = snoise(uv * 2.5 - uTime * 0.08);
+  float pattern = (n1 + n2) * 0.5;
+  
+  float intensity = smoothstep(-0.5, 1.5, pattern + height * 0.2);
 
-  float midPoint = 0.20;
-  float auroraAlpha = smoothstep(midPoint - uBlend * 0.5, midPoint + uBlend * 0.5, intensity);
+  float auroraAlpha = smoothstep(-uBlend, uBlend, intensity);
 
   vec3 auroraColor = intensity * rampColor;
 
-  fragColor = vec4(auroraColor * auroraAlpha, auroraAlpha);
+  fragColor = vec4(auroraColor * auroraAlpha, auroraAlpha * 0.3);
 }
 `;
 
