@@ -99,9 +99,9 @@
   --accent-color-1: #A3ABD1;
   --accent-color-2: #8B8FC5;
   --accent-color-3: #C5CDEA;
-  --border-color: #E2E8F0;
+  --border-color: rgba(255, 255, 255, 0.1);
   --highlight-color: #8B8FC5;
-  --card-bg: #FFFFFF;
+  --card-bg: rgba(255, 255, 255, 0.03);
   --button-gradient: linear-gradient(135deg, #A3ABD1, #8B8FC5);
 
   /* Cortexgarden theme variables */
@@ -123,8 +123,8 @@
   --dark-highlight-color: #3A7BD5;
   --dark-accent-1: #2A5298;
   --dark-accent-2: #3A7BD5;
-  --dark-border-color: #2A5298;
-  --dark-card-bg: rgba(27, 58, 95, 0.7);
+  --dark-border-color: rgba(255, 255, 255, 0.05);
+  --dark-card-bg: rgba(0, 0, 0, 0.15);
   --dark-button-gradient: linear-gradient(135deg, #2A5298, #3A7BD5);
 
   /* Decorative colors */

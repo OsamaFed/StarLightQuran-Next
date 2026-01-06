@@ -3,7 +3,10 @@
   padding: 20px;
   border-radius: var(--radius-lg);
   position: relative;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2));
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   animation: fadeInUp 0.5s ease-out backwards;
   animation-delay: calc(var(--verse-index, 0) * 0.05s);
@@ -11,54 +14,9 @@
   transition: all 0.3s ease;
 }
 
-/* Size variants based on verse length */
-.sizeVerySmall {
-  padding: 12px 16px;
-  margin-bottom: 16px;
-}
-
-.sizeVerySmall .verseText {
-  font-size: inherit;
-}
-
-.sizeSmall {
-  padding: 14px 18px;
-  margin-bottom: 18px;
-}
-
-.sizeSmall .verseText {
-  font-size: inherit;
-}
-
-.sizeMedium {
-  padding: 20px;
-  margin-bottom: 24px;
-}
-
-.sizeMedium .verseText {
-  font-size: inherit;
-}
-
-.sizeLarge {
-  padding: 24px;
-  margin-bottom: 28px;
-}
-
-.sizeLarge .verseText {
-  font-size: inherit;
-}
-
-.sizeVeryLarge {
-  padding: 28px;
-  margin-bottom: 32px;
-}
-
-.sizeVeryLarge .verseText {
-  font-size: inherit;
-}
-
 :global(.darkMode) .verse {
-  background: linear-gradient(145deg, rgba(34, 50, 64, 0.6), rgba(34, 50, 64, 0.3));
+  background: rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 255, 255, 0.05);
 }
 
 .verseNumber {
