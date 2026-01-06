@@ -8,6 +8,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ShareIcon from "@mui/icons-material/Share";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import CheckIcon from "@mui/icons-material/Check";
+import gsap from "gsap";
 
 interface VerseSpeedDialProps {
   verseId: string;
@@ -16,26 +17,72 @@ interface VerseSpeedDialProps {
   surahName: string;
 }
 
-async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
+// Global state to track the active menu to ensure only one is visible at a time
+let activeMenuSetter: ((visible: boolean) => void) | null = null;
+
+async function captureElementAsBlob(
+  verseText: string,
+  surahName: string,
+  verseNumber: number
+): Promise<Blob | null> {
   const html2canvas = (await import("html2canvas")).default;
-  const clone = el.cloneNode(true) as HTMLElement;
-  clone.setAttribute("dir", "rtl");
-  clone.style.direction = "rtl";
-  const rect = el.getBoundingClientRect();
-  clone.style.width = `${rect.width}px`;
-  clone.style.boxSizing = "border-box";
 
   const container = document.createElement("div");
   container.style.position = "fixed";
   container.style.left = "-9999px";
   container.style.top = "0";
-  container.style.zIndex = "2147483647";
-  container.appendChild(clone);
+  container.style.width = "800px";
+  container.style.backgroundColor = "#fdf8f3"; // Cream background like in the image
+  container.style.padding = "60px";
+  container.style.display = "flex";
+  container.style.flexDirection = "column";
+  container.style.alignItems = "center";
+  container.style.justifyContent = "center";
+  container.style.fontFamily = "'Amiri', serif";
+  container.style.direction = "rtl";
+  container.style.boxSizing = "border-box";
+
+  // Surah name top left
+  const header = document.createElement("div");
+  header.style.width = "100%";
+  header.style.display = "flex";
+  header.style.justifyContent = "space-between";
+  header.style.marginBottom = "40px";
+  header.style.fontSize = "24px";
+  header.style.color = "#333";
+
+  const surahLabel = document.createElement("div");
+  surahLabel.innerText = `سُورَةُ ${surahName}`;
+  header.appendChild(surahLabel);
+
+  // Empty placeholder for top right as requested to ignore it
+  const placeholder = document.createElement("div");
+  header.appendChild(placeholder);
+
+  container.appendChild(header);
+
+  // Verse text in the middle
+  const content = document.createElement("div");
+  content.style.fontSize = "36px";
+  content.style.lineHeight = "1.8";
+  content.style.textAlign = "center";
+  content.style.color = "#000";
+  content.style.marginBottom = "20px";
+  content.innerText = verseText;
+  container.appendChild(content);
+
+  // Verse number
+  const footer = document.createElement("div");
+  footer.style.fontSize = "20px";
+  footer.style.color = "#666";
+  footer.innerText = `(${verseNumber})`;
+  container.appendChild(footer);
+
   document.body.appendChild(container);
 
   try {
-    const canvas = await html2canvas(clone, {
-      backgroundColor: null,
+    const canvas = await html2canvas(container, {
+      backgroundColor: "#fdf8f3",
       scale: 2,
       useCORS: true,
     });
@@ -61,7 +108,6 @@ export default function VerseSpeedDial({
 
   const menuRef = useRef<HTMLDivElement | null>(null);
   const longPressTimer = useRef<number | null>(null);
-  const [isPressed, setIsPressed] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimeoutRef = useRef<number | null>(null);
 
@@ -103,8 +149,13 @@ export default function VerseSpeedDial({
       if (isScrolling) return;
       if (longPressTimer.current)
         window.clearTimeout(longPressTimer.current);
-      setIsPressed(true);
+      
       longPressTimer.current = window.setTimeout(() => {
+        // If there's an active menu from another verse, hide it
+        if (activeMenuSetter && activeMenuSetter !== setMenuVisible) {
+          activeMenuSetter(false);
+        }
+        activeMenuSetter = setMenuVisible;
         setMenuVisible(true);
       }, 350) as unknown as number;
     };
@@ -114,7 +165,6 @@ export default function VerseSpeedDial({
         window.clearTimeout(longPressTimer.current);
         longPressTimer.current = null;
       }
-      setIsPressed(false);
     };
 
     el.addEventListener("mousedown", start);
@@ -137,6 +187,16 @@ export default function VerseSpeedDial({
     };
   }, [verseId, isScrolling]);
 
+  useEffect(() => {
+    if (menuVisible && menuRef.current) {
+      gsap.fromTo(
+        menuRef.current,
+        { opacity: 0, y: 20, scale: 0.9 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.7)" }
+      );
+    }
+  }, [menuVisible]);
+
   const handleCopy = () => {
     const text = `${verseText}\n\n${surahName}:${verseNumber}`;
     navigator.clipboard?.writeText(text).then(() => {
@@ -150,8 +210,7 @@ export default function VerseSpeedDial({
 
   const handleShare = async () => {
     try {
-      const verseElement = document.getElementById(verseId);
-      if (verseElement && "share" in navigator) {
+      if ("share" in navigator) {
         await (navigator as any).share({
           title: `${surahName}:${verseNumber}`,
           text: verseText,
@@ -166,10 +225,7 @@ export default function VerseSpeedDial({
   const handleSavePhoto = async () => {
     try {
       setIsDownloading(true);
-      const verseElement = document.getElementById(verseId);
-      if (!verseElement) return;
-
-      const blob = await captureElementAsBlob(verseElement);
+      const blob = await captureElementAsBlob(verseText, surahName, verseNumber);
       if (!blob) return;
 
       const url = URL.createObjectURL(blob);
@@ -203,6 +259,8 @@ export default function VerseSpeedDial({
             gap: 8,
             padding: 8,
             borderRadius: 12,
+            background: "rgba(0,0,0,0.72)",
+            boxShadow: "0 6px 18px rgba(0,0,0,0.3)",
           }}
         >
           <Tooltip title="نسخ">
