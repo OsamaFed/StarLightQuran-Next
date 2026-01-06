@@ -110,6 +110,15 @@ export default function VerseCard({
         verseText={ayah.text}
         verseNumber={verseNumber}
         surahName={surahName}
+        activeDialId={activeTafseerId !== null ? `verse-${activeTafseerId}` : null}
+        setActiveDialId={(id) => {
+          if (id === null) {
+            setActiveTafseerId(null);
+          } else {
+            const num = parseInt(id.replace("verse-", ""));
+            setActiveTafseerId(num);
+          }
+        }}
       />
     </div>
   );
