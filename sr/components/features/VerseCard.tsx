@@ -13,6 +13,8 @@ interface VerseCardProps {
   isDarkMode: boolean;
   onLoadTafseer: (ayahNumber: number) => Promise<string | null>;
   fontSize?: number;
+  activeTafseerId: number | null;
+  setActiveTafseerId: (id: number | null) => void;
 }
 
 export default function VerseCard({
@@ -22,15 +24,17 @@ export default function VerseCard({
   isDarkMode,
   onLoadTafseer,
   fontSize = 24,
+  activeTafseerId,
+  setActiveTafseerId,
 }: VerseCardProps) {
-  const [showTafseer, setShowTafseer] = useState(false);
+  const showTafseer = activeTafseerId === ayah.number;
   const [tafseer, setTafseer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleTafseerClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (showTafseer) {
-      setShowTafseer(false);
+      setActiveTafseerId(null);
       return;
     }
 
@@ -40,7 +44,7 @@ export default function VerseCard({
       setTafseer(tafseerText);
       setLoading(false);
     }
-    setShowTafseer(true);
+    setActiveTafseerId(ayah.number);
   };
 
   // Calculate size based on verse length

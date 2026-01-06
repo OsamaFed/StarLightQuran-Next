@@ -71,9 +71,10 @@ export default function Home() {
     >
       <div className={styles.auroraBg}>
         <Aurora
-          colorStops={isDarkMode ? ['#000000', '#1a1a2e', '#16213e'] : ['#f0f4f8', '#d9e2ec', '#bcccdc']}
-          blend={0.8}
-          amplitude={1.2}
+          colorStops={isDarkMode ? ["#3A29FF", "#FF94B4", "#FF3232"] : ['#f0f4f8', '#d9e2ec', '#bcccdc']}
+          blend={isDarkMode ? 0.5 : 0.8}
+          amplitude={isDarkMode ? 1.0 : 1.2}
+          speed={isDarkMode ? 0.5 : 1.0}
         />
       </div>
       <div className={styles.toggleWrapper}>
