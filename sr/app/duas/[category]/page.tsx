@@ -127,13 +127,24 @@ export default function DuaCategoryPage() {
                 variants={itemVariants}
               >
                 <p className={styles.adhkarText}>{item.text}</p>
-                {item.count > 1 && (
-                  <div className={styles.adhkarMeta}>
-                    <span className={styles.countBadge}>
-                      التكرار: {item.count} مرات
-                    </span>
-                  </div>
-                )}
+                <div className={styles.adhkarFooter}>
+                  {item.count > 1 && (
+                    <div className={styles.adhkarMeta}>
+                      <span className={styles.countBadge}>
+                        التكرار: {item.count} مرات
+                      </span>
+                    </div>
+                  )}
+                  {item.filename && (
+                    <button
+                      className={`${styles.audioButton} ${playingId === item.id ? styles.playing : ""}`}
+                      onClick={() => toggleAudio(item.id, item.filename)}
+                      aria-label="استماع"
+                    >
+                      {playingId === item.id ? "⏸ وقف" : "▶ استماع"}
+                    </button>
+                  )}
+                </div>
               </motion.div>
             ))}
           </motion.div>

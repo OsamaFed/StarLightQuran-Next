@@ -13,6 +13,7 @@ interface AdhkarItem {
   text: string;
   count: number;
   audio?: string;
+  filename?: string;
 }
 
 interface AdhkarCategory {
@@ -34,6 +35,38 @@ export default function CategoryPage() {
   const [loading, setLoading] = useState(true);
   const [allCategories, setAllCategories] = useState<AdhkarCategory[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [playingId, setPlayingId] = useState<number | null>(null);
+  const [audioInstance, setAudioInstance] = useState<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (audioInstance) {
+        audioInstance.pause();
+        audioInstance.src = "";
+      }
+    };
+  }, [audioInstance]);
+
+  const toggleAudio = (id: number, filename?: string) => {
+    if (playingId === id) {
+      audioInstance?.pause();
+      setPlayingId(null);
+      return;
+    }
+
+    if (audioInstance) {
+      audioInstance.pause();
+    }
+
+    if (filename) {
+      const audioPath = `/audio/${filename}`;
+      const newAudio = new Audio(audioPath);
+      newAudio.play();
+      setAudioInstance(newAudio);
+      setPlayingId(id);
+      newAudio.onended = () => setPlayingId(null);
+    }
+  };
 
   useEffect(() => {
     async function fetchAdhkar() {
@@ -128,13 +161,24 @@ const prevCategory = currentIndex > 0 ? allCategories[currentIndex - 1] : null
                 variants={itemVariants}
               >
                 <p className={styles.adhkarText}>{item.text}</p>
-                {item.count > 1 && (
-                  <div className={styles.adhkarMeta}>
-                    <span className={styles.countBadge}>
-                      التكرار: {item.count} مرات
-                    </span>
-                  </div>
-                )}
+                <div className={styles.adhkarFooter}>
+                  {item.count > 1 && (
+                    <div className={styles.adhkarMeta}>
+                      <span className={styles.countBadge}>
+                        التكرار: {item.count} مرات
+                      </span>
+                    </div>
+                  )}
+                  {item.filename && (
+                    <button
+                      className={`${styles.audioButton} ${playingId === item.id ? styles.playing : ""}`}
+                      onClick={() => toggleAudio(item.id, item.filename)}
+                      aria-label="استماع"
+                    >
+                      {playingId === item.id ? "⏸ وقف" : "▶ استماع"}
+                    </button>
+                  )}
+                </div>
               </motion.div>
             ))}
           </motion.div>
