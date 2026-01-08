@@ -1,3 +1,4 @@
+
 .wrapper {
   min-height: 100vh;
   transition: all var(--transition-slow);
@@ -397,17 +398,20 @@
 }
 
 .introTitle {
-  font-size: 2.2rem;
-  font-weight: 800;
-  margin-bottom: 24px;
+  font-size: 2.0rem;
+  font-weight: 600;
+  margin-bottom: 26px;
   color: var(--text-primary);
   line-height: 1.2;
+}
+.darkMode .introTitle {
+  color: var(--dark-text-primary)
 }
 
 .introSubtitle {
   font-size: 1.2rem;
   margin-bottom: 30px;
-  color: var(--text-secondary);
+  color: var(--highlight-color);
   font-weight: 500;
 }
 
@@ -422,8 +426,8 @@
 }
 
 .introList li {
-  font-size: 1.1rem;
-  color: var(--text-primary);
+  font-size: 1.2rem;
+  color: var(--highlight-color);
   padding: 4px 0;
   position: relative;
   opacity: 0.9;
