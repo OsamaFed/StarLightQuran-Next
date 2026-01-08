@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   },
   // Allow all origins in dev to prevent cross-origin reload issues on Replit
   experimental: {
-    allowedReplicatedOrigins: ["*"],
+    // allowedReplicatedOrigins is not a valid key in some Next.js versions
   },
 } as any;
 

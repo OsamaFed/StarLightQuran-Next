@@ -61,7 +61,12 @@ export default function DuaCategoryPage() {
     if (filename) {
       const audioPath = `/audio/${filename}`;
       const newAudio = new Audio(audioPath);
-      newAudio.play();
+      newAudio.play().catch(err => {
+        console.error("Audio playback failed:", err);
+        if (err.name === 'NotAllowedError') {
+           alert("يرجى التفاعل مع الصفحة أولاً لتتمكن من تشغيل الصوت");
+        }
+      });
       setAudioInstance(newAudio);
       setPlayingId(id);
       newAudio.onended = () => setPlayingId(null);

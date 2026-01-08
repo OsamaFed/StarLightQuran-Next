@@ -61,7 +61,13 @@ export default function CategoryPage() {
     if (filename) {
       const audioPath = `/audio/${filename}`;
       const newAudio = new Audio(audioPath);
-      newAudio.play();
+      newAudio.play().catch(err => {
+        console.error("Audio playback failed:", err);
+        // Fallback for some browsers or restricted environments
+        if (err.name === 'NotAllowedError') {
+           alert("يرجى التفاعل مع الصفحة أولاً لتتمكن من تشغيل الصوت");
+        }
+      });
       setAudioInstance(newAudio);
       setPlayingId(id);
       newAudio.onended = () => setPlayingId(null);
