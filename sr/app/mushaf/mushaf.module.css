@@ -243,26 +243,34 @@
 }
 
 .waqfDropdownBtn {
-  background: var(--glass-bg);
-  border: 1px solid var(--accent-color-1);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-primary);
-  padding: 10px 24px;
-  border-radius: var(--radius-round);
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  border-radius: var(--radius-lg);
   font-family: 'KoGaliModern', sans-serif;
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   cursor: pointer;
   transition: all var(--transition-base);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .waqfDropdownBtn:hover {
-  background: var(--accent-color-1);
-  color: white;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+}
+
+.darkMode .waqfDropdownBtn {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.05);
+  color: var(--dark-text-primary);
 }
 
 .dropdownArrow {
@@ -279,22 +287,18 @@
   max-width: 500px;
   margin-top: 12px;
   padding: 20px;
-  background: var(--glass-bg);
-  border: 1px solid var(--accent-color-1);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   animation: fadeInDown 0.3s ease-out;
 }
 
-:global(.darkMode) .waqfDropdownBtn {
-  background: var(--dark-bg-secondary);
-  border-color: var(--dark-accent-1);
-  color: var(--dark-text-primary);
-}
-
-:global(.darkMode) .waqfDropdownContent {
-  background: var(--dark-bg-secondary);
-  border-color: var(--dark-accent-1);
+.darkMode .waqfDropdownContent {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.05);
 }
 
 .waqfGuideWelcome {
