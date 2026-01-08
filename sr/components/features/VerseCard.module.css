@@ -12,29 +12,6 @@
   animation-delay: calc(var(--verse-index, 0) * 0.05s);
   user-select: none;
   transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.verse:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.verse:active {
-  transform: scale(0.995);
-}
-
-.verse.active {
-  background: rgba(212, 163, 115, 0.15);
-  border-color: var(--accent-color-1);
-  transform: translateX(-8px);
-  box-shadow: 0 8px 32px rgba(212, 163, 115, 0.2);
-}
-
-:global(.darkMode) .verse.active {
-  background: rgba(197, 108, 240, 0.15);
-  border-color: var(--dark-highlight-color);
-  box-shadow: 0 8px 32px rgba(197, 108, 240, 0.25);
 }
 
 :global(.darkMode) .verse {
