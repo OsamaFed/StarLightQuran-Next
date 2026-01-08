@@ -13,6 +13,8 @@ interface VerseCardProps {
   isDarkMode: boolean;
   onLoadTafseer: (ayahNumber: number) => Promise<string | null>;
   fontSize?: number;
+  isActive?: boolean;
+  onInteraction?: (active: boolean) => void;
 }
 
 export default function VerseCard({
@@ -22,6 +24,8 @@ export default function VerseCard({
   isDarkMode,
   onLoadTafseer,
   fontSize = 24,
+  isActive = false,
+  onInteraction,
 }: VerseCardProps) {
   const [showTafseer, setShowTafseer] = useState(false);
   const [tafseer, setTafseer] = useState<string | null>(null);
@@ -41,6 +45,12 @@ export default function VerseCard({
       setLoading(false);
     }
     setShowTafseer(true);
+  };
+
+  const handleInteraction = (active: boolean) => {
+    if (onInteraction) {
+      onInteraction(active);
+    }
   };
 
   // Calculate size based on verse length
@@ -82,8 +92,8 @@ export default function VerseCard({
 
   return (
     <div
-      id={`verse-${ayah.number}`}
-      className={`${styles.verse} ${sizeClass}`}
+      id={`verse-${ayah.numberInSurah}`}
+      className={`${styles.verse} ${sizeClass} ${isActive ? styles.active : ""}`}
       style={{ ...dynamicStyle, fontSize: `${fontSize}px` }}
     >
       <span className={styles.verseNumber}>{verseNumber}</span>
@@ -102,10 +112,12 @@ export default function VerseCard({
         </div>
       )}
       <VerseSpeedDial
-        verseId={`verse-${ayah.number}`}
+        verseId={`verse-${ayah.numberInSurah}`}
         verseText={ayah.text}
         verseNumber={verseNumber}
         surahName={surahName}
+        onOpen={() => handleInteraction(true)}
+        onClose={() => handleInteraction(false)}
       />
     </div>
   );

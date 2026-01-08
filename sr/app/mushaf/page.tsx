@@ -32,7 +32,7 @@ export default function MushafPage() {
   useScrollRestoration("quran", [loading, currentSurah]);
 
   const [fontSize, setFontSize] = useState(24);
-  const [showWaqfGuide, setShowWaqfGuide] = useState(false);
+  const [activeVerseId, setActiveVerseId] = useState<string | null>(null);
 
   const increaseFontSize = () => {
     setFontSize((prev) => Math.min(prev + 2, 36));
@@ -44,7 +44,11 @@ export default function MushafPage() {
 
   const handleSurahSelect = (surahId: number) => {
     loadSurah(surahId);
-    setShowWaqfGuide(false);
+    setActiveVerseId(null);
+  };
+
+  const handleVerseInteraction = (verseId: string | null) => {
+    setActiveVerseId(verseId);
   };
 
   return (
@@ -97,20 +101,6 @@ export default function MushafPage() {
               )}
               {currentSurah && (
                 <>
-                  <div className={styles.waqfDropdownContainer}>
-                    <button 
-                      className={styles.waqfDropdownBtn}
-                      onClick={() => setShowWaqfGuide(!showWaqfGuide)}
-                    >
-                      <span>علامات الوقوف</span>
-                      <span className={`${styles.dropdownArrow} ${showWaqfGuide ? styles.arrowUp : ""}`}>▼</span>
-                    </button>
-                    {showWaqfGuide && (
-                      <div className={styles.waqfDropdownContent}>
-                        <WaqfGuide />
-                      </div>
-                    )}
-                  </div>
                   <div className={styles.surahIndicator}>
                     <span className={styles.surahName}>{currentSurah.name.replace(/\s+/g, ' ')}</span>
                   </div>
@@ -128,6 +118,8 @@ export default function MushafPage() {
                       surahName={currentSurah.name}
                       onLoadTafseer={loadTafseer}
                       fontSize={fontSize}
+                      isActive={activeVerseId === `verse-${ayah.numberInSurah}`}
+                      onInteraction={(active) => handleVerseInteraction(active ? `verse-${ayah.numberInSurah}` : null)}
                     />
                   ))}
                 </>
