@@ -8,6 +8,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ShareIcon from "@mui/icons-material/Share";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import CheckIcon from "@mui/icons-material/Check";
+import gsap from "gsap";
 
 interface VerseSpeedDialProps {
   verseId: string;
@@ -136,6 +137,26 @@ export default function VerseSpeedDial({
       el.removeEventListener("touchmove", cancel);
     };
   }, [verseId, isScrolling]);
+
+  useEffect(() => {
+    if (menuVisible && menuRef.current) {
+      gsap.fromTo(
+        menuRef.current,
+        {
+          opacity: 0,
+          y: 20,
+          scale: 0.8,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.4,
+          ease: "back.out(1.7)",
+        }
+      );
+    }
+  }, [menuVisible]);
 
   const handleCopy = () => {
     const text = `${verseText}\n\n${surahName}:${verseNumber}`;
