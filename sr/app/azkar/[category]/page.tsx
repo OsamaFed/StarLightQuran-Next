@@ -13,7 +13,6 @@ interface AdhkarItem {
   text: string;
   count: number;
   audio?: string;
-  filename?: string;
 }
 
 interface AdhkarCategory {
@@ -35,48 +34,6 @@ export default function CategoryPage() {
   const [loading, setLoading] = useState(true);
   const [allCategories, setAllCategories] = useState<AdhkarCategory[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [playingId, setPlayingId] = useState<number | null>(null);
-  const [audioInstance, setAudioInstance] = useState<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (audioInstance) {
-        audioInstance.pause();
-        audioInstance.src = "";
-      }
-    };
-  }, [audioInstance]);
-
-  const toggleAudio = (id: number, filename?: string) => {
-    if (playingId === id) {
-      audioInstance?.pause();
-      setPlayingId(null);
-      return;
-    }
-
-    if (audioInstance) {
-      audioInstance.pause();
-    }
-
-    if (filename) {
-      // Ensure filename has .mp3 extension if it's missing
-      const fullFilename = filename.endsWith('.mp3') ? filename : `${filename}.mp3`;
-      const audioPath = `/audio/${fullFilename}`;
-      const newAudio = new Audio(audioPath);
-      newAudio.crossOrigin = "anonymous"; // Try adding cross-origin for external assets if any
-      newAudio.play().catch(err => {
-        console.error("Audio playback failed:", err, "Path:", audioPath);
-        if (err.name === 'NotAllowedError') {
-           alert("يرجى التفاعل مع الصفحة أولاً لتتمكن من تشغيل الصوت");
-        } else if (err.name === 'NotSupportedError' || err.name === 'AbortError') {
-           console.warn("Format not supported, file missing, or playback aborted:", audioPath);
-        }
-      });
-      setAudioInstance(newAudio);
-      setPlayingId(id);
-      newAudio.onended = () => setPlayingId(null);
-    }
-  };
 
   useEffect(() => {
     async function fetchAdhkar() {
@@ -171,24 +128,13 @@ const prevCategory = currentIndex > 0 ? allCategories[currentIndex - 1] : null
                 variants={itemVariants}
               >
                 <p className={styles.adhkarText}>{item.text}</p>
-                <div className={styles.adhkarFooter}>
-                  {item.count > 1 && (
-                    <div className={styles.adhkarMeta}>
-                      <span className={styles.countBadge}>
-                        التكرار: {item.count} مرات
-                      </span>
-                    </div>
-                  )}
-                  {item.filename && (
-                    <button
-                      className={`${styles.audioButton} ${playingId === item.id ? styles.playing : ""}`}
-                      onClick={() => toggleAudio(item.id, item.filename)}
-                      aria-label="استماع"
-                    >
-                      {playingId === item.id ? "⏸ وقف" : "▶ استماع"}
-                    </button>
-                  )}
-                </div>
+                {item.count > 1 && (
+                  <div className={styles.adhkarMeta}>
+                    <span className={styles.countBadge}>
+                      التكرار: {item.count} مرات
+                    </span>
+                  </div>
+                )}
               </motion.div>
             ))}
           </motion.div>
