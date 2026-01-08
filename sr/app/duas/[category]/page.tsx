@@ -13,6 +13,7 @@ interface DuaItem {
   text: string;
   count: number;
   audio?: string;
+  filename?: string;
 }
 
 interface DuaCategory {
@@ -34,6 +35,38 @@ export default function DuaCategoryPage() {
   const [loading, setLoading] = useState(true);
   const [allCategories, setAllCategories] = useState<DuaCategory[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [playingId, setPlayingId] = useState<number | null>(null);
+  const [audioInstance, setAudioInstance] = useState<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (audioInstance) {
+        audioInstance.pause();
+        audioInstance.src = "";
+      }
+    };
+  }, [audioInstance]);
+
+  const toggleAudio = (id: number, filename?: string) => {
+    if (playingId === id) {
+      audioInstance?.pause();
+      setPlayingId(null);
+      return;
+    }
+
+    if (audioInstance) {
+      audioInstance.pause();
+    }
+
+    if (filename) {
+      const audioPath = `/audio/${filename}`;
+      const newAudio = new Audio(audioPath);
+      newAudio.play();
+      setAudioInstance(newAudio);
+      setPlayingId(id);
+      newAudio.onended = () => setPlayingId(null);
+    }
+  };
 
   useEffect(() => {
     async function fetchDuas() {
