@@ -59,12 +59,16 @@ export default function DuaCategoryPage() {
     }
 
     if (filename) {
-      const audioPath = `/audio/${filename}`;
+      const fullFilename = filename.endsWith('.mp3') ? filename : `${filename}.mp3`;
+      const audioPath = `/audio/${fullFilename}`;
       const newAudio = new Audio(audioPath);
+      newAudio.crossOrigin = "anonymous";
       newAudio.play().catch(err => {
-        console.error("Audio playback failed:", err);
+        console.error("Audio playback failed:", err, "Path:", audioPath);
         if (err.name === 'NotAllowedError') {
            alert("يرجى التفاعل مع الصفحة أولاً لتتمكن من تشغيل الصوت");
+        } else if (err.name === 'NotSupportedError' || err.name === 'AbortError') {
+           console.warn("Format not supported, file missing, or playback aborted:", audioPath);
         }
       });
       setAudioInstance(newAudio);

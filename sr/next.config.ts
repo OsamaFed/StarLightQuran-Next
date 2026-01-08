@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
   experimental: {
     // allowedReplicatedOrigins is not a valid key in some Next.js versions
   },
+  // Ensure we can access public assets properly
+  async rewrites() {
+    return [
+      {
+        source: '/audio/:path*',
+        destination: '/audio/:path*',
+      },
+    ];
+  },
 } as any;
 
 export default nextConfig;

@@ -59,13 +59,17 @@ export default function CategoryPage() {
     }
 
     if (filename) {
-      const audioPath = `/audio/${filename}`;
+      // Ensure filename has .mp3 extension if it's missing
+      const fullFilename = filename.endsWith('.mp3') ? filename : `${filename}.mp3`;
+      const audioPath = `/audio/${fullFilename}`;
       const newAudio = new Audio(audioPath);
+      newAudio.crossOrigin = "anonymous"; // Try adding cross-origin for external assets if any
       newAudio.play().catch(err => {
-        console.error("Audio playback failed:", err);
-        // Fallback for some browsers or restricted environments
+        console.error("Audio playback failed:", err, "Path:", audioPath);
         if (err.name === 'NotAllowedError') {
            alert("يرجى التفاعل مع الصفحة أولاً لتتمكن من تشغيل الصوت");
+        } else if (err.name === 'NotSupportedError' || err.name === 'AbortError') {
+           console.warn("Format not supported, file missing, or playback aborted:", audioPath);
         }
       });
       setAudioInstance(newAudio);
