@@ -13,8 +13,6 @@ interface VerseCardProps {
   isDarkMode: boolean;
   onLoadTafseer: (ayahNumber: number) => Promise<string | null>;
   fontSize?: number;
-  activeTafseerId: number | null;
-  setActiveTafseerId: (id: number | null) => void;
 }
 
 export default function VerseCard({
@@ -24,17 +22,15 @@ export default function VerseCard({
   isDarkMode,
   onLoadTafseer,
   fontSize = 24,
-  activeTafseerId,
-  setActiveTafseerId,
 }: VerseCardProps) {
-  const showTafseer = activeTafseerId === ayah.number;
+  const [showTafseer, setShowTafseer] = useState(false);
   const [tafseer, setTafseer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleTafseerClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (showTafseer) {
-      setActiveTafseerId(null);
+      setShowTafseer(false);
       return;
     }
 
@@ -44,7 +40,7 @@ export default function VerseCard({
       setTafseer(tafseerText);
       setLoading(false);
     }
-    setActiveTafseerId(ayah.number);
+    setShowTafseer(true);
   };
 
   // Calculate size based on verse length
@@ -110,15 +106,6 @@ export default function VerseCard({
         verseText={ayah.text}
         verseNumber={verseNumber}
         surahName={surahName}
-        activeDialId={activeTafseerId !== null ? `verse-${activeTafseerId}` : null}
-        setActiveDialId={(id) => {
-          if (id === null) {
-            setActiveTafseerId(null);
-          } else {
-            const num = parseInt(id.replace("verse-", ""));
-            setActiveTafseerId(num);
-          }
-        }}
       />
     </div>
   );

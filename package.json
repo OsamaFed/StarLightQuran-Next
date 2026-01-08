@@ -1,37 +1,6 @@
 {
-  "name": "sr",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev -H 0.0.0.0 -p 5000",
-    "build": "next build",
-    "start": "next start -H 0.0.0.0 -p 5000",
-    "lint": "eslint"
-  },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^7.3.6",
-    "@mui/material": "^7.3.6",
-    "dayjs": "^1.11.19",
-    "dom-to-image-more": "^2.9.0",
-    "framer-motion": "^12.23.25",
     "gsap": "^3.14.2",
-    "html2canvas": "^1.4.1",
-    "next": "16.0.7",
-    "ogl": "^1.0.11",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "undici-types": "^6.21.0"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.0.7",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "ogl": "^1.0.11"
   }
 }

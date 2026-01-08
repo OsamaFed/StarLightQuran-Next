@@ -14,8 +14,6 @@ interface VerseSpeedDialProps {
   verseText: string;
   verseNumber: number;
   surahName: string;
-  activeDialId: string | null;
-  setActiveDialId: (id: string | null) => void;
 }
 
 async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
@@ -55,15 +53,9 @@ export default function VerseSpeedDial({
   verseText,
   verseNumber,
   surahName,
-  activeDialId,
-  setActiveDialId,
 }: VerseSpeedDialProps) {
   const lastObjectUrlRef = useRef<string | null>(null);
-  const menuVisible = activeDialId === verseId;
-  const setMenuVisible = (visible: boolean) => {
-    if (visible) setActiveDialId(verseId);
-    else setActiveDialId(null);
-  };
+  const [menuVisible, setMenuVisible] = useState(false);
   const [isCopying, setIsCopying] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -113,7 +105,7 @@ export default function VerseSpeedDial({
         window.clearTimeout(longPressTimer.current);
       setIsPressed(true);
       longPressTimer.current = window.setTimeout(() => {
-        setActiveDialId(verseId);
+        setMenuVisible(true);
       }, 350) as unknown as number;
     };
 

@@ -384,6 +384,65 @@
   box-shadow: 0 0 15px rgba(58, 123, 213, 0.5);
 }
 
+.introContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  border-radius: var(--radius-xl);
+  max-width: 600px;
+  margin: 40px auto;
+  box-shadow: var(--shadow-lg);
+  animation: fadeInScale 0.8s ease-out forwards;
+}
+
+.introTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.introSubtitle {
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  color: var(--text-secondary);
+}
+
+.introList {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.introList li {
+  font-size: 1rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.introList li::before {
+  content: "•";
+  color: var(--highlight-color);
+  font-weight: bold;
+}
+
+.introFooter {
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
 .loadingText,
 .errorText {
   text-align: center;

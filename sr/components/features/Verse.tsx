@@ -11,19 +11,9 @@ interface VerseProps {
   surahName: string;
   onLoadTafseer: (ayahNumber: number) => Promise<string | null>;
   fontSize?: number;
-  activeTafseerId: number | null;
-  setActiveTafseerId: (id: number | null) => void;
 }
 
-export default function Verse({ 
-  ayah, 
-  verseNumber, 
-  surahName, 
-  onLoadTafseer, 
-  fontSize,
-  activeTafseerId,
-  setActiveTafseerId
-}: VerseProps) {
+export default function Verse({ ayah, verseNumber, surahName, onLoadTafseer, fontSize }: VerseProps) {
   const { isDarkMode } = useTheme();
 
   return (
@@ -34,8 +24,6 @@ export default function Verse({
       isDarkMode={isDarkMode}
       onLoadTafseer={onLoadTafseer}
       fontSize={fontSize}
-      activeTafseerId={activeTafseerId}
-      setActiveTafseerId={setActiveTafseerId}
     />
   );
 }

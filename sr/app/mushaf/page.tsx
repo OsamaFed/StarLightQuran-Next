@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { useQuran } from "@/hooks/useQuran";
 import { useTheme } from "@/hooks/useTheme";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
@@ -10,7 +10,6 @@ import { SurahSelector, Verse } from "@/components/features";
 import { FontControls, DarkModeToggle } from "@/components/ui";
 import { WaqfGuide } from "@/components/common";
 import styles from "./mushaf.module.css";
-import gsap from "gsap";
 
 export default function MushafPage() {
   const { isDarkMode, toggleDarkMode } = useTheme();
@@ -30,28 +29,10 @@ export default function MushafPage() {
     prevSurah,
   } = useQuran();
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [activeTafseerId, setActiveTafseerId] = useState<number | null>(null);
-
   useScrollRestoration("quran", [loading, currentSurah]);
 
   const [fontSize, setFontSize] = useState(24);
   const [showWaqfGuide, setShowWaqfGuide] = useState(false);
-
-  useEffect(() => {
-    if (!loading && currentVerses.length > 0) {
-      const ctx = gsap.context(() => {
-        gsap.from(".verse-anim", {
-          y: 30,
-          autoAlpha: 0,
-          duration: 0.8,
-          stagger: 0.1,
-          ease: "power3.out",
-        });
-      }, containerRef);
-      return () => ctx.revert();
-    }
-  }, [loading, currentVerses, currentPage]);
 
   const increaseFontSize = () => {
     setFontSize((prev) => Math.min(prev + 2, 36));
@@ -97,16 +78,22 @@ export default function MushafPage() {
         <div className={styles.quranFrame}>
           <DecorativeElements />
 
-          <div className={styles.quranContent} style={{ fontSize: `${fontSize}px` }} ref={containerRef}>
+          <div className={styles.quranContent} style={{ fontSize: `${fontSize}px` }}>
             <div className={styles.versesContainer}>
               {loading && <p className={styles.loadingText}>جاري تحميل السورة...</p>}
               {error && <p className={styles.errorText}>{error}</p>}
               {!loading && !error && !currentSurah && (
-                <>
-                  <div>
-                    <p>اضغط على أي آية لتحميلها كصورة أو نسخها أو مشاركتها</p>
-                  </div>
-                </>
+                <div className={styles.introContainer}>
+                  <p className={styles.introTitle}>اختر سورة من المصحف ثم حدِّد آية للتفاعل معها.</p>
+                  <p className={styles.introSubtitle}>بعد ذلك يمكنك:</p>
+                  <ul className={styles.introList}>
+                    <li>حفظ صورة الآية</li>
+                    <li>مشاركة الآية مع غيرك</li>
+                    <li>نسخ نص الآية</li>
+                    <li>تشغيل التلاوة الصوتية والاستماع لها</li>
+                  </ul>
+                  <p className={styles.introFooter}>خذ وقتك مع الآيات… فالقرآن يُقرأ بتدبّر 🤍</p>
+                </div>
               )}
               {currentSurah && (
                 <>
@@ -134,17 +121,14 @@ export default function MushafPage() {
                     }}
                   />
                   {currentVerses.map((ayah, index) => (
-                    <div key={ayah.number} className="verse-anim">
-                      <Verse
-                        ayah={ayah}
-                        verseNumber={(currentPage - 1) * 12 + index + 1}
-                        surahName={currentSurah.name}
-                        onLoadTafseer={loadTafseer}
-                        fontSize={fontSize}
-                        activeTafseerId={activeTafseerId}
-                        setActiveTafseerId={setActiveTafseerId}
-                      />
-                    </div>
+                    <Verse
+                      key={ayah.number}
+                      ayah={ayah}
+                      verseNumber={(currentPage - 1) * 12 + index + 1}
+                      surahName={currentSurah.name}
+                      onLoadTafseer={loadTafseer}
+                      fontSize={fontSize}
+                    />
                   ))}
                 </>
               )}
