@@ -30,9 +30,9 @@
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding-top: 0;
+  padding: 0 20px;
   position: relative;
   animation: fadeInUp 0.6s ease-out;
 }
@@ -181,8 +181,8 @@
   padding: 20px 28px;
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-md);
-  width: 95%;
-  max-width: 850px;
+  width: 100%;
+  max-width: 1100px;
   margin: 0 auto;
   border: var(--glass-border);
   position: relative;
@@ -200,13 +200,13 @@
 
 .quranFrame {
   position: relative;
-  padding: 40px;
+  padding: 50px 60px;
   border: 3px solid var(--border-color);
   border-radius: var(--radius-2xl);
   background: var(--glass-bg);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  min-height: 550px;
+  min-height: 600px;
   box-shadow: var(--shadow-lg);
   overflow: hidden;
   transition: all var(--transition-smooth);
