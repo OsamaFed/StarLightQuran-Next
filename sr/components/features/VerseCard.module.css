@@ -12,6 +12,16 @@
   animation-delay: calc(var(--verse-index, 0) * 0.05s);
   user-select: none;
   transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.verse:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.verse:active {
+  transform: scale(0.995);
 }
 
 .verse.active {

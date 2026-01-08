@@ -95,6 +95,7 @@ export default function VerseCard({
       id={`verse-${ayah.numberInSurah}`}
       className={`${styles.verse} ${sizeClass} ${isActive ? styles.active : ""}`}
       style={{ ...dynamicStyle, fontSize: `${fontSize}px` }}
+      onClick={() => handleInteraction(!isActive)}
     >
       <span className={styles.verseNumber}>{verseNumber}</span>
       <span className={styles.verseText}>{ayah.text}</span>
