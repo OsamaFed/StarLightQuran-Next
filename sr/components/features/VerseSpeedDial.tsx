@@ -217,6 +217,7 @@ export default function VerseSpeedDial({
       {menuVisible && (
         <div
           ref={menuRef}
+          data-html2canvas-ignore="true"
           style={{
             position: "absolute",
             bottom: 6,
