@@ -96,31 +96,14 @@ export default function VerseSpeedDial({
     };
   }, []);
 
-  const [menuPos, setMenuPos] = useState({ bottom: 20, left: 20 });
-
   useEffect(() => {
     const el = document.getElementById(verseId);
     if (!el) return;
 
-    const start = (e: MouseEvent | TouchEvent) => {
+    const start = () => {
       if (isScrolling) return;
       if (longPressTimer.current)
         window.clearTimeout(longPressTimer.current);
-      
-      // Calculate position based on the element or touch/click
-      let x = 20;
-      let y = 20;
-      
-      if (e instanceof MouseEvent) {
-        x = Math.max(20, Math.min(e.clientX - 50, window.innerWidth - 150));
-        y = Math.max(20, window.innerHeight - e.clientY + 10);
-      } else if (e.touches && e.touches[0]) {
-        x = Math.max(20, Math.min(e.touches[0].clientX - 50, window.innerWidth - 150));
-        y = Math.max(20, window.innerHeight - e.touches[0].clientY + 10);
-      }
-      
-      setMenuPos({ bottom: y, left: x });
-      
       setIsPressed(true);
       longPressTimer.current = window.setTimeout(() => {
         setMenuVisible(true);
@@ -234,16 +217,12 @@ export default function VerseSpeedDial({
           ref={menuRef}
           style={{
             position: "fixed",
-            bottom: menuPos.bottom,
-            left: menuPos.left,
-            zIndex: 2000,
+            bottom: 6,
+            right: "55%",
             display: "flex",
             gap: 8,
             padding: 8,
             borderRadius: 12,
-            background: "rgba(0, 0, 0, 0.5)",
-            backdropFilter: "blur(10px)",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
           }}
         >
           <Tooltip title="نسخ">
