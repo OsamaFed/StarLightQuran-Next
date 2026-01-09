@@ -216,13 +216,17 @@ export default function VerseSpeedDial({
         <div
           ref={menuRef}
           style={{
-            position: "fixed",
+            position: "absolute",
             bottom: 6,
             right: "55%",
             display: "flex",
             gap: 8,
             padding: 8,
             borderRadius: 12,
+            zIndex: 2000,
+            background: "rgba(0, 0, 0, 0.5)",
+            backdropFilter: "blur(10px)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
           }}
         >
           <Tooltip title="نسخ">
