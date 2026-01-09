@@ -18,7 +18,7 @@ interface VerseSpeedDialProps {
   surahName: string;
 }
 
-async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
+async function captureElementAsBlob(el: HTMLElement, isDarkMode: boolean): Promise<Blob | null> {
   const html2canvas = (await import("html2canvas")).default;
   const clone = el.cloneNode(true) as HTMLElement;
   clone.setAttribute("dir", "rtl");
@@ -32,17 +32,45 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
   container.style.left = "-9999px";
   container.style.top = "0";
   container.style.zIndex = "2147483647";
+  
+  // Enhance styling for the high-resolution image
+  clone.style.padding = "60px";
+  clone.style.background = isDarkMode 
+    ? "linear-gradient(135deg, #1e1e1e 0%, #121212 100%)" 
+    : "linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%)";
+  clone.style.borderRadius = "20px";
+  clone.style.color = isDarkMode ? "#ffffff" : "#333333";
+  clone.style.boxShadow = "none";
+  clone.style.display = "flex";
+  clone.style.flexDirection = "column";
+  clone.style.alignItems = "center";
+  clone.style.justifyContent = "center";
+  clone.style.textAlign = "center";
+  clone.style.minHeight = "300px";
+  clone.style.border = isDarkMode ? "1px solid #333" : "1px solid #eee";
+  
+  // Adjust verse text specifically if possible
+  const textEl = clone.querySelector("p, span, div");
+  if (textEl instanceof HTMLElement) {
+    textEl.style.fontSize = "2.5rem";
+    textEl.style.lineHeight = "1.8";
+    textEl.style.marginBottom = "30px";
+    textEl.style.fontFamily = "inherit";
+    textEl.style.color = "inherit";
+  }
+
   container.appendChild(clone);
   document.body.appendChild(container);
 
   try {
     const canvas = await html2canvas(clone, {
-      backgroundColor: null,
-      scale: 2,
+      backgroundColor: isDarkMode ? "#1a1a1a" : "#ffffff",
+      scale: 4,
       useCORS: true,
+      logging: false,
     });
     const blob: Blob | null = await new Promise((resolve) =>
-      canvas.toBlob((b) => resolve(b))
+      canvas.toBlob((b) => resolve(b), "image/png", 1.0)
     );
     return blob;
   } finally {
@@ -118,7 +146,7 @@ export default function VerseSpeedDial({
         longPressTimer.current = null;
       }
       setIsPressed(false);
-    };
+    }
 
     el.addEventListener("mousedown", start);
     el.addEventListener("mouseup", cancel);
@@ -192,7 +220,7 @@ export default function VerseSpeedDial({
       const verseElement = document.getElementById(verseId);
       if (!verseElement) return;
 
-      const blob = await captureElementAsBlob(verseElement);
+      const blob = await captureElementAsBlob(verseElement, isDarkMode);
       if (!blob) return;
 
       const url = URL.createObjectURL(blob);
