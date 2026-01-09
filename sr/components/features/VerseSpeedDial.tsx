@@ -9,6 +9,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import CheckIcon from "@mui/icons-material/Check";
 import gsap from "gsap";
+import { useTheme } from "@/hooks/useTheme";
 
 interface VerseSpeedDialProps {
   verseId: string;
@@ -55,6 +56,7 @@ export default function VerseSpeedDial({
   verseNumber,
   surahName,
 }: VerseSpeedDialProps) {
+  const { isDarkMode } = useTheme();
   const lastObjectUrlRef = useRef<string | null>(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const [isCopying, setIsCopying] = useState(false);
@@ -226,7 +228,7 @@ export default function VerseSpeedDial({
           }}
         >
           <Tooltip title="نسخ">
-            <IconButton onClick={handleCopy} sx={{ color: "white" }}>
+            <IconButton onClick={handleCopy} sx={{ color: isDarkMode ? "white" : "var(--highlight-color)" }}>
               {isCopying ? (
                 <CheckIcon sx={{ color: "#4caf50" }} />
               ) : (
@@ -236,13 +238,13 @@ export default function VerseSpeedDial({
           </Tooltip>
 
           <Tooltip title="مشاركة">
-            <IconButton onClick={handleShare} sx={{ color: "white" }}>
+            <IconButton onClick={handleShare} sx={{ color: isDarkMode ? "white" : "var(--highlight-color)" }}>
               <ShareIcon />
             </IconButton>
           </Tooltip>
 
           <Tooltip title="حفظ صورة">
-            <IconButton onClick={handleSavePhoto} sx={{ color: "white" }}>
+            <IconButton onClick={handleSavePhoto} sx={{ color: isDarkMode ? "white" : "var(--highlight-color)" }}>
               {isDownloading ? (
                 <CircularProgress size={20} color="inherit" />
               ) : (
