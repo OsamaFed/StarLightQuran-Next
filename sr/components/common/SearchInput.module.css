@@ -20,6 +20,12 @@
   box-shadow: var(--shadow-md);
 }
 
+/* allow parent wrappers to override sizing on small/responsive layouts */
+:global(.responsiveSearch) .inputContainer {
+  max-width: 100%;
+  min-width: 0;
+}
+
 .inputContainer:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-lg);

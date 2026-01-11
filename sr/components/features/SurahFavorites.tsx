@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { surahs } from "@/data/surahs";
 import styles from "./SurahFavorites.module.css";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 import { useTheme } from "@/hooks/useTheme";
 
 export default function SurahFavorites({ onSelect }: { onSelect?: (id: number) => void }) {
@@ -40,6 +42,8 @@ export default function SurahFavorites({ onSelect }: { onSelect?: (id: number) =
     save(next);
   };
 
+  
+
   const listRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -57,7 +61,7 @@ export default function SurahFavorites({ onSelect }: { onSelect?: (id: number) =
   return (
     <div className={styles.container}>
       <details className={styles.details}>
-        <summary className={styles.summary}>⭐ المفضلات ({favList.length})</summary>
+        <summary className={styles.summary}>المفضلة ({favList.length})</summary>
         <div ref={listRef} className={styles.list}>
           {favList.length === 0 && <div className={styles.empty}>لا توجد سور مفضلة بعد</div>}
           {favList.map((s) => (
@@ -68,7 +72,15 @@ export default function SurahFavorites({ onSelect }: { onSelect?: (id: number) =
               >
                 {s.id}. {s.name}
               </button>
-              <button className={styles.remove} onClick={() => toggle(s.id)}>إزالة</button>
+              <IconButton
+                size="small"
+                aria-label="إزالة"
+                className={styles.remove}
+                onClick={() => toggle(s.id)}
+                sx={{ bgcolor: 'transparent' }}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
             </div>
           ))}
         </div>

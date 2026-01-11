@@ -4,15 +4,17 @@
 
 .details {
   border: 1px solid rgba(0,0,0,0.06);
-  background: var(--glass-bg);
-  padding: 8px 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  backdrop-filter: blur(10px) saturate(1.02);
+  -webkit-backdrop-filter: blur(10px) saturate(1.02);
+  padding: 10px 14px;
   border-radius: 12px;
 }
 
 .summary {
   cursor: pointer;
   font-weight: 600;
-  color: #0b0b0b; /* light mode: dark text */
+  color: inherit;
   list-style: none;
 }
 
@@ -23,29 +25,78 @@
   gap: 8px;
 }
 
+.listsGrid {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.listColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.topHeader {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.headerItem {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.count {
+  margin-left: 6px;
+  font-weight: 600;
+  color: inherit;
+}
+
 .item {
   display: flex;
   gap: 8px;
   align-items: center;
   justify-content: space-between;
+  padding: 6px 4px;
+  border-radius: 8px;
+  transition: background 180ms ease;
+}
+
+.item:hover {
+  background: rgba(255,255,255,0.02);
 }
 
 .name {
   background: transparent;
   border: none;
-  color: #0b0b0b; /* light mode: dark text */
+  color: inherit;
   text-align: left;
   font-size: 0.95rem;
   cursor: pointer;
 }
 
 .remove {
-  background: var(--highlight-color);
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 4px;
+  background: transparent;
+  color: inherit;
+  border-radius: 4px;
+  padding: 6px; /* keep hit area comfortable */
+}
+
+.verseItem {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .empty {
@@ -55,11 +106,9 @@
 
 :global(.darkMode) .details {
   border-color: rgba(255,255,255,0.06);
-  background: var(--card-bg);
-}
-
-:global(.darkMode) .name {
-  color: #ffffff; /* dark mode: white text */
+  background: linear-gradient(180deg, rgba(10,18,28,0.35), rgba(10,18,28,0.18));
+  backdrop-filter: blur(10px) saturate(1.02);
+  -webkit-backdrop-filter: blur(10px) saturate(1.02);
 }
 
 :global(.darkMode) .remove {

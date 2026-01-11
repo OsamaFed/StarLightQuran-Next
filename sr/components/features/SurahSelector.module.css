@@ -1,6 +1,9 @@
 .container {
   position: relative;
-  width: 200px;
+  width: auto;
+  max-width: 240px;
+  min-width: 120px;
+  flex: 0 0 auto;
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -114,8 +117,8 @@
 
 @media (max-width: 768px) {
   .container {
-    min-width: 160px;
-    width: 160px;
+    max-width: 220px;
+    min-width: 140px;
   }
 
   .select {
@@ -126,8 +129,13 @@
 
 @media (max-width: 480px) {
   .container {
-    min-width: 150px;
-    width: auto;
-    max-width: 180px;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .select {
+    padding: 12px 40px 12px 14px;
+    font-size: 0.95rem;
   }
 }

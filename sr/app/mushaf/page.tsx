@@ -1,15 +1,17 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useQuran } from "@/hooks/useQuran";
 import { useTheme } from "@/hooks/useTheme";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { PageHeader } from "@/components/layout";
-import { SearchInput, DecorativeElements, Pagination } from "@/components/common";
-import { SurahSelector, Verse, SurahFavorites, SurahStarButton } from "@/components/features";
-import { FontControls, DarkModeToggle } from "@/components/ui";
+import { DecorativeElements, Pagination } from "@/components/common";
+import { Verse, SurahStarButton } from "@/components/features";
+import TopControls from "@/components/layout/TopControls";
+import { FontControls } from "@/components/ui";
 import { WaqfGuide } from "@/components/common";
+import { surahs } from "@/data/surahs";
 import styles from "./mushaf.module.css";
 
 export default function MushafPage() {
@@ -34,6 +36,7 @@ export default function MushafPage() {
 
   const [fontSize, setFontSize] = useState(24);
   const [showWaqfGuide, setShowWaqfGuide] = useState(false);
+  const [pendingNav, setPendingNav] = useState<{ surahId?: number; verseId?: string } | null>(null);
 
   const increaseFontSize = () => {
     setFontSize((prev) => Math.min(prev + 2, 36));
@@ -47,6 +50,46 @@ export default function MushafPage() {
     loadSurah(surahId);
     setShowWaqfGuide(false);
   };
+
+  // Listen for navigation events from VerseFavorites
+  useEffect(() => {
+    const handler = (ev: Event) => {
+      try {
+        const d = (ev as CustomEvent).detail;
+        if (!d) return;
+        const name = d.surahName;
+        const verseId = d.verseId as string | undefined;
+        if (!name) return;
+        const found = surahs.find((s) => s.name === name || s.name.replace(/\s+/g, ' ') === name);
+        if (!found) return;
+        // if already on same surah, just scroll
+        if (found.id === currentSurah?.id) {
+          if (verseId) {
+            const el = document.getElementById(verseId);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          return;
+        }
+        // otherwise, request load and remember target
+        setPendingNav({ surahId: found.id, verseId });
+        loadSurah(found.id);
+      } catch (e) {}
+    };
+    window.addEventListener('navigateToVerse', handler as EventListener);
+    return () => window.removeEventListener('navigateToVerse', handler as EventListener);
+  }, [currentSurah, loadSurah]);
+
+  // when surah loads, if there's a pending verse target, scroll to it
+  useEffect(() => {
+    try {
+      if (!pendingNav) return;
+      if (pendingNav.surahId && currentSurah && pendingNav.surahId === currentSurah.id && pendingNav.verseId) {
+        const el = document.getElementById(pendingNav.verseId);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setPendingNav(null);
+      }
+    } catch (e) {}
+  }, [currentSurah, pendingNav]);
 
   return (
     <div className={`${styles.wrapper} ${isDarkMode ? styles.darkMode : ""}`}>
@@ -63,17 +106,7 @@ export default function MushafPage() {
             <div className={styles.subtitle}>وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا</div>
           </div>
           <div className={styles.controls}>
-            <SearchInput onSelectSurah={handleSurahSelect} />
-            <DarkModeToggle isDarkMode={isDarkMode} onToggle={toggleDarkMode} />
-            <SurahSelector
-              currentSurahId={currentSurah?.number}
-              onSelect={handleSurahSelect}
-            />
-            <SurahFavorites onSelect={handleSurahSelect} />
-            <FontControls
-              onIncrease={increaseFontSize}
-              onDecrease={decreaseFontSize}
-            />
+            <TopControls currentSurahId={currentSurah?.number} onSurahSelect={handleSurahSelect} onIncrease={increaseFontSize} onDecrease={decreaseFontSize} />
           </div>
         </header>
 

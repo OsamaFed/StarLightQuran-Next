@@ -80,14 +80,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 24px;
+  padding: 36px 28px;
   margin-bottom: 32px;
-  background: var(--button-gradient);
+  background: linear-gradient(135deg, rgba(58,123,213,0.12), rgba(212,163,115,0.08));
   border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 10px 40px rgba(12, 26, 43, 0.12), var(--shadow-lg);
   transition: all var(--transition-smooth);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .header::before {
@@ -175,16 +175,16 @@
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  padding: 20px 28px;
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-md);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(10px) saturate(1.05);
+  -webkit-backdrop-filter: blur(10px) saturate(1.05);
+  padding: 18px 22px;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(8,16,28,0.08), var(--shadow-md);
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
-  border: var(--glass-border);
+  border: 1px solid rgba(255,255,255,0.04);
   position: relative;
   z-index: 1;
   transition: all var(--transition-base);
@@ -200,17 +200,32 @@
 
 .quranFrame {
   position: relative;
-  padding: 50px 60px;
-  border: 3px solid var(--border-color);
+  padding: 40px 42px;
+  border: 2px solid rgba(0,0,0,0.06);
   border-radius: var(--radius-2xl);
-  background: var(--glass-bg);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  min-height: 600px;
-  box-shadow: var(--shadow-lg);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  backdrop-filter: blur(6px) saturate(1.03);
+  -webkit-backdrop-filter: blur(6px) saturate(1.03);
+  min-height: 520px;
+  box-shadow: 0 12px 40px rgba(2,6,23,0.06), var(--shadow-lg);
   overflow: hidden;
   transition: all var(--transition-smooth);
   animation: fadeInScale 0.8s ease-out;
+}
+
+.favoritesRow {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 16px;
+  width: 100%;
+  margin-top: 16px;
+}
+
+@media (max-width: 900px) {
+  .favoritesRow {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }
 
 .quranFrame::before {
@@ -320,17 +335,21 @@
 }
 
 .surahIndicator {
-  background: var(--button-gradient);
-  padding: 12px 24px;
+  background: linear-gradient(90deg, rgba(58,123,213,0.9), rgba(212,163,115,0.9));
+  padding: 10px 20px;
   margin-bottom: 20px;
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   color: white;
   position: sticky;
-  top: 10px;
-  z-index: 3;
-  transition: all var(--transition-base);
-  animation: slideInRight 0.5s ease-out;
+  top: 12px;
+  z-index: 30;
+  border-radius: 12px;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  transition: all 220ms ease;
+  animation: slideInRight 0.45s ease-out;
 }
 
 .surahFavoriteBtn {
@@ -355,6 +374,10 @@
 .surahName {
   font-weight: bold;
   letter-spacing: 1px;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 1.15rem;
 }
 
 .progressBar {
@@ -412,7 +435,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 60px 20px;
+  padding: 48px 20px;
   max-width: 800px;
   margin: 0 auto;
   animation: fadeIn 1s ease-out forwards;

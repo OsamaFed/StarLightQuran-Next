@@ -7,6 +7,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ShareIcon from "@mui/icons-material/Share";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
 import CheckIcon from "@mui/icons-material/Check";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import gsap from "gsap";
@@ -73,6 +75,7 @@ export default function VerseSpeedDial({
   const [menuVisible, setMenuVisible] = useState(false);
   const [isCopying, setIsCopying] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
   const longPressTimer = useRef<number | null>(null);
@@ -153,6 +156,40 @@ export default function VerseSpeedDial({
       el.removeEventListener("touchmove", cancel);
     };
   }, [verseId, isScrolling]);
+
+  // handle favorite state for this verse
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("favoriteVerses");
+      const arr = raw ? JSON.parse(raw) as Array<{id:string}> : [];
+      setIsFavorited(arr.some((v) => v.id === verseId));
+    } catch (e) {
+      setIsFavorited(false);
+    }
+  }, [verseId]);
+
+  const toggleFavoriteVerse = () => {
+    try {
+      const raw = localStorage.getItem("favoriteVerses");
+      const arr = raw ? JSON.parse(raw) as Array<{id:string, text?:string, surahName?:string, verseNumber?:number}> : [];
+      const exists = arr.some((v) => v.id === verseId);
+      let next;
+      if (exists) {
+        next = arr.filter((v) => v.id !== verseId);
+      } else {
+        const item = { id: verseId, text: verseText?.slice(0,120) || "", surahName, verseNumber };
+        next = [item, ...arr];
+      }
+      localStorage.setItem("favoriteVerses", JSON.stringify(next));
+      setIsFavorited(!exists);
+      try {
+        window.dispatchEvent(new CustomEvent("favoriteVersesChanged", { detail: { favorites: next } }));
+      } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
+    setMenuVisible(false);
+  };
 
   // Apply a very simple press/hover feedback on the verse element itself
   useEffect(() => {
@@ -353,6 +390,21 @@ export default function VerseSpeedDial({
               ) : (
                 <MenuBookIcon fontSize="small" />
               )}
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title={isFavorited ? "إزالة من المفضلة" : "أضف للمفضلة"}>
+            <IconButton
+              onClick={toggleFavoriteVerse}
+              sx={{
+                color: isFavorited ? (isDarkMode ? '#FFD54F' : '#FFB400') : (isDarkMode ? 'white' : '#0b0b0b'),
+                bgcolor: 'transparent',
+                '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' }
+              }}
+              size="small"
+              aria-label="favorite-verse"
+            >
+              {isFavorited ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
             </IconButton>
           </Tooltip>
 
