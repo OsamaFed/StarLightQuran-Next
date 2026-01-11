@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import gsap from "gsap";
 import { useQuran } from "@/hooks/useQuran";
 import { useTheme } from "@/hooks/useTheme";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { PageHeader } from "@/components/layout";
 import { SearchInput, DecorativeElements, Pagination } from "@/components/common";
-import { SurahSelector, Verse } from "@/components/features";
+import { SurahSelector, Verse, SurahFavorites, SurahStarButton } from "@/components/features";
 import { FontControls, DarkModeToggle } from "@/components/ui";
 import { WaqfGuide } from "@/components/common";
 import styles from "./mushaf.module.css";
@@ -68,6 +69,7 @@ export default function MushafPage() {
               currentSurahId={currentSurah?.number}
               onSelect={handleSurahSelect}
             />
+            <SurahFavorites onSelect={handleSurahSelect} />
             <FontControls
               onIncrease={increaseFontSize}
               onDecrease={decreaseFontSize}
@@ -113,6 +115,7 @@ export default function MushafPage() {
                   </div>
                   <div className={styles.surahIndicator}>
                     <span className={styles.surahName}>{currentSurah.name.replace(/\s+/g, ' ')}</span>
+                            <SurahStarButton surahNumber={currentSurah.number} />
                   </div>
                   <div
                     className={styles.progressBar}

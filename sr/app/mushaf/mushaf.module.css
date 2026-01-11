@@ -333,6 +333,23 @@
   animation: slideInRight 0.5s ease-out;
 }
 
+.surahFavoriteBtn {
+  margin-left: 12px;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.95);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.surahFavoriteBtn:hover {
+  transform: translateY(-2px);
+}
+
+:global(.darkMode) .surahFavoriteBtn {
+  color: #FFD700;
+}
+
 
 
 .surahName {

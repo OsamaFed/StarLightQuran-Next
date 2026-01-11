@@ -8,6 +8,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ShareIcon from "@mui/icons-material/Share";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import CheckIcon from "@mui/icons-material/Check";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
 import gsap from "gsap";
 import { useTheme } from "@/hooks/useTheme";
 
@@ -27,6 +28,17 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
   clone.style.width = `${rect.width}px`;
   clone.style.boxSizing = "border-box";
 
+  // ensure background matches current theme for exported image
+  let exportBg: string | null = null;
+  try {
+    const theme = document.documentElement.getAttribute("data-theme") || (document.body.classList.contains("darkMode") ? "dark" : "light");
+    const computedBg = getComputedStyle(document.documentElement).getPropertyValue("--background") || "";
+    // use pure white for light mode exported images
+    const bg = theme === "dark" ? (computedBg.trim() || "#0D1B2A") : "#ffffff";
+    clone.style.backgroundColor = bg;
+    exportBg = bg;
+  } catch (e) {}
+
   const container = document.createElement("div");
   container.style.position = "fixed";
   container.style.left = "-9999px";
@@ -37,8 +49,8 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
 
   try {
     const canvas = await html2canvas(clone, {
-      backgroundColor: null,
-      scale: 2,
+      backgroundColor: exportBg || undefined,
+      scale: 3,
       useCORS: true,
     });
     const blob: Blob | null = await new Promise((resolve) =>
@@ -67,6 +79,8 @@ export default function VerseSpeedDial({
   const [isPressed, setIsPressed] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimeoutRef = useRef<number | null>(null);
+  const originalBgRef = useRef<string | null>(null);
+  const [isTafsirOpen, setIsTafsirOpen] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -140,6 +154,47 @@ export default function VerseSpeedDial({
     };
   }, [verseId, isScrolling]);
 
+  // Apply a very simple press/hover feedback on the verse element itself
+  useEffect(() => {
+    const el = document.getElementById(verseId) as HTMLElement | null;
+    if (!el) return;
+
+    if (isPressed) {
+      originalBgRef.current = el.style.backgroundColor || "";
+      el.style.transition = "background-color 120ms ease";
+      el.style.backgroundColor = isDarkMode
+        ? "rgba(255,255,255,0.04)"
+        : "rgba(0,0,0,0.04)";
+    } else {
+      // restore previous background
+      el.style.backgroundColor = originalBgRef.current || "";
+    }
+
+    return () => {
+      if (el) el.style.backgroundColor = originalBgRef.current || "";
+    };
+  }, [isPressed, verseId, isDarkMode]);
+
+  // Detect if a tafsir panel is present/open so the menu can stay above it
+  useEffect(() => {
+    const checkTafsir = () => {
+      const candidate = document.querySelector(
+        "#tafsir, .tafsir, [data-tafsir], [data-tafsir-open]"
+      ) as HTMLElement | null;
+      const open = !!candidate && candidate.offsetHeight > 0 && candidate.offsetParent !== null;
+      setIsTafsirOpen(open);
+    };
+
+    checkTafsir();
+    const mo = new MutationObserver(checkTafsir);
+    mo.observe(document.body, { childList: true, subtree: true, attributes: true });
+    window.addEventListener("resize", checkTafsir);
+    return () => {
+      mo.disconnect();
+      window.removeEventListener("resize", checkTafsir);
+    };
+  }, []);
+
   useEffect(() => {
     if (menuVisible && menuRef.current) {
       gsap.fromTo(
@@ -159,6 +214,29 @@ export default function VerseSpeedDial({
       );
     }
   }, [menuVisible]);
+
+  const [isTafsirLoading, setIsTafsirLoading] = useState(false);
+
+  useEffect(() => {
+    const onLoaded = (ev: Event) => {
+      try {
+        const d = (ev as CustomEvent).detail;
+        if (d && d.verseId === verseId) setIsTafsirLoading(false);
+      } catch (e) {}
+    };
+    const onClosed = (ev: Event) => {
+      try {
+        const d = (ev as CustomEvent).detail;
+        if (d && d.verseId === verseId) setIsTafsirLoading(false);
+      } catch (e) {}
+    };
+    window.addEventListener("tafsirLoaded", onLoaded as EventListener);
+    window.addEventListener("tafsirClosed", onClosed as EventListener);
+    return () => {
+      window.removeEventListener("tafsirLoaded", onLoaded as EventListener);
+      window.removeEventListener("tafsirClosed", onClosed as EventListener);
+    };
+  }, [verseId]);
 
   const handleCopy = () => {
     const text = `${verseText}\n\n${surahName}:${verseNumber}`;
@@ -212,6 +290,24 @@ export default function VerseSpeedDial({
     }
   };
 
+  const handleOpenTafsir = () => {
+    // notify other parts of the app to open tafsir for this verse
+    try {
+      const ev = new CustomEvent("openTafsir", { detail: { verseId } });
+      window.dispatchEvent(ev);
+    } catch (e) {}
+    setIsTafsirLoading(true);
+    setMenuVisible(false);
+  };
+
+  // Inform other UI to hide inline tafsir buttons while the speed-dial is visible
+  useEffect(() => {
+    try {
+      const ev = new CustomEvent(menuVisible ? "versespeeddial:hideInlineTafsir" : "versespeeddial:showInlineTafsir");
+      window.dispatchEvent(ev);
+    } catch (e) {}
+  }, [menuVisible]);
+
   return (
     <>
       {menuVisible && (
@@ -221,15 +317,54 @@ export default function VerseSpeedDial({
           style={{
             position: "absolute",
             bottom: 6,
-            right: "55%",
+            left: 6,
             display: "flex",
             gap: 8,
             padding: 8,
             borderRadius: 12,
+            zIndex: 50,
+            alignItems: 'center',
+            background: isDarkMode ? 'rgba(18,22,28,0.6)' : 'rgba(255,255,255,0.92)',
+            border: isDarkMode ? '1px solid rgba(255,255,255,0.04)' : '1px solid rgba(0,0,0,0.06)',
+            boxShadow: isDarkMode ? '0 8px 30px rgba(0,0,0,0.45)' : '0 6px 20px rgba(24,24,24,0.06)',
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
+            pointerEvents: 'auto',
+            minWidth: 140,
           }}
         >
+          <Tooltip title="تفسير">
+            <IconButton
+              onClick={handleOpenTafsir}
+              aria-label="تفسير"
+              size="small"
+              data-tafsir-button
+              sx={{
+                color: isDarkMode ? "white" : "var(--highlight-color)",
+                bgcolor: "transparent",
+                boxShadow: isDarkMode ? "0 4px 16px rgba(58,123,213,0.08)" : "var(--shadow-xs)",
+                border: "1px solid transparent",
+                backdropFilter: "blur(6px)",
+                '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' }
+              }}
+            >
+              {isTafsirLoading ? (
+                <CircularProgress size={18} color="inherit" />
+              ) : (
+                <MenuBookIcon fontSize="small" />
+              )}
+            </IconButton>
+          </Tooltip>
+
           <Tooltip title="نسخ">
-            <IconButton onClick={handleCopy} sx={{ color: isDarkMode ? "white" : "var(--highlight-color)" }}>
+            <IconButton
+              onClick={handleCopy}
+              sx={{
+                color: isDarkMode ? "white" : "#0b0b0b",
+                bgcolor: "transparent",
+                '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' }
+              }}
+            >
               {isCopying ? (
                 <CheckIcon sx={{ color: "#4caf50" }} />
               ) : (
@@ -239,13 +374,27 @@ export default function VerseSpeedDial({
           </Tooltip>
 
           <Tooltip title="مشاركة">
-            <IconButton onClick={handleShare} sx={{ color: isDarkMode ? "white" : "var(--highlight-color)" }}>
+            <IconButton
+              onClick={handleShare}
+              sx={{
+                color: isDarkMode ? "white" : "#0b0b0b",
+                bgcolor: "transparent",
+                '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' }
+              }}
+            >
               <ShareIcon />
             </IconButton>
           </Tooltip>
 
           <Tooltip title="حفظ صورة">
-            <IconButton onClick={handleSavePhoto} sx={{ color: isDarkMode ? "white" : "var(--highlight-color)" }}>
+            <IconButton
+              onClick={handleSavePhoto}
+              sx={{
+                color: isDarkMode ? "white" : "#0b0b0b",
+                bgcolor: "transparent",
+                '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' }
+              }}
+            >
               {isDownloading ? (
                 <CircularProgress size={20} color="inherit" />
               ) : (

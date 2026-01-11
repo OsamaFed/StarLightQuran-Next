@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Ayah } from "@/types";
 import VerseSpeedDial from "./VerseSpeedDial";
 import styles from "./VerseCard.module.css";
@@ -27,21 +27,43 @@ export default function VerseCard({
   const [tafseer, setTafseer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleTafseerClick = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (showTafseer) {
-      setShowTafseer(false);
-      return;
-    }
+  useEffect(() => {
+    const handler = async (ev: Event) => {
+      try {
+        const detail = (ev as CustomEvent).detail;
+        if (!detail || !detail.verseId) return;
+        const targetId = `verse-${ayah.number}`;
+        if (detail.verseId !== targetId) return;
 
-    if (!tafseer) {
-      setLoading(true);
-      const tafseerText = await onLoadTafseer(ayah.number);
-      setTafseer(tafseerText);
-      setLoading(false);
-    }
-    setShowTafseer(true);
-  };
+        if (showTafseer) {
+          setShowTafseer(false);
+          try {
+            const evClosed = new CustomEvent("tafsirClosed", { detail: { verseId: targetId } });
+            window.dispatchEvent(evClosed);
+          } catch (e) {}
+          return;
+        }
+
+        if (!tafseer) {
+          setLoading(true);
+          const tafseerText = await onLoadTafseer(ayah.number);
+          setTafseer(tafseerText);
+          setLoading(false);
+          try {
+            const evLoaded = new CustomEvent("tafsirLoaded", { detail: { verseId: targetId } });
+            window.dispatchEvent(evLoaded);
+          } catch (e) {}
+        }
+
+        setShowTafseer(true);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    window.addEventListener("openTafsir", handler as EventListener);
+    return () => window.removeEventListener("openTafsir", handler as EventListener);
+  }, [ayah.number, onLoadTafseer, showTafseer, tafseer]);
 
   // Calculate size based on verse length
   const verseLength = ayah.text.length;
@@ -88,14 +110,7 @@ export default function VerseCard({
     >
       <span className={styles.verseNumber}>{verseNumber}</span>
       <span className={styles.verseText}>{ayah.text}</span>
-      <div className={styles.verseActions}>
-        <button
-          className={styles.tafseerBtn}
-          onClick={handleTafseerClick}
-        >
-          📖 التفسير
-        </button>
-      </div>
+      {/* Tafsir is opened by the small tafsir icon (VerseSpeedDial) via `openTafsir` event */}
       {showTafseer && (
         <div className={styles.tafseerText}>
           {loading ? "جاري تحميل التفسير..." : tafseer}

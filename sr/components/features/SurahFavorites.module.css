@@ -1,0 +1,67 @@
+.container {
+  font-family: inherit;
+}
+
+.details {
+  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--glass-bg);
+  padding: 8px 12px;
+  border-radius: 12px;
+}
+
+.summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #0b0b0b; /* light mode: dark text */
+  list-style: none;
+}
+
+.list {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.name {
+  background: transparent;
+  border: none;
+  color: #0b0b0b; /* light mode: dark text */
+  text-align: left;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.remove {
+  background: var(--highlight-color);
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.empty {
+  color: var(--text-secondary);
+  padding: 6px 0;
+}
+
+:global(.darkMode) .details {
+  border-color: rgba(255,255,255,0.06);
+  background: var(--card-bg);
+}
+
+:global(.darkMode) .name {
+  color: #ffffff; /* dark mode: white text */
+}
+
+:global(.darkMode) .remove {
+  background: var(--dark-highlight-color);
+}
