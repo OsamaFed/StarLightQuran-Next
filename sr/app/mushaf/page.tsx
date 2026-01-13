@@ -63,16 +63,16 @@ export default function MushafPage() {
         />
         <header className={styles.header}>
           <div className={styles.controlsGrid}>
-            <div className={styles.searchSection}>
+            <div className={styles.searchAndSurahSection}>
               <SearchInput onSelectSurah={handleSurahSelect} />
-              <SurahFavorites onSelect={handleSurahSelect} />
-            </div>
-
-            <div className={styles.surahSection}>
               <SurahSelector
                 currentSurahId={currentSurah?.number}
                 onSelect={handleSurahSelect}
               />
+            </div>
+
+            <div className={styles.favoritesSection}>
+              <SurahFavorites onSelect={handleSurahSelect} />
             </div>
 
             <div className={styles.toolsSection}>

@@ -42,23 +42,32 @@
 /* Grid Layout للعناصر التحكم */
 .controlsGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 0.8rem;
   margin: 0;
   width: 100%;
 }
 
+.searchAndSurahSection {
+  display: flex;
+  flex-direction: row;
+  gap: 0.6rem;
+}
+
 .searchSection,
 .surahSection,
-.toolsSection {
+.toolsSection,
+.favoritesSection {
   display: grid;
   gap: 0.6rem;
-  auto-rows: max-content;
+  
 }
 
 .searchSection > *,
 .surahSection > *,
-.toolsSection > * {
+.toolsSection > *,
+.favoritesSection > *,
+.searchAndSurahSection > * {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -68,11 +77,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 1;
 }
 
 .darkMode .searchSection > *,
 .darkMode .surahSection > *,
-.darkMode .toolsSection > * {
+.darkMode .toolsSection > *,
+.darkMode .favoritesSection > *,
+.darkMode .searchAndSurahSection > * {
   background: rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -283,9 +295,8 @@
 }
 
 @media (max-width: 1024px) {
-  .controlsGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.8rem;
+  .searchAndSurahSection {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -294,9 +305,8 @@
     padding: 1rem;
   }
 
-  .controlsGrid {
+  .searchAndSurahSection {
     grid-template-columns: 1fr;
-    gap: 0.6rem;
   }
 
   .quranFrame {
@@ -318,7 +328,7 @@
     font-size: 1rem;
   }
 
-  .controlsGrid {
+  .searchAndSurahSection {
     grid-template-columns: 1fr;
     gap: 0.5rem;
   }
