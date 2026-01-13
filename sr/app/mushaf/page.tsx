@@ -11,7 +11,7 @@ import { SurahSelector, Verse, SurahFavorites, SurahStarButton } from "@/compone
 import { FontControls, DarkModeToggle } from "@/components/ui";
 import { WaqfGuide } from "@/components/common";
 import styles from "./mushaf.module.css";
-import { Aurora } from "@/components/ui/Aurora";
+import { Aurora } from "@/components/ui/";
 
 
 export default function MushafPage() {
