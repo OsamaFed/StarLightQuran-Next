@@ -69,23 +69,17 @@ export default function MushafPage() {
 
         <div className={styles.controlsGrid}>
           <div className={styles.searchSection}>
-            <div className={styles.searchCard}>
-              <SearchInput onSelectSurah={handleSurahSelect} />
-            </div>
-            <div className={styles.favoritesSmall}>
-              <SurahFavorites onSelect={handleSurahSelect} />
-            </div>
+            <SearchInput onSelectSurah={handleSurahSelect} />
+            <SurahFavorites onSelect={handleSurahSelect} />
           </div>
 
           <div className={styles.surahSection}>
-            <div className={styles.surahCard}>
-              <SurahSelector
-                currentSurahId={currentSurah?.number}
-                onSelect={handleSurahSelect}
-              />
-            </div>
-            </div>
-            
+            <SurahSelector
+              currentSurahId={currentSurah?.number}
+              onSelect={handleSurahSelect}
+            />
+          </div>
+
           <div className={styles.toolsSection}>
             <FontControls
               onIncrease={increaseFontSize}
