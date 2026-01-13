@@ -65,7 +65,6 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 1rem;
   padding: 0.75rem;
-  transition: background 0.2s ease, border-color 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -93,18 +92,11 @@
   padding: 2rem;
   min-height: 400px;
   margin-bottom: 2rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
 .darkMode .quranFrame {
   background: rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.quranFrame:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .quranContent {
@@ -194,17 +186,11 @@
   border-radius: 1rem;
   padding: 1rem 1.5rem;
   margin-bottom: 1.5rem;
-  transition: all 0.2s ease;
 }
 
 .darkMode .surahIndicator {
   background: rgba(0, 0, 0, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.surahIndicator:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .surahName {
