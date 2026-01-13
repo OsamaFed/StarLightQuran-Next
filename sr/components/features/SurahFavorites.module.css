@@ -39,29 +39,16 @@
   cursor: pointer;
 }
 
-.remove {
-  background: var(--highlight-color);
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-}
+
 
 .empty {
   color: var(--text-secondary);
   padding: 6px 0;
 }
 
-:global(.darkMode) .details {
-  border-color: rgba(255,255,255,0.06);
-  background: var(--card-bg);
-}
+
 
 :global(.darkMode) .name {
   color: #ffffff; /* dark mode: white text */
 }
 
-:global(.darkMode) .remove {
-  background: var(--dark-highlight-color);
-}

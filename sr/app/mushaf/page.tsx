@@ -11,6 +11,8 @@ import { SurahSelector, Verse, SurahFavorites, SurahStarButton } from "@/compone
 import { FontControls, DarkModeToggle } from "@/components/ui";
 import { WaqfGuide } from "@/components/common";
 import styles from "./mushaf.module.css";
+import { Aurora } from "@/components/ui/Aurora";
+
 
 export default function MushafPage() {
   const { isDarkMode, toggleDarkMode } = useTheme();
@@ -50,6 +52,7 @@ export default function MushafPage() {
 
   return (
     <div className={`${styles.wrapper} ${isDarkMode ? styles.darkMode : ""}`}>
+      <div className={styles.aurorabg}><Aurora colorStops={['#1a1a1a', '#2d3748', '#1a1a1a']} blend={0.5} amplitude={0.3} /></div>
       <div className={styles.container}>
         <PageHeader
           isDarkMode={isDarkMode}
@@ -78,7 +81,6 @@ export default function MushafPage() {
         </header>
 
         <div className={styles.quranFrame}>
-          <DecorativeElements />
 
           <div className={styles.quranContent} style={{ fontSize: `${fontSize}px` }}>
             <div className={styles.versesContainer}>

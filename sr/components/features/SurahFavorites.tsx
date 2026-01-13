@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { surahs } from "@/data/surahs";
 import styles from "./SurahFavorites.module.css";
+  import CloseIcon from '@mui/icons-material/Close';
 import { useTheme } from "@/hooks/useTheme";
 
 export default function SurahFavorites({ onSelect }: { onSelect?: (id: number) => void }) {
@@ -57,7 +58,7 @@ export default function SurahFavorites({ onSelect }: { onSelect?: (id: number) =
   return (
     <div className={styles.container}>
       <details className={styles.details}>
-        <summary className={styles.summary}>⭐ المفضلات ({favList.length})</summary>
+        <summary className={styles.summary}> المفضلة({favList.length})</summary>
         <div ref={listRef} className={styles.list}>
           {favList.length === 0 && <div className={styles.empty}>لا توجد سور مفضلة بعد</div>}
           {favList.map((s) => (
@@ -68,7 +69,9 @@ export default function SurahFavorites({ onSelect }: { onSelect?: (id: number) =
               >
                 {s.id}. {s.name}
               </button>
-              <button className={styles.remove} onClick={() => toggle(s.id)}>إزالة</button>
+              <button className={styles.remove} onClick={() => toggle(s.id)}>
+                meow
+              </button>
             </div>
           ))}
         </div>
