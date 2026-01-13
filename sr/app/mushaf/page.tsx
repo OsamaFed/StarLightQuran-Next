@@ -62,32 +62,28 @@ export default function MushafPage() {
           showDarkModeToggle={false}
         />
         <header className={styles.header}>
-          <div className={styles.titleContainer}>
-            <div className={styles.subtitle}>وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا</div>
+          <div className={styles.controlsGrid}>
+            <div className={styles.searchSection}>
+              <SearchInput onSelectSurah={handleSurahSelect} />
+              <SurahFavorites onSelect={handleSurahSelect} />
+            </div>
+
+            <div className={styles.surahSection}>
+              <SurahSelector
+                currentSurahId={currentSurah?.number}
+                onSelect={handleSurahSelect}
+              />
+            </div>
+
+            <div className={styles.toolsSection}>
+              <FontControls
+                onIncrease={increaseFontSize}
+                onDecrease={decreaseFontSize}
+              />
+              <DarkModeToggle isDarkMode={isDarkMode} onToggle={toggleDarkMode} />
+            </div>
           </div>
         </header>
-
-        <div className={styles.controlsGrid}>
-          <div className={styles.searchSection}>
-            <SearchInput onSelectSurah={handleSurahSelect} />
-            <SurahFavorites onSelect={handleSurahSelect} />
-          </div>
-
-          <div className={styles.surahSection}>
-            <SurahSelector
-              currentSurahId={currentSurah?.number}
-              onSelect={handleSurahSelect}
-            />
-          </div>
-
-          <div className={styles.toolsSection}>
-            <FontControls
-              onIncrease={increaseFontSize}
-              onDecrease={decreaseFontSize}
-            />
-            <DarkModeToggle isDarkMode={isDarkMode} onToggle={toggleDarkMode} />
-          </div>
-        </div>
 
         <div className={styles.quranFrame}>
 
