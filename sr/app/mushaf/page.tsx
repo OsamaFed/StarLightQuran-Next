@@ -63,7 +63,7 @@ export default function MushafPage() {
         />
         <header className={styles.header}>
           <div className={styles.controlsGrid}>
-            <div className={styles.searchAndSurahSection}>
+            <div className={styles.unifiedSearchRow}>
               <SearchInput onSelectSurah={handleSurahSelect} />
               <SurahSelector
                 currentSurahId={currentSurah?.number}
@@ -71,16 +71,18 @@ export default function MushafPage() {
               />
             </div>
 
-            <div className={styles.favoritesSection}>
-              <SurahFavorites onSelect={handleSurahSelect} />
-            </div>
+            <div className={styles.lowerControlsRow}>
+              <div className={styles.favoritesWrapper}>
+                <SurahFavorites onSelect={handleSurahSelect} />
+              </div>
 
-            <div className={styles.toolsSection}>
-              <FontControls
-                onIncrease={increaseFontSize}
-                onDecrease={decreaseFontSize}
-              />
-              <DarkModeToggle isDarkMode={isDarkMode} onToggle={toggleDarkMode} />
+              <div className={styles.toolsWrapper}>
+                <FontControls
+                  onIncrease={increaseFontSize}
+                  onDecrease={decreaseFontSize}
+                />
+                <DarkModeToggle isDarkMode={isDarkMode} onToggle={toggleDarkMode} />
+              </div>
             </div>
           </div>
         </header>
