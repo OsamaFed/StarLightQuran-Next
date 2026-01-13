@@ -52,7 +52,7 @@ export default function MushafPage() {
 
   return (
     <div className={`${styles.wrapper} ${isDarkMode ? styles.darkMode : ""}`}>
-      <div className={styles.aurorabg}><Aurora colorStops={['#1a1a1a', '#2d3748', '#1a1a1a']} blend={0.5} amplitude={0.3} /></div>
+      <div className={styles.aurorabg}><Aurora /></div>
       <div className={styles.container}>
         <PageHeader
           isDarkMode={isDarkMode}
@@ -65,20 +65,35 @@ export default function MushafPage() {
           <div className={styles.titleContainer}>
             <div className={styles.subtitle}>وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا</div>
           </div>
-          <div className={styles.controls}>
-            <SearchInput onSelectSurah={handleSurahSelect} />
-            <DarkModeToggle isDarkMode={isDarkMode} onToggle={toggleDarkMode} />
-            <SurahSelector
-              currentSurahId={currentSurah?.number}
-              onSelect={handleSurahSelect}
-            />
-            <SurahFavorites onSelect={handleSurahSelect} />
+        </header>
+
+        <div className={styles.controlsGrid}>
+          <div className={styles.searchSection}>
+            <div className={styles.searchCard}>
+              <SearchInput onSelectSurah={handleSurahSelect} />
+            </div>
+            <div className={styles.favoritesSmall}>
+              <SurahFavorites onSelect={handleSurahSelect} />
+            </div>
+          </div>
+
+          <div className={styles.surahSection}>
+            <div className={styles.surahCard}>
+              <SurahSelector
+                currentSurahId={currentSurah?.number}
+                onSelect={handleSurahSelect}
+              />
+            </div>
+            </div>
+            
+          <div className={styles.toolsSection}>
             <FontControls
               onIncrease={increaseFontSize}
               onDecrease={decreaseFontSize}
             />
+            <DarkModeToggle isDarkMode={isDarkMode} onToggle={toggleDarkMode} />
           </div>
-        </header>
+        </div>
 
         <div className={styles.quranFrame}>
 
