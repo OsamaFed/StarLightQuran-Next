@@ -124,12 +124,7 @@ export default function MushafPage() {
                     <span className={styles.surahName}>{currentSurah.name.replace(/\s+/g, ' ')}</span>
                             <SurahStarButton surahNumber={currentSurah.number} />
                   </div>
-                  <div
-                    className={styles.progressBar}
-                    style={{
-                      ['--progress' as string]: `${(currentPage / totalPages) * 100}%`,
-                    }}
-                  />
+                  {/* progress bar removed per design request */}
                   {currentVerses.map((ayah, index) => (
                     <Verse
                       key={ayah.number}

@@ -122,7 +122,14 @@ export default function VerseSpeedDial({
         window.clearTimeout(longPressTimer.current);
       setIsPressed(true);
       longPressTimer.current = window.setTimeout(() => {
+        // Prevent opening if another verse's menu is already open
+        const current = (window as any).__currentVerseSpeedDialOpenId;
+        if (current && current !== verseId) return;
+        (window as any).__currentVerseSpeedDialOpenId = verseId;
         setMenuVisible(true);
+        try {
+          window.dispatchEvent(new CustomEvent('versespeeddial:opened', { detail: { verseId } }));
+        } catch (e) {}
       }, 350) as unknown as number;
     };
 
@@ -244,6 +251,8 @@ export default function VerseSpeedDial({
       setIsCopying(true);
       setTimeout(() => {
         setIsCopying(false);
+        // close and clear global flag
+        if ((window as any).__currentVerseSpeedDialOpenId === verseId) delete (window as any).__currentVerseSpeedDialOpenId;
         setMenuVisible(false);
       }, 1000);
     });
@@ -286,6 +295,7 @@ export default function VerseSpeedDial({
       console.error(err);
     } finally {
       setIsDownloading(false);
+      if ((window as any).__currentVerseSpeedDialOpenId === verseId) delete (window as any).__currentVerseSpeedDialOpenId;
       setMenuVisible(false);
     }
   };
@@ -307,6 +317,29 @@ export default function VerseSpeedDial({
       window.dispatchEvent(ev);
     } catch (e) {}
   }, [menuVisible]);
+
+  // Close when clicking/tapping outside the menu or the verse element
+  useEffect(() => {
+    if (!menuVisible) return;
+    const handler = (e: Event) => {
+      const target = e.target as Node | null;
+      const menuEl = menuRef.current;
+      const verseEl = document.getElementById(verseId);
+      if (menuEl && target && menuEl.contains(target)) return;
+      if (verseEl && target && verseEl.contains(target)) return;
+      if ((window as any).__currentVerseSpeedDialOpenId === verseId) delete (window as any).__currentVerseSpeedDialOpenId;
+      setMenuVisible(false);
+      try {
+        window.dispatchEvent(new CustomEvent('versespeeddial:closed', { detail: { verseId } }));
+      } catch (e) {}
+    };
+    document.addEventListener('mousedown', handler);
+    document.addEventListener('touchstart', handler);
+    return () => {
+      document.removeEventListener('mousedown', handler);
+      document.removeEventListener('touchstart', handler);
+    };
+  }, [menuVisible, verseId]);
 
   return (
     <>

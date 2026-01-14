@@ -26,49 +26,65 @@ export default function Pagination({
   hasPrevSurah,
 }: PaginationProps) {
   return (
-    <div className={styles.pagination}>
-      <button
-        className={styles.btn}
-        onClick={onPrevSurah}
-        disabled={!hasPrevSurah}
-      >
-        السورة السابقة
-      </button>
-      <button
-        className={styles.btn}
-        onClick={onPrevPage}
-        disabled={currentPage <= 1}
-      >
-        الصفحة السابقة
-      </button>
-      <span className={styles.pageNumber}>
-        {currentPage} / {totalPages}
-      </span>
-      <select
-        className={styles.pageSelect}
-        value={currentPage}
-        onChange={(e) => onGoToPage(parseInt(e.target.value))}
-      >
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-          <option key={page} value={page}>
-            صفحة {page}
-          </option>
-        ))}
-      </select>
-      <button
-        className={styles.btn}
-        onClick={onNextPage}
-        disabled={currentPage >= totalPages}
-      >
-        الصفحة التالية
-      </button>
-      <button
-        className={styles.btn}
-        onClick={onNextSurah}
-        disabled={!hasNextSurah}
-      >
-        السورة التالية
-      </button>
+    <div className={styles.pagination} role="navigation" aria-label="pagination">
+      <div className={styles.card}>
+        <button
+          className={styles.btn}
+          onClick={onPrevSurah}
+          disabled={!hasPrevSurah}
+          aria-label="السورة السابقة"
+        >
+          <span className={styles.arrow}>→</span>
+          <span>السورة السابقة</span>
+        </button>
+
+        <button
+          className={styles.btn}
+          onClick={onPrevPage}
+          disabled={currentPage <= 1}
+          aria-label="الصفحة السابقة"
+        >
+          <span className={styles.arrow}>→</span>
+          <span>الصفحة السابقة</span>
+        </button>
+
+        <span className={styles.pageNumber}>
+          {currentPage} / {totalPages}
+        </span>
+
+        <select
+          className={styles.pageSelect}
+          value={currentPage}
+          onChange={(e) => onGoToPage(parseInt(e.target.value))}
+          aria-label="اختر الصفحة"
+        >
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <option key={page} value={page}>
+              صفحة {page}
+            </option>
+          ))}
+        </select>
+
+        <button
+          className={styles.btn}
+          onClick={onNextPage}
+          disabled={currentPage >= totalPages}
+          aria-label="الصفحة التالية"
+        >
+          <span>الصفحة التالية</span>
+          <span className={styles.arrow}>←</span>
+        </button>
+
+        <button
+          className={styles.btn}
+          onClick={onNextSurah}
+          disabled={!hasNextSurah}
+          aria-label="السورة التالية"
+        >
+          <span>السورة التالية</span>
+          <span className={styles.arrow}>←</span>
+        </button>
+      </div>
     </div>
   );
 }

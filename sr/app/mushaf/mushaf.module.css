@@ -119,13 +119,21 @@
 .versesContainer {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
+  gap: 0.6rem;
 }
 
 .versesContainer > div {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.09);
   border-radius: 1rem;
   padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 22px rgba(2,6,23,0.04);
+}
+
+.darkMode .versesContainer > div {
+  background: rgba(0, 0, 0, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.45);
 }
 
 .introContainer {
@@ -210,23 +218,7 @@
   font-weight: 700;
 }
 
-.progressBar {
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-bottom: 2rem;
-}
 
-.progressBar::after {
-  content: '';
-  display: block;
-  height: 100%;
-  width: var(--progress, 0%);
-  background: linear-gradient(90deg, #5227FF, #7cff67);
-  border-radius: 2px;
-  transition: width 0.3s ease;
-}
 
 .subtitle {
   font-size: 1.1rem;
