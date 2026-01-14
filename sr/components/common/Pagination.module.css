@@ -54,7 +54,10 @@
   background: rgba(255, 255, 255, 0.02);
   color: black;
 }
-:global(.darkMode) .pageSelect, .pageNumber, .btn {
+
+:global(.darkMode) .pageSelect, 
+:global(.darkMode) .pageNumber, 
+:global(.darkMode) .btn {
   color: white;
 }
 
