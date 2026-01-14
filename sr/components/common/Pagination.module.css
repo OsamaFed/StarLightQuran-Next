@@ -54,11 +54,16 @@
   background: rgba(255, 255, 255, 0.02);
   color: black;
 }
-
 :global(.darkMode) .pageSelect, 
 :global(.darkMode) .pageNumber, 
 :global(.darkMode) .btn {
   color: white;
+}
+
+:global(:not(.darkMode)) .pageSelect, 
+:global(:not(.darkMode)) .pageNumber, 
+:global(:not(.darkMode)) .btn {
+  color: black;
 }
 
 @media (max-width: 768px) {
