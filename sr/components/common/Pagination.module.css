@@ -13,7 +13,7 @@
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm);
 }
@@ -24,7 +24,7 @@
   gap: 8px;
   padding: 10px 14px;
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.04);
+  border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: var(--radius-md);
   color: var(--text-primary);
   cursor: pointer;
@@ -50,8 +50,8 @@
 .pageSelect {
   padding: 8px 10px;
   border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.04);
-  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.02);
   color: var(--text-primary);
 }
 
@@ -64,4 +64,17 @@
   .card { gap: 6px; padding: 8px }
   .btn { padding: 6px 8px; font-size: 0.95rem }
   .pageSelect { padding: 6px 8px }
+}
+
+:global(.darkMode) .card {
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+:global(.darkMode) .btn {
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+:global(.darkMode) .pageSelect {
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
