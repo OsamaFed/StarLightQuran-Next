@@ -44,7 +44,6 @@ export default function Pagination({
           disabled={currentPage <= 1}
           aria-label="الصفحة السابقة"
         >
-          <span className={styles.arrow}>→</span>
           <span>الصفحة السابقة</span>
         </button>
 
@@ -72,7 +71,6 @@ export default function Pagination({
           aria-label="الصفحة التالية"
         >
           <span>الصفحة التالية</span>
-          <span className={styles.arrow}>←</span>
         </button>
 
         <button
