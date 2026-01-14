@@ -57,13 +57,13 @@
 :global(.darkMode) .pageSelect, 
 :global(.darkMode) .pageNumber, 
 :global(.darkMode) .btn {
-  color: white;
+  color: white !important;
 }
 
 :global(:not(.darkMode)) .pageSelect, 
 :global(:not(.darkMode)) .pageNumber, 
 :global(:not(.darkMode)) .btn {
-  color: black;
+  color: black !important;
 }
 
 @media (max-width: 768px) {
