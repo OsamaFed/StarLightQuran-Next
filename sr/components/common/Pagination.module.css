@@ -90,6 +90,7 @@
   color: var(--pagination-text, black);
 }
 
+:global(.darkMode) .pagination,
 :global(.darkMode) {
   --pagination-text: #ffffff;
 }
