@@ -9,6 +9,8 @@ import ShareIcon from "@mui/icons-material/Share";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import CheckIcon from "@mui/icons-material/Check";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
 import gsap from "gsap";
 import { useTheme } from "@/hooks/useTheme";
 
@@ -17,6 +19,7 @@ interface VerseSpeedDialProps {
   verseText: string;
   verseNumber: number;
   surahName: string;
+  surahId: number;
 }
 
 async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
@@ -67,12 +70,14 @@ export default function VerseSpeedDial({
   verseText,
   verseNumber,
   surahName,
+  surahId,
 }: VerseSpeedDialProps) {
   const { isDarkMode } = useTheme();
   const lastObjectUrlRef = useRef<string | null>(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const [isCopying, setIsCopying] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
   const longPressTimer = useRef<number | null>(null);
@@ -94,6 +99,31 @@ export default function VerseSpeedDial({
       if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current);
     };
   }, [verseId]);
+
+  // Load favorite status on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("favoriteVerses");
+      if (raw) {
+        const favs = JSON.parse(raw);
+        const exists = favs.some((v: any) => v.id === verseId);
+        setIsFavorited(exists);
+      }
+    } catch (e) {}
+
+    const handler = (ev: Event) => {
+      try {
+        const favs = (ev as CustomEvent).detail?.favorites as any[] | undefined;
+        if (Array.isArray(favs)) {
+          const exists = favs.some((v) => v.id === verseId);
+          setIsFavorited(exists);
+        }
+      } catch (e) {}
+    };
+    window.addEventListener("favoriteVerseChanged", handler as EventListener);
+    return () => window.removeEventListener("favoriteVerseChanged", handler as EventListener);
+  }, [verseId]);
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -258,6 +288,37 @@ export default function VerseSpeedDial({
     });
   };
 
+  const handleAddToFavorites = () => {
+    try {
+      const raw = localStorage.getItem("favoriteVerses");
+      let favs = raw ? JSON.parse(raw) : [];
+      
+      const exists = favs.find((v: any) => v.id === verseId);
+      if (exists) {
+        favs = favs.filter((v: any) => v.id !== verseId);
+      } else {
+        favs.push({
+          id: `${surahId}_${verseNumber}`,
+          verseNumber,
+          surahName,
+          text: verseText,
+          surahId,
+        });
+      }
+      
+      localStorage.setItem("favoriteVerses", JSON.stringify(favs));
+      setIsFavorited(!exists);
+      window.dispatchEvent(new CustomEvent("favoriteVerseChanged", { detail: { favorites: favs } }));
+      
+      setTimeout(() => {
+        if ((window as any).__currentVerseSpeedDialOpenId === verseId) delete (window as any).__currentVerseSpeedDialOpenId;
+        setMenuVisible(false);
+      }, 500);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const handleShare = async () => {
     try {
       const verseElement = document.getElementById(verseId);
@@ -386,6 +447,19 @@ export default function VerseSpeedDial({
               ) : (
                 <MenuBookIcon fontSize="small" />
               )}
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title={isFavorited ? "إزالة من المفضلة" : "إضافة للمفضلة"}>
+            <IconButton
+              onClick={handleAddToFavorites}
+              sx={{
+                color: isFavorited ? "#ffd700" : (isDarkMode ? "white" : "#0b0b0b"),
+                bgcolor: "transparent",
+                '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' }
+              }}
+            >
+              {isFavorited ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
             </IconButton>
           </Tooltip>
 

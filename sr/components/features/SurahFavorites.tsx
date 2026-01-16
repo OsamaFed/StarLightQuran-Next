@@ -69,8 +69,8 @@ export default function SurahFavorites({ onSelect }: { onSelect?: (id: number) =
               >
                 {s.id}. {s.name}
               </button>
-              <button className={styles.remove} onClick={() => toggle(s.id)}>
-                meow
+              <button className={styles.remove} onClick={() => toggle(s.id)} title="إزالة من المفضلة">
+                <CloseIcon fontSize="small" />
               </button>
             </div>
           ))}

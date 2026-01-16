@@ -18,9 +18,15 @@
 
 .list {
   margin-top: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .list {
+    grid-template-columns: 1fr;
+  }
 }
 
 .item {
@@ -28,27 +34,69 @@
   gap: 8px;
   align-items: center;
   justify-content: space-between;
+  padding: 8px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.item:hover {
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .name {
   background: transparent;
   border: none;
   color: #0b0b0b; /* light mode: dark text */
-  text-align: left;
+  text-align: right;
   font-size: 0.95rem;
   cursor: pointer;
+  flex: 1;
+  padding: 0;
+  text-decoration: none;
 }
 
+.remove {
+  background: transparent;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
 
+.remove:hover {
+  color: #d32f2f;
+}
 
 .empty {
   color: var(--text-secondary);
   padding: 6px 0;
+  grid-column: 1 / -1;
+  text-align: center;
 }
-
-
 
 :global(.darkMode) .name {
   color: #ffffff; /* dark mode: white text */
+}
+
+:global(.darkMode) .item {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+:global(.darkMode) .item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+:global(.darkMode) .remove {
+  color: #999;
+}
+
+:global(.darkMode) .remove:hover {
+  color: #ff6b6b;
 }
 

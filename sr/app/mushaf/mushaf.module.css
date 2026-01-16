@@ -87,7 +87,7 @@
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(212, 163, 115, 0.2);
   border-radius: 1rem;
   padding: 0.75rem;
 }
@@ -96,6 +96,26 @@
 .darkMode .favoritesSection > *{
   background: rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.favoritesSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .favoritesSection {
+    grid-template-columns: 1fr;
+  }
+}
+
+.favoritesSection > :first-child {
+  order: 2;
+}
+
+.favoritesSection > :last-child {
+  order: 1;
 }
 
 .toolsSection {

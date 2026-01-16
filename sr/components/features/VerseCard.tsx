@@ -10,6 +10,7 @@ interface VerseCardProps {
   ayah: Ayah;
   verseNumber: number;
   surahName: string;
+  surahId: number;
   isDarkMode: boolean;
   onLoadTafseer: (ayahNumber: number) => Promise<string | null>;
   fontSize?: number;
@@ -19,6 +20,7 @@ export default function VerseCard({
   ayah,
   verseNumber,
   surahName,
+  surahId,
   isDarkMode,
   onLoadTafseer,
   fontSize = 24,
@@ -121,6 +123,7 @@ export default function VerseCard({
         verseText={ayah.text}
         verseNumber={verseNumber}
         surahName={surahName}
+        surahId={surahId}
       />
     </div>
   );

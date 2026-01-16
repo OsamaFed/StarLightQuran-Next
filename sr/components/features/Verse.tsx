@@ -9,11 +9,12 @@ interface VerseProps {
   ayah: Ayah;
   verseNumber: number;
   surahName: string;
+  surahId: number;
   onLoadTafseer: (ayahNumber: number) => Promise<string | null>;
   fontSize?: number;
 }
 
-export default function Verse({ ayah, verseNumber, surahName, onLoadTafseer, fontSize }: VerseProps) {
+export default function Verse({ ayah, verseNumber, surahName, surahId, onLoadTafseer, fontSize }: VerseProps) {
   const { isDarkMode } = useTheme();
 
   return (
@@ -21,6 +22,7 @@ export default function Verse({ ayah, verseNumber, surahName, onLoadTafseer, fon
       ayah={ayah}
       verseNumber={verseNumber}
       surahName={surahName}
+      surahId={surahId}
       isDarkMode={isDarkMode}
       onLoadTafseer={onLoadTafseer}
       fontSize={fontSize}

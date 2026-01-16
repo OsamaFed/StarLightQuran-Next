@@ -1,14 +1,103 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
 import styles from "./SurahFavorites.module.css";
+import { useTheme } from "@/hooks/useTheme";
+import CloseIcon from '@mui/icons-material/Close';
+
+interface FavoriteVerse {
+  id: string;
+  verseNumber: number;
+  surahName: string;
+  text: string;
+  surahId?: number;
+}
 
 export default function VerseFavorites() {
+  const { isDarkMode } = useTheme();
+  const [favorites, setFavorites] = useState<FavoriteVerse[]>([]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("favoriteVerses");
+      if (raw) setFavorites(JSON.parse(raw));
+    } catch (e) {
+      setFavorites([]);
+    }
+    const handler = (ev: Event) => {
+      try {
+        const favs = (ev as CustomEvent).detail?.favorites as FavoriteVerse[] | undefined;
+        if (Array.isArray(favs)) setFavorites(favs);
+      } catch (e) {}
+    };
+    window.addEventListener("favoriteVerseChanged", handler as EventListener);
+    return () => window.removeEventListener("favoriteVerseChanged", handler as EventListener);
+  }, []);
+
+  const save = (arr: FavoriteVerse[]) => {
+    setFavorites(arr);
+    try {
+      localStorage.setItem("favoriteVerses", JSON.stringify(arr));
+      window.dispatchEvent(new CustomEvent("favoriteVerseChanged", { detail: { favorites: arr } }));
+    } catch (e) {}
+  };
+
+  const toggle = (id: string) => {
+    const exists = favorites.find((v) => v.id === id);
+    const next = exists ? favorites.filter((v) => v.id !== id) : [...favorites];
+    save(next);
+  };
+
+  const handleSelectVerse = (verse: FavoriteVerse) => {
+    try {
+      // Extract surah number from verseId (format: "surahNumber_verseNumber")
+      // or use surahId directly if available
+      const surahNumber = verse.surahId || parseInt(verse.id.split('_')[0]);
+      
+      if (isNaN(surahNumber)) {
+        console.error('Invalid surah number');
+        return;
+      }
+
+      // Dispatch event to load surah and navigate to verse
+      window.dispatchEvent(new CustomEvent('navigateToVerse', { 
+        detail: { 
+          surahNumber,
+          verseNumber: verse.verseNumber 
+        } 
+      }));
+    } catch (e) {
+      console.error('Error navigating to verse:', e);
+    }
+  };
+
+  const listRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    try {
+      if (listRef.current) {
+        gsap.from(listRef.current.children, { opacity: 0, y: -6, stagger: 0.04, duration: 0.28, ease: "power2.out" });
+      }
+    } catch (e) {}
+  }, [favorites]);
+
   return (
     <div className={styles.container}>
       <details className={styles.details}>
-        <summary className={styles.summary}>الآيات المفضلة(0)</summary>
-        <div className={styles.list}>
-          <div className={styles.empty}>لا توجد آيات مفضلة بعد</div>
+        <summary className={styles.summary}>الآيات المفضلة({favorites.length})</summary>
+        <div ref={listRef} className={styles.list}>
+          {favorites.length === 0 && <div className={styles.empty}>لا توجد آيات مفضلة بعد</div>}
+          {favorites.map((v) => (
+            <div key={v.id} className={styles.item}>
+              <button className={styles.name} onClick={() => handleSelectVerse(v)} title={`اذهب إلى ${v.surahName}:${v.verseNumber}`}>
+                {v.surahName}:{v.verseNumber}
+              </button>
+              <button className={styles.remove} onClick={() => toggle(v.id)}>
+                <CloseIcon fontSize="small" />
+              </button>
+            </div>
+          ))}
         </div>
       </details>
     </div>

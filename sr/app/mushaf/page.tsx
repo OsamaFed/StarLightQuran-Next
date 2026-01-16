@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useQuran } from "@/hooks/useQuran";
 import { useTheme } from "@/hooks/useTheme";
@@ -50,6 +50,37 @@ export default function MushafPage() {
     loadSurah(surahId);
     setShowWaqfGuide(false);
   };
+
+  // Handle navigation to favorite verse
+  useEffect(() => {
+    const handleNavigateToVerse = (event: Event) => {
+      try {
+        const detail = (event as CustomEvent).detail;
+        if (detail && detail.surahNumber && detail.verseNumber) {
+          const { surahNumber, verseNumber } = detail;
+          loadSurah(surahNumber);
+          
+          // Scroll to verse element after surah loads
+          setTimeout(() => {
+            const verseElement = document.getElementById(`verse-${verseNumber}`);
+            if (verseElement) {
+              verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              // Add highlight effect
+              verseElement.style.backgroundColor = 'rgba(212, 163, 115, 0.1)';
+              setTimeout(() => {
+                verseElement.style.backgroundColor = '';
+              }, 2000);
+            }
+          }, 300);
+        }
+      } catch (e) {
+        console.error('Error navigating to verse:', e);
+      }
+    };
+
+    window.addEventListener('navigateToVerse', handleNavigateToVerse as EventListener);
+    return () => window.removeEventListener('navigateToVerse', handleNavigateToVerse as EventListener);
+  }, [loadSurah]);
 
   return (
     <div className={`${styles.wrapper} ${isDarkMode ? styles.darkMode : ""}`}>
@@ -135,6 +166,7 @@ export default function MushafPage() {
                       ayah={ayah}
                       verseNumber={(currentPage - 1) * 12 + index + 1}
                       surahName={currentSurah.name}
+                      surahId={currentSurah.number}
                       onLoadTafseer={loadTafseer}
                       fontSize={fontSize}
                     />
