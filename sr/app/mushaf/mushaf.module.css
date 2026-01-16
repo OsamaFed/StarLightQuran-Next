@@ -84,18 +84,18 @@
 
 .toolsSection > *,
 .favoritesSection > *{
-  background: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  border: none;
-  border-radius: 0;
-  padding: 0;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 0.75rem;
 }
 
 .darkMode .toolsSection > *,
 .darkMode .favoritesSection > *{
-  background: none;
-  border: none;
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .toolsSection {
