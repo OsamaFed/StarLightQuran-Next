@@ -7,7 +7,8 @@ import { useTheme } from "@/hooks/useTheme";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { PageHeader } from "@/components/layout";
 import { SearchInput, DecorativeElements, Pagination } from "@/components/common";
-import { SurahSelector, Verse, SurahFavorites, SurahStarButton } from "@/components/features";
+import { SurahSelector, Verse, SurahFavorites, SurahStarButton,} from "@/components/features";
+import VerseFavorites from "@/components/features/VerseFavorites";
 import { FontControls, DarkModeToggle } from "@/components/ui";
 import { WaqfGuide } from "@/components/common";
 import styles from "./mushaf.module.css";
@@ -76,6 +77,7 @@ export default function MushafPage() {
 
             <div className={styles.favoritesSection}>
               <SurahFavorites onSelect={handleSurahSelect} />
+              <VerseFavorites />
             </div>
 
             <div className={styles.toolsSection}>
@@ -127,7 +129,6 @@ export default function MushafPage() {
                     <span className={styles.surahName}>{currentSurah.name.replace(/\s+/g, ' ')}</span>
                             <SurahStarButton surahNumber={currentSurah.number} />
                   </div>
-                  {/* progress bar removed per design request */}
                   {currentVerses.map((ayah, index) => (
                     <Verse
                       key={ayah.number}

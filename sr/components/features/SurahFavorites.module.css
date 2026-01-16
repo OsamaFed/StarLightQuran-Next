@@ -3,10 +3,10 @@
 }
 
 .details {
-  border: 1px solid rgba(0,0,0,0.06);
-  background: var(--glass-bg);
-  padding: 8px 12px;
-  border-radius: 12px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
 }
 
 .summary {
