@@ -5,10 +5,7 @@ const nextConfig: NextConfig = {
   devIndicators: {
     appIsrStatus: false,
   },
-  // Allow all origins in dev to prevent cross-origin reload issues on Replit
-  experimental: {
-    allowedReplicatedOrigins: ["*"],
-  },
-} as any;
+  allowedDevOrigins: ["*"],
+};
 
 export default nextConfig;
