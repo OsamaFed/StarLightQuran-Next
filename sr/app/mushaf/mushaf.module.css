@@ -32,11 +32,30 @@
 }
 
 .titleContainer {
-  display: none;
+  display: block;
+  margin-bottom: 1.5rem;
+}
+
+.titleSection {
+  display: block;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.titleText {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, rgba(212, 163, 115, 0.8) 0%, rgba(82, 39, 255, 0.6) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  padding: 0;
+  letter-spacing: 0.05em;
 }
 
 .subtitle {
-  display: none;
+  display: block;
 }
 
 /* Grid Layout للعناصر التحكم */

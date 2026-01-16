@@ -62,6 +62,9 @@ export default function MushafPage() {
           showDarkModeToggle={false}
         />
         <header className={styles.header}>
+          <div className={styles.titleSection}>
+            <h1 className={styles.titleText}>ورتل القرآن ترتيلا</h1>
+          </div>
           <div className={styles.controlsGrid}>
             <div className={styles.searchAndSurahSection}>
               <SearchInput onSelectSurah={handleSurahSelect} />
@@ -153,6 +156,7 @@ export default function MushafPage() {
             onPrevSurah={prevSurah}
             hasNextSurah={currentSurah.number < 114}
             hasPrevSurah={currentSurah.number > 1}
+            isDarkMode={isDarkMode}
           />
         )}
 

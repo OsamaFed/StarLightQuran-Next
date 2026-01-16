@@ -12,6 +12,7 @@ interface PaginationProps {
   onPrevSurah: () => void;
   hasNextSurah: boolean;
   hasPrevSurah: boolean;
+  isDarkMode?: boolean;
 }
 
 export default function Pagination({
@@ -24,9 +25,10 @@ export default function Pagination({
   onPrevSurah,
   hasNextSurah,
   hasPrevSurah,
+  isDarkMode = false,
 }: PaginationProps) {
   return (
-    <div className={styles.pagination} role="navigation" aria-label="pagination">
+    <div className={`${styles.pagination} ${isDarkMode ? styles.darkMode : styles.lightMode}`} role="navigation" aria-label="pagination">
       <div className={styles.card}>
         <button
           className={styles.btn}

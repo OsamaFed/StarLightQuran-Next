@@ -5,17 +5,39 @@
   padding: 0 12px;
 }
 
+/* Light Mode Styles */
+.lightMode {
+  --pagination-bg: rgba(255, 255, 255, 0.03);
+  --pagination-text: #000000;
+  --pagination-border: rgba(255, 255, 255, 0.1);
+  --pagination-btn-border: rgba(255, 255, 255, 0.04);
+  --pagination-btn-hover: rgba(255, 255, 255, 0.08);
+  --pagination-select-bg: rgba(255, 255, 255, 0.02);
+  --pagination-number-bg: rgba(255, 255, 255, 0.03);
+}
+
+/* Dark Mode Styles */
+.darkMode {
+  --pagination-bg: rgba(0, 0, 0, 0.15);
+  --pagination-text: #ffffff;
+  --pagination-border: rgba(255, 255, 255, 0.05);
+  --pagination-btn-border: rgba(255, 255, 255, 0.04);
+  --pagination-btn-hover: rgba(255, 255, 255, 0.1);
+  --pagination-select-bg: rgba(255, 255, 255, 0.05);
+  --pagination-number-bg: rgba(0, 0, 0, 0.12);
+}
+
 .card {
   display: flex;
   gap: 10px;
   align-items: center;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--pagination-bg);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--pagination-border);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .btn {
@@ -24,11 +46,22 @@
   gap: 8px;
   padding: 10px 14px;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--pagination-btn-border);
   border-radius: var(--radius-md);
-  color: var(--pagination-text, black);
-  cursor: pointer;
+  color: var(--pagination-text);
   font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--pagination-btn-hover);
+  border-color: rgba(212, 163, 115, 0.4);
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .btn:disabled {
@@ -50,13 +83,15 @@
   min-width: 40px;
   height: 40px;
   border-radius: 10px;
-  background: var(--glass-bg, rgba(255,255,255,0.03));
-  backdrop-filter: var(--glass-blur, blur(6px));
-  -webkit-backdrop-filter: var(--glass-blur, blur(6px));
-  color: var(--pagination-text, black);
-  box-shadow: var(--shadow-xs);
-  position: relative;
+  background: var(--pagination-number-bg);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--pagination-text);
   font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  position: relative;
+  border: 1px solid rgba(212, 163, 115, 0.15);
 }
 
 .pageNumber::before {
@@ -64,7 +99,7 @@
   position: absolute;
   inset: -2px;
   border-radius: 10px;
-  border: 1px solid var(--highlight-color, rgba(255,255,255,0.06));
+  border: 1px solid var(--pagination-border);
   opacity: 0.25;
   pointer-events: none;
 }
@@ -75,7 +110,7 @@
   width: 100%;
   height: 100%;
   border-radius: 10px;
-  background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 60%);
+  background: radial-gradient(circle, rgba(212, 163, 115, 0.06) 0%, transparent 60%);
   top: -10%;
   left: -5%;
   pointer-events: none;
@@ -85,49 +120,72 @@
 .pageSelect {
   padding: 8px 10px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--pagination-text, black);
+  border: 1px solid var(--pagination-btn-border);
+  background: var(--pagination-select-bg);
+  color: var(--pagination-text);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
-:global(.darkMode) .pagination,
-:global(.darkMode) {
-  --pagination-text: #ffffff;
+.pageSelect:hover {
+  border-color: rgba(212, 163, 115, 0.4);
+  background: var(--pagination-btn-hover);
 }
 
-:global(:not(.darkMode)) {
-  --pagination-text: #000000;
+.pageSelect:focus {
+  outline: none;
+  border-color: rgba(212, 163, 115, 0.6);
+  box-shadow: 0 0 0 2px rgba(212, 163, 115, 0.1);
+}
+
+/* Ensure option styling in select */
+.pageSelect option {
+  background: #1a1a1a;
+  color: #ffffff;
 }
 
 @media (max-width: 768px) {
-  .card { gap: 8px; padding: 10px }
-  .btn { padding: 8px 10px }
+  .card {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .btn {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+
+  .pageSelect {
+    padding: 6px 8px;
+    font-size: 0.9rem;
+  }
 }
 
 @media (max-width: 480px) {
-  .card { gap: 6px; padding: 8px }
-  .btn { padding: 6px 8px; font-size: 0.95rem }
-  .pageSelect { padding: 6px 8px }
-}
+  .card {
+    gap: 6px;
+    padding: 8px;
+    flex-wrap: wrap;
+  }
 
-:global(.darkMode) .card {
-  background: rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
+  .btn {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
 
-:global(.darkMode) .btn {
-  border: 1px solid rgba(255, 255, 255, 0.04);
-}
+  .pageSelect {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
 
-:global(.darkMode) .pageSelect {
-  border: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-:global(.darkMode) .pageNumber {
-  background: rgba(0,0,0,0.12);
-  box-shadow: none;
-}
-
-:global(:not(.darkMode)) .pageNumber {
-  background: rgba(255,255,255,0.03);
+  .pageNumber {
+    padding: 4px 8px;
+    min-width: 36px;
+    height: 36px;
+    font-size: 0.85rem;
+  }
 }
