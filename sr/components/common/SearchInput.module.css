@@ -137,9 +137,10 @@
 }
 
 .searchResults {
-  position: absolute;
-  top: calc(100% + 12px);
-  right: 0;
+  position: fixed;
+  top: 150px;
+  left: 50%;
+  transform: translateX(-50%);
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -147,9 +148,9 @@
   border-radius: var(--radius-lg);
   max-height: 400px;
   overflow-y: auto;
-  z-index: 9999;
-  width: 100%;
-  min-width: 280px;
+  z-index: 99999;
+  width: 90%;
+  max-width: 400px;
   box-shadow: var(--shadow-xl);
   animation: fadeInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   scrollbar-width: thin;
