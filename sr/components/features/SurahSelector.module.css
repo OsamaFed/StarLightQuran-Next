@@ -1,14 +1,15 @@
 .container {
   position: relative;
   width: 200px;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   border-radius: var(--radius-lg);
   overflow: hidden;
   transition: all var(--transition-smooth);
-  border: var(--glass-border);
-  box-shadow: var(--shadow-md);
+  border: none;
+  box-shadow: none;
+  opacity: 1;
 }
 
 
@@ -20,7 +21,7 @@
   right: 12px;
   top: 50%;
   transform: translateY(-50%) rotate(-45deg);
-  stroke: var(--accent-color-1);
+  stroke: var(--text-primary);
   transition: all var(--transition-smooth);
   z-index: 2;
   pointer-events: none;
@@ -28,11 +29,15 @@
 
 .container:hover .arrow {
   transform: translateY(-50%) rotate(0deg);
-  stroke: var(--highlight-color);
+  stroke: var(--text-primary);
 }
 
 :global(.darkMode) .arrow {
-  stroke: var(--dark-highlight-color);
+  stroke: #ffffff;
+}
+
+:global(.lightMode) .arrow {
+  stroke: #000000;
 }
 
 .select {
@@ -51,6 +56,14 @@
   cursor: pointer;
   z-index: 1;
   transition: all var(--transition-base);
+}
+
+:global(.darkMode) .select {
+  color: #ffffff;
+}
+
+:global(.lightMode) .select {
+  color: #000000;
 }
 
 

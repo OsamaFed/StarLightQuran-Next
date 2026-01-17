@@ -135,14 +135,16 @@ export default function MushafPage() {
 
             <div className={styles.favoritesSection}>
               <SurahFavorites onSelect={handleSurahSelect} />
+              <div className={styles.fontControlsCenter}>
+                <FontControls
+                  onIncrease={increaseFontSize}
+                  onDecrease={decreaseFontSize}
+                />
+              </div>
               <VerseFavorites />
             </div>
 
             <div className={styles.toolsSection}>
-              <FontControls
-                onIncrease={increaseFontSize}
-                onDecrease={decreaseFontSize}
-              />
               <DarkModeToggle isDarkMode={isDarkMode} onToggle={toggleDarkMode} />
             </div>
           </div>
