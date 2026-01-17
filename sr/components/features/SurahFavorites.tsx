@@ -58,7 +58,9 @@ export default function SurahFavorites({ onSelect }: { onSelect?: (id: number) =
   return (
     <div className={styles.container}>
       <details className={styles.details}>
-        <summary className={styles.summary}> المفضلة({favList.length})</summary>
+        <summary className={styles.summary}>
+          السور المفضلة
+          ({favList.length})</summary>
         <div ref={listRef} className={styles.list}>
           {favList.length === 0 && <div className={styles.empty}>لا توجد سور مفضلة بعد</div>}
           {favList.map((s) => (
