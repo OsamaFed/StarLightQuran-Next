@@ -6,7 +6,7 @@ import { useQuran } from "@/hooks/useQuran";
 import { useTheme } from "@/hooks/useTheme";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { PageHeader } from "@/components/layout";
-import { SearchInput, DecorativeElements, Pagination } from "@/components/common";
+import { SearchInput, Pagination } from "@/components/common";
 import { SurahSelector, Verse, SurahFavorites, SurahStarButton,} from "@/components/features";
 import VerseFavorites from "@/components/features/VerseFavorites";
 import { FontControls, DarkModeToggle } from "@/components/ui";
