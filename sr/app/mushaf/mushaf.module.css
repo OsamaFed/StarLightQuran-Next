@@ -85,13 +85,13 @@
 .favoritesSection {
   display: flex;
   flex-direction: row;
-  gap: 0.6rem;
+  justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-radius: 2rem;
-  padding: 0.4rem;
+  padding: 0.6rem;
   border: 1px solid rgba(212, 163, 115, 0.2);
 }
 
@@ -101,12 +101,17 @@
 }
 
 .favoritesSection > * {
-  background: transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: none !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(212, 163, 115, 0.2) !important;
+  border-radius: 1.5rem !important;
   padding: 0.75rem 1.25rem !important;
-  border-radius: 0 !important;
+}
+
+.darkMode .favoritesSection > * {
+  background: rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
 
 .toolsSection > * {
