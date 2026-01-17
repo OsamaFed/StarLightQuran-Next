@@ -120,11 +120,13 @@ export default function MushafPage() {
                 searchTerm={searchTerm}
                 onSearchChange={handleSearchChange}
               />
-              <SearchResults
-                results={filteredSurahs}
-                isVisible={showResults}
-                onSelect={handleSurahSelect}
-              />
+              <div className={styles.SearchResults}>
+                <SearchResults
+                  results={filteredSurahs}
+                  isVisible={showResults}
+                  onSelect={handleSurahSelect}
+                />
+              </div>
               <SurahSelector
                 currentSurahId={currentSurah?.number}
                 onSelect={handleSurahSelect}

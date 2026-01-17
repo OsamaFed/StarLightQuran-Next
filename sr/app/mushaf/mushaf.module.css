@@ -81,6 +81,7 @@
   -webkit-backdrop-filter: blur(8px);
   border-radius: 2rem;
   position: relative;
+  z-index: 50;
 }
 .darkMode .searchAndSurahSection {
   background: rgba(0, 0, 0, 0.15);
@@ -138,6 +139,13 @@
   display: grid;
   gap: 1rem;
   auto-rows: max-content;
+}
+.SearchResults{
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 100;
 }
 
 .quranFrame {

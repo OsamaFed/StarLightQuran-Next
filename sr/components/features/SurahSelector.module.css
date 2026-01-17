@@ -11,42 +11,7 @@
   box-shadow: var(--shadow-md);
 }
 
-.container::before {
-  content: '';
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  right: -20px;
-  top: -20px;
-  background: radial-gradient(circle, var(--highlight-color) 0%, transparent 70%);
-  opacity: 0.3;
-  z-index: 0;
-  transition: all var(--transition-base);
-}
 
-.container:hover::before {
-  opacity: 0.5;
-  transform: scale(1.2);
-}
-
-.container:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg), 0 0 20px rgba(212, 163, 115, 0.15);
-}
-
-:global(.darkMode) .container {
-  background: rgba(34, 50, 64, 0.8);
-  border: 1px solid rgba(197, 108, 240, 0.2);
-}
-
-:global(.darkMode) .container::before {
-  background: radial-gradient(circle, var(--dark-highlight-color) 0%, transparent 70%);
-}
-
-:global(.darkMode) .container:hover {
-  border-color: rgba(197, 108, 240, 0.4);
-  box-shadow: var(--shadow-lg), 0 0 25px rgba(197, 108, 240, 0.2);
-}
 
 .arrow {
   width: 22px;
@@ -88,29 +53,7 @@
   transition: all var(--transition-base);
 }
 
-.select:focus {
-  background: rgba(212, 163, 115, 0.08);
-}
 
-.select option {
-  background: var(--main-bg-color);
-  color: var(--text-primary);
-  padding: 12px;
-  font-family: 'KoGaliModern', sans-serif;
-}
-
-:global(.darkMode) .select {
-  color: var(--dark-text-primary);
-}
-
-:global(.darkMode) .select:focus {
-  background: rgba(197, 108, 240, 0.1);
-}
-
-:global(.darkMode) .select option {
-  background: var(--dark-bg-secondary);
-  color: var(--dark-text-primary);
-}
 
 @media (max-width: 768px) {
   .container {
