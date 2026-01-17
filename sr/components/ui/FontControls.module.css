@@ -1,95 +1,59 @@
 .container {
   display: flex;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 8px;
+  background: transparent;
+  padding: 4px;
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(197, 205, 234, 0.4);
-  box-shadow: var(--shadow-sm);
+  border: none;
+  box-shadow: none;
   transition: all var(--transition-smooth);
 }
 
 .container:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
+  transform: none;
+  box-shadow: none;
 }
 
 :global(.darkMode) .container {
-  background: var(--dark-card-bg);
-
+  background: transparent;
 }
 
 :global(.darkMode) .container:hover {
-  border-color: rgba(58, 123, 213, 0.5);
-  box-shadow: var(--shadow-md);
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .btn {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 18px;
-  background: linear-gradient(145deg, var(--accent-color-1), var(--highlight-color));
-  border: none;
+  padding: 10px 16px;
+  background: rgba(212, 163, 115, 0.1);
+  border: 1px solid rgba(212, 163, 115, 0.2);
   border-radius: var(--radius-lg);
-  color: white;
+  color: var(--text-primary);
   cursor: pointer;
-  font-family: 'KoGaliModern', sans-serif;
+  font-family: inherit;
   font-size: 0.9rem;
   font-weight: 600;
   transition: all var(--transition-smooth);
-  box-shadow: var(--shadow-sm);
-  position: relative;
-  overflow: hidden;
-  min-width: 90px;
+  min-width: 80px;
   justify-content: center;
 }
 
-.btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-  transition: left 0.4s ease;
-}
-
-
-.increaseBtn:hover {
-  background: linear-gradient(145deg, #ccd5ae, var(--highlight-color));
-}
-
-.decreaseBtn:hover {
-  background: linear-gradient(145deg, var(--highlight-color), #ccd5ae);
-}
-
-.btn svg {
-  transition: transform var(--transition-spring);
-}
-
-.btn:hover svg {
-  transform: scale(1.2);
-}
-
 :global(.darkMode) .btn {
-  background: linear-gradient(145deg, var(--dark-accent-1), var(--dark-accent-2));
-  box-shadow: 0 2px 12px rgba(58, 123, 213, 0.25);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.btn:hover {
+  background: rgba(212, 163, 115, 0.2);
+  transform: translateY(-2px);
 }
 
 :global(.darkMode) .btn:hover {
-  box-shadow: 0 4px 20px rgba(58, 123, 213, 0.4);
-}
-
-:global(.darkMode) .increaseBtn:hover {
-  background: linear-gradient(145deg, var(--dark-accent-2), var(--dark-highlight-color));
-}
-
-:global(.darkMode) .decreaseBtn:hover {
-  background: linear-gradient(145deg, var(--dark-highlight-color), var(--dark-accent-2));
+  background: rgba(255, 255, 255, 0.1);
 }
 
 @media (max-width: 768px) {
