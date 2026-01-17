@@ -95,7 +95,7 @@ export default function MushafPage() {
         />
         <header className={styles.header}>
           <div className={styles.titleSection}>
-            <h1 className={styles.titleText}>ورتل القرآن ترتيلا</h1>
+            <h1 className={styles.titleText}>وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا</h1>
           </div>
           <div className={styles.controlsGrid}>
             <div className={styles.searchAndSurahSection}>
