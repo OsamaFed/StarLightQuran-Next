@@ -1,53 +1,21 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { surahs } from "@/data/surahs";
-import SearchResultsList from "../features/SearchResultsList";
+import { useState } from "react";
 import styles from "./SearchInput.module.css";
 
 interface SearchInputProps {
-  onSelectSurah: (surahId: number) => void;
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
 }
 
-export default function SearchInput({ onSelectSurah }: SearchInputProps) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showResults, setShowResults] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const filteredSurahs = searchTerm.length > 0
-    ? surahs.filter((surah) =>
-        surah.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : [];
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setShowResults(false);
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
-
+export default function SearchInput({ searchTerm, onSearchChange }: SearchInputProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchTerm(value);
-    setShowResults(value.length > 0);
-  };
-
-  const handleSelectSurah = (surahId: number) => {
-    onSelectSurah(surahId);
-    setSearchTerm("");
-    setShowResults(false);
+    onSearchChange(value);
   };
 
   return (
-    <div className={styles.searchContainer} ref={containerRef}>
+    <div className={styles.searchContainer}>
       <div className={styles.inputContainer}>
         <div className={styles.shadowInput}></div>
         <button className={styles.inputButtonShadow} type="button">
@@ -73,11 +41,6 @@ export default function SearchInput({ onSelectSurah }: SearchInputProps) {
           onChange={handleInputChange}
         />
       </div>
-      <SearchResultsList 
-        results={filteredSurahs} 
-        onSelect={handleSelectSurah} 
-        isVisible={showResults} 
-      />
     </div>
   );
 }

@@ -2,12 +2,14 @@
 
 import { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
+import { surahs } from "@/data/surahs";
 import { useQuran } from "@/hooks/useQuran";
 import { useTheme } from "@/hooks/useTheme";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { PageHeader } from "@/components/layout";
 import { SearchInput, Pagination } from "@/components/common";
 import { SurahSelector, Verse, SurahFavorites, SurahStarButton,} from "@/components/features";
+import SearchResults from "./SearchResults";
 import VerseFavorites from "@/components/features/VerseFavorites";
 import { FontControls, DarkModeToggle } from "@/components/ui";
 import { WaqfGuide } from "@/components/common";
@@ -37,6 +39,14 @@ export default function MushafPage() {
 
   const [fontSize, setFontSize] = useState(24);
   const [showWaqfGuide, setShowWaqfGuide] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showResults, setShowResults] = useState(false);
+
+  const filteredSurahs = searchTerm.length > 0
+    ? surahs.filter((surah) =>
+        surah.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
 
   const increaseFontSize = () => {
     setFontSize((prev) => Math.min(prev + 2, 36));
@@ -49,6 +59,13 @@ export default function MushafPage() {
   const handleSurahSelect = (surahId: number) => {
     loadSurah(surahId);
     setShowWaqfGuide(false);
+    setSearchTerm("");
+    setShowResults(false);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setShowResults(value.length > 0);
   };
 
   // Handle navigation to favorite verse
@@ -99,7 +116,15 @@ export default function MushafPage() {
           </div>
           <div className={styles.controlsGrid}>
             <div className={styles.searchAndSurahSection}>
-              <SearchInput onSelectSurah={handleSurahSelect} />
+              <SearchInput 
+                searchTerm={searchTerm}
+                onSearchChange={handleSearchChange}
+              />
+              <SearchResults
+                results={filteredSurahs}
+                isVisible={showResults}
+                onSelect={handleSurahSelect}
+              />
               <SurahSelector
                 currentSurahId={currentSurah?.number}
                 onSelect={handleSurahSelect}

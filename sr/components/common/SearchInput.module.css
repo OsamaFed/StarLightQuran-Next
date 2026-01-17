@@ -136,90 +136,10 @@
   color: rgba(230, 230, 230, 0.5);
 }
 
-.searchResults {
-  position: fixed;
-  top: 150px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
-  border-radius: var(--radius-lg);
-  max-height: 400px;
-  overflow-y: auto;
-  z-index: 99999;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: var(--shadow-xl);
-  animation: fadeInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent-color-1) transparent;
-}
-
-.searchResults::-webkit-scrollbar {
-  width: 6px;
-}
-
-.searchResults::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.searchResults::-webkit-scrollbar-thumb {
-  background-color: var(--accent-color-1);
-  border-radius: 10px;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.searchResultItem {
-  padding: 14px 18px;
-  cursor: pointer;
-  transition: all var(--transition-base);
-  color: var(--text-primary);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.searchResultItem:last-child {
-  border-bottom: none;
-}
-
-.searchResultItem:hover {
-  background: linear-gradient(145deg, rgba(212, 163, 115, 0.15), rgba(204, 213, 174, 0.1));
-  padding-right: 24px;
-}
-
-:global(.darkMode) .searchResults {
-  background: rgba(34, 50, 64, 0.95);
-  border: 1px solid rgba(197, 108, 240, 0.2);
-}
-
-:global(.darkMode) .searchResultItem {
-  color: var(--dark-text-primary);
-  border-bottom-color: rgba(255, 255, 255, 0.05);
-}
-
-:global(.darkMode) .searchResultItem:hover {
-  background: linear-gradient(145deg, rgba(197, 108, 240, 0.2), rgba(139, 92, 246, 0.1));
-}
-
 @media (max-width: 768px) {
   .inputContainer {
     min-width: 160px;
     padding: 8px 14px;
-  }
-
-  .searchResults {
-    width: 260px;
   }
 }
 
@@ -227,9 +147,5 @@
   .inputContainer {
     min-width: 150px;
     max-width: 200px;
-  }
-
-  .searchResults {
-    width: 240px;
   }
 }
