@@ -12,8 +12,17 @@
 .summary {
   cursor: pointer;
   font-weight: 600;
-  color: #0b0b0b; /* light mode: dark text */
+  color: var(--primary, #d4a373);
   list-style: none;
+  transition: color 0.2s ease;
+}
+
+.summary:hover {
+  color: var(--primary-light, #e9c46a);
+}
+
+:global(.darkMode) .summary {
+  color: #d4a373;
 }
 
 .list {
