@@ -4,4 +4,4 @@ export { default as VerseSpeedDial } from './VerseSpeedDial';
 export { default as SurahFavorites } from './SurahFavorites';
 export { default as SurahStarButton } from './SurahStarButton';
 export { default as PrayerTimes } from './PrayerTimes';
-export { default as SearchResultsList } from './SearchResultsList';
+export { default as SearchResults } from './SearchResults';

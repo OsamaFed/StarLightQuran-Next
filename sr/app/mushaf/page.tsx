@@ -8,8 +8,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { PageHeader } from "@/components/layout";
 import { SearchInput, Pagination, ScrollToTop } from "@/components/common";
-import { SurahSelector, Verse, SurahFavorites, SurahStarButton,} from "@/components/features";
-import SearchResults from "./SearchResults";
+import { SurahSelector, VerseCard, SurahFavorites, SurahStarButton, SearchResults } from "@/components/features";
 import VerseFavorites from "@/components/features/VerseFavorites";
 import { FontControls, DarkModeToggle } from "@/components/ui";
 import { WaqfGuide } from "@/components/common";
@@ -187,12 +186,13 @@ export default function MushafPage() {
                             <SurahStarButton surahNumber={currentSurah.number} />
                   </div>
                   {currentVerses.map((ayah, index) => (
-                    <Verse
+                    <VerseCard
                       key={ayah.number}
                       ayah={ayah}
                       verseNumber={(currentPage - 1) * 12 + index + 1}
                       surahName={currentSurah.name}
                       surahId={currentSurah.number}
+                      isDarkMode={isDarkMode}
                       onLoadTafseer={loadTafseer}
                       fontSize={fontSize}
                     />
