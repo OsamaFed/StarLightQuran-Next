@@ -86,6 +86,10 @@ export default function VerseSpeedDial({
   const scrollTimeoutRef = useRef<number | null>(null);
   const originalBgRef = useRef<string | null>(null);
   const [isTafsirOpen, setIsTafsirOpen] = useState(false);
+  
+  // لتتبع بدء اللمسة ومسافة الحركة
+  const startTouchRef = useRef<{ x: number; y: number; time: number } | null>(null);
+  const isLongPressTriggeredRef = useRef(false);
 
   useEffect(() => {
     return () => {
@@ -97,8 +101,31 @@ export default function VerseSpeedDial({
       }
       if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
       if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current);
+      if ((window as any).__currentVerseSpeedDialOpenId === verseId) {
+        delete (window as any).__currentVerseSpeedDialOpenId;
+      }
     };
   }, [verseId]);
+
+  // معالج لمنع فتح عدة قائمات في نفس الوقت
+  useEffect(() => {
+    const handleOtherMenuOpened = (ev: Event) => {
+      try {
+        const d = (ev as CustomEvent).detail;
+        if (d && d.verseId !== verseId && menuVisible) {
+          setMenuVisible(false);
+          if ((window as any).__currentVerseSpeedDialOpenId === verseId) {
+            delete (window as any).__currentVerseSpeedDialOpenId;
+          }
+        }
+      } catch (e) {}
+    };
+    
+    window.addEventListener('versespeeddial:opened', handleOtherMenuOpened as EventListener);
+    return () => {
+      window.removeEventListener('versespeeddial:opened', handleOtherMenuOpened as EventListener);
+    };
+  }, [verseId, menuVisible]);
 
   // Load favorite status on mount
   useEffect(() => {
@@ -127,12 +154,14 @@ export default function VerseSpeedDial({
 
   useEffect(() => {
     const handleScroll = () => {
+      // لا نستخدم isScrolling لمنع الضغط المطول مباشرة
+      // بدلاً من ذلك، سنستخدم معلومات اللمسة
       setIsScrolling(true);
       if (scrollTimeoutRef.current)
         window.clearTimeout(scrollTimeoutRef.current);
       scrollTimeoutRef.current = window.setTimeout(() => {
         setIsScrolling(false);
-      }, 150) as unknown as number;
+      }, 200) as unknown as number;
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
@@ -146,16 +175,46 @@ export default function VerseSpeedDial({
     const el = document.getElementById(verseId);
     if (!el) return;
 
-    const start = () => {
-      if (isScrolling) return;
+    const start = (e: Event) => {
+      // حفظ بيانات اللمسة
+      if (e instanceof TouchEvent && e.touches.length > 0) {
+        const touch = e.touches[0];
+        startTouchRef.current = {
+          x: touch.clientX,
+          y: touch.clientY,
+          time: Date.now(),
+        };
+      } else if (e instanceof MouseEvent) {
+        startTouchRef.current = {
+          x: e.clientX,
+          y: e.clientY,
+          time: Date.now(),
+        };
+      }
+      
       if (longPressTimer.current)
         window.clearTimeout(longPressTimer.current);
+      
+      isLongPressTriggeredRef.current = false;
       setIsPressed(true);
+      
       longPressTimer.current = window.setTimeout(() => {
+        // تحقق إذا كان هناك حركة كبيرة
+        if (startTouchRef.current) {
+          const now = Date.now();
+          const elapsed = now - startTouchRef.current.time;
+          
+          // إذا كان الوقت أقل من 200ms، قد تكون حركة scrolling
+          if (elapsed < 200) {
+            return;
+          }
+        }
+        
         // Prevent opening if another verse's menu is already open
         const current = (window as any).__currentVerseSpeedDialOpenId;
         if (current && current !== verseId) return;
         (window as any).__currentVerseSpeedDialOpenId = verseId;
+        isLongPressTriggeredRef.current = true;
         setMenuVisible(true);
         try {
           window.dispatchEvent(new CustomEvent('versespeeddial:opened', { detail: { verseId } }));
@@ -169,15 +228,31 @@ export default function VerseSpeedDial({
         longPressTimer.current = null;
       }
       setIsPressed(false);
+      startTouchRef.current = null;
+    };
+
+    const handleTouchMove = (e: Event) => {
+      if (!startTouchRef.current || isLongPressTriggeredRef.current) return;
+      
+      if (e instanceof TouchEvent && e.touches.length > 0) {
+        const touch = e.touches[0];
+        const deltaX = Math.abs(touch.clientX - startTouchRef.current.x);
+        const deltaY = Math.abs(touch.clientY - startTouchRef.current.y);
+        
+        // إذا تجاوزت الحركة 15px في أي اتجاه، ألغ الضغط المطول
+        if (deltaX > 15 || deltaY > 15) {
+          cancel();
+        }
+      }
     };
 
     el.addEventListener("mousedown", start);
     el.addEventListener("mouseup", cancel);
     el.addEventListener("mouseleave", cancel);
-    el.addEventListener("touchstart", start);
-    el.addEventListener("touchend", cancel);
-    el.addEventListener("touchcancel", cancel);
-    el.addEventListener("touchmove", cancel);
+    el.addEventListener("touchstart", start, { passive: true });
+    el.addEventListener("touchend", cancel, { passive: true });
+    el.addEventListener("touchcancel", cancel, { passive: true });
+    el.addEventListener("touchmove", handleTouchMove, { passive: true });
 
     return () => {
       cancel();
@@ -187,9 +262,9 @@ export default function VerseSpeedDial({
       el.removeEventListener("touchstart", start);
       el.removeEventListener("touchend", cancel);
       el.removeEventListener("touchcancel", cancel);
-      el.removeEventListener("touchmove", cancel);
+      el.removeEventListener("touchmove", handleTouchMove);
     };
-  }, [verseId, isScrolling]);
+  }, [verseId]);
 
   // Apply a very simple press/hover feedback on the verse element itself
   useEffect(() => {
@@ -382,7 +457,14 @@ export default function VerseSpeedDial({
   // Close when clicking/tapping outside the menu or the verse element
   useEffect(() => {
     if (!menuVisible) return;
+    
     const handler = (e: Event) => {
+      // لا تغلق القائمة إذا كانت بسبب نفس اللمسة التي فتحتها
+      if (isLongPressTriggeredRef.current && e.type === 'touchstart') {
+        isLongPressTriggeredRef.current = false;
+        return;
+      }
+      
       const target = e.target as Node | null;
       const menuEl = menuRef.current;
       const verseEl = document.getElementById(verseId);
@@ -394,9 +476,15 @@ export default function VerseSpeedDial({
         window.dispatchEvent(new CustomEvent('versespeeddial:closed', { detail: { verseId } }));
       } catch (e) {}
     };
-    document.addEventListener('mousedown', handler);
-    document.addEventListener('touchstart', handler);
+    
+    // أضف تأخير صغير لمنع الـ immediate close
+    const timeoutId = window.setTimeout(() => {
+      document.addEventListener('mousedown', handler);
+      document.addEventListener('touchstart', handler);
+    }, 100);
+    
     return () => {
+      window.clearTimeout(timeoutId);
       document.removeEventListener('mousedown', handler);
       document.removeEventListener('touchstart', handler);
     };

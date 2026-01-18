@@ -36,18 +36,6 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-<<<<<<< HEAD
-  background: rgba(212, 163, 115, 0.15);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(212, 163, 115, 0.25);
-  color: var(--text-primary);
-  border-radius: 50%;
-  margin: 0 0 0 16px;
-  font-size: 1rem;
-  font-weight: bold;
-  box-shadow: 0 4px 12px rgba(212, 163, 115, 0.1);
-=======
   background: var(--button-gradient);
   color: white;
   border-radius: var(--radius-round);
@@ -55,7 +43,6 @@
   font-size: 1.1rem;
   font-weight: 700;
   box-shadow: var(--shadow-sm);
->>>>>>> ad45e3b (Update verse display with glassmorphism and improved dark mode)
   user-select: none;
   transition: all var(--transition-spring);
   position: relative;
