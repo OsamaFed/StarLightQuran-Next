@@ -82,17 +82,17 @@ export function useQuran() {
   const nextPage = useCallback(() => {
     if (currentPage < totalPages) {
       setCurrentPage((prev) => prev + 1);
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (currentSurah && currentSurah.number < 114) {
       loadSurah(currentSurah.number + 1);
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [currentPage, totalPages, currentSurah, loadSurah]);
 
   const prevPage = useCallback(async () => {
     if (currentPage > 1) {
       setCurrentPage((prev) => prev - 1);
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (currentSurah && currentSurah.number > 1) {
       try {
         const prevSurahNumber = currentSurah.number - 1;
@@ -112,7 +112,7 @@ export function useQuran() {
             ayahs: processedAyahs,
           });
           setCurrentPage(Math.ceil(processedAyahs.length / VERSES_PER_PAGE));
-          window.scrollTo(0, 0);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       } catch (err) {
         console.error("Error loading previous surah:", err);
@@ -122,20 +122,20 @@ export function useQuran() {
 
   const goToPage = useCallback((page: number) => {
     setCurrentPage(page);
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   const nextSurah = useCallback(() => {
     if (currentSurah && currentSurah.number < 114) {
       loadSurah(currentSurah.number + 1);
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [currentSurah, loadSurah]);
 
   const prevSurah = useCallback(() => {
     if (currentSurah && currentSurah.number > 1) {
       loadSurah(currentSurah.number - 1);
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [currentSurah, loadSurah]);
 

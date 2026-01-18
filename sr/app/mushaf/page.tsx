@@ -7,7 +7,7 @@ import { useQuran } from "@/hooks/useQuran";
 import { useTheme } from "@/hooks/useTheme";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { PageHeader } from "@/components/layout";
-import { SearchInput, Pagination } from "@/components/common";
+import { SearchInput, Pagination, ScrollToTop } from "@/components/common";
 import { SurahSelector, Verse, SurahFavorites, SurahStarButton,} from "@/components/features";
 import SearchResults from "./SearchResults";
 import VerseFavorites from "@/components/features/VerseFavorites";
@@ -218,6 +218,7 @@ export default function MushafPage() {
             isDarkMode={isDarkMode}
           />
         )}
+        <ScrollToTop isDarkMode={isDarkMode} />
 
       </div>
     </div>

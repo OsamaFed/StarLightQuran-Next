@@ -41,6 +41,13 @@ export default function SurahFavorites({ onSelect }: { onSelect?: (id: number) =
     save(next);
   };
 
+  const handleItemClick = (e: React.MouseEvent, surahId: number) => {
+    if ((e.target as HTMLElement).closest(`.${styles.remove}`)) {
+      return;
+    }
+    onSelect && onSelect(surahId);
+  };
+
   const listRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -64,13 +71,10 @@ export default function SurahFavorites({ onSelect }: { onSelect?: (id: number) =
         <div ref={listRef} className={styles.list}>
           {favList.length === 0 && <div className={styles.empty}>لا توجد سور مفضلة بعد</div>}
           {favList.map((s) => (
-            <div key={s.id} className={styles.item}>
-              <button
-                className={styles.name}
-                onClick={() => onSelect && onSelect(s.id)}
-              >
+            <div key={s.id} className={styles.item} onClick={(e) => handleItemClick(e, s.id)}>
+              <span className={styles.name}>
                 {s.id}. {s.name}
-              </button>
+              </span>
               <button className={styles.remove} onClick={() => toggle(s.id)} title="إزالة من المفضلة">
                 <CloseIcon fontSize="small" />
               </button>

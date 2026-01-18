@@ -72,6 +72,13 @@ export default function VerseFavorites() {
     }
   };
 
+  const handleItemClick = (e: React.MouseEvent, verse: FavoriteVerse) => {
+    if ((e.target as HTMLElement).closest(`.${styles.remove}`)) {
+      return;
+    }
+    handleSelectVerse(verse);
+  };
+
   const listRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -89,10 +96,10 @@ export default function VerseFavorites() {
         <div ref={listRef} className={styles.list}>
           {favorites.length === 0 && <div className={styles.empty}>لا توجد آيات مفضلة بعد</div>}
           {favorites.map((v) => (
-            <div key={v.id} className={styles.item}>
-              <button className={styles.name} onClick={() => handleSelectVerse(v)} title={`اذهب إلى ${v.surahName}:${v.verseNumber}`}>
+            <div key={v.id} className={styles.item} onClick={(e) => handleItemClick(e, v)}>
+              <span className={styles.name} title={`اذهب إلى ${v.surahName}:${v.verseNumber}`}>
                 {v.surahName}:{v.verseNumber}
-              </button>
+              </span>
               <button className={styles.remove} onClick={() => toggle(v.id)}>
                 <CloseIcon fontSize="small" />
               </button>
