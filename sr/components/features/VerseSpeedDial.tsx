@@ -22,6 +22,13 @@ interface VerseSpeedDialProps {
   surahId: number;
 }
 
+// Helper: Close menu and clear global state
+const closeMenuAndClear = (verseId: string) => {
+  if ((window as any).__currentVerseSpeedDialOpenId === verseId) {
+    delete (window as any).__currentVerseSpeedDialOpenId;
+  }
+};
+
 async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
   const html2canvas = (await import("html2canvas")).default;
   const clone = el.cloneNode(true) as HTMLElement;
@@ -31,15 +38,12 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
   clone.style.width = `${rect.width}px`;
   clone.style.boxSizing = "border-box";
 
-  // ensure background matches current theme for exported image
   let exportBg: string | null = null;
   try {
     const theme = document.documentElement.getAttribute("data-theme") || (document.body.classList.contains("darkMode") ? "dark" : "light");
     const computedBg = getComputedStyle(document.documentElement).getPropertyValue("--background") || "";
-    // use pure white for light mode exported images
-    const bg = theme === "dark" ? (computedBg.trim() || "#0D1B2A") : "#ffffff";
-    clone.style.backgroundColor = bg;
-    exportBg = bg;
+    exportBg = theme === "dark" ? (computedBg.trim() || "#0D1B2A") : "#ffffff";
+    clone.style.backgroundColor = exportBg;
   } catch (e) {}
 
   const container = document.createElement("div");
@@ -78,16 +82,13 @@ export default function VerseSpeedDial({
   const [isCopying, setIsCopying] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
+  const [isTafsirLoading, setIsTafsirLoading] = useState(false);
+  const [isTafsirOpen, setIsTafsirOpen] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
   const longPressTimer = useRef<number | null>(null);
-  const [isPressed, setIsPressed] = useState(false);
-  const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimeoutRef = useRef<number | null>(null);
-  const originalBgRef = useRef<string | null>(null);
-  const [isTafsirOpen, setIsTafsirOpen] = useState(false);
-  
-  // لتتبع بدء اللمسة ومسافة الحركة
   const startTouchRef = useRef<{ x: number; y: number; time: number } | null>(null);
   const isLongPressTriggeredRef = useRef(false);
 
@@ -101,9 +102,7 @@ export default function VerseSpeedDial({
       }
       if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
       if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current);
-      if ((window as any).__currentVerseSpeedDialOpenId === verseId) {
-        delete (window as any).__currentVerseSpeedDialOpenId;
-      }
+      closeMenuAndClear(verseId);
     };
   }, [verseId]);
 
@@ -112,11 +111,9 @@ export default function VerseSpeedDial({
     const handleOtherMenuOpened = (ev: Event) => {
       try {
         const d = (ev as CustomEvent).detail;
-        if (d && d.verseId !== verseId && menuVisible) {
+        if (d?.verseId !== verseId && menuVisible) {
           setMenuVisible(false);
-          if ((window as any).__currentVerseSpeedDialOpenId === verseId) {
-            delete (window as any).__currentVerseSpeedDialOpenId;
-          }
+          closeMenuAndClear(verseId);
         }
       } catch (e) {}
     };
@@ -129,24 +126,25 @@ export default function VerseSpeedDial({
 
   // Load favorite status on mount
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem("favoriteVerses");
-      if (raw) {
-        const favs = JSON.parse(raw);
-        const exists = favs.some((v: any) => v.id === verseId);
-        setIsFavorited(exists);
-      }
-    } catch (e) {}
+    const updateFavoriteStatus = () => {
+      try {
+        const raw = localStorage.getItem("favoriteVerses");
+        const favs = raw ? JSON.parse(raw) : [];
+        setIsFavorited(favs.some((v: any) => v.id === verseId));
+      } catch (e) {}
+    };
 
+    updateFavoriteStatus();
+    
     const handler = (ev: Event) => {
       try {
         const favs = (ev as CustomEvent).detail?.favorites as any[] | undefined;
         if (Array.isArray(favs)) {
-          const exists = favs.some((v) => v.id === verseId);
-          setIsFavorited(exists);
+          setIsFavorited(favs.some((v) => v.id === verseId));
         }
       } catch (e) {}
     };
+
     window.addEventListener("favoriteVerseChanged", handler as EventListener);
     return () => window.removeEventListener("favoriteVerseChanged", handler as EventListener);
   }, [verseId]);
@@ -154,14 +152,9 @@ export default function VerseSpeedDial({
 
   useEffect(() => {
     const handleScroll = () => {
-      // لا نستخدم isScrolling لمنع الضغط المطول مباشرة
-      // بدلاً من ذلك، سنستخدم معلومات اللمسة
-      setIsScrolling(true);
       if (scrollTimeoutRef.current)
         window.clearTimeout(scrollTimeoutRef.current);
-      scrollTimeoutRef.current = window.setTimeout(() => {
-        setIsScrolling(false);
-      }, 200) as unknown as number;
+      scrollTimeoutRef.current = window.setTimeout(() => {}, 200) as unknown as number;
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
@@ -176,7 +169,6 @@ export default function VerseSpeedDial({
     if (!el) return;
 
     const start = (e: Event) => {
-      // حفظ بيانات اللمسة
       if (e instanceof TouchEvent && e.touches.length > 0) {
         const touch = e.touches[0];
         startTouchRef.current = {
@@ -199,18 +191,9 @@ export default function VerseSpeedDial({
       setIsPressed(true);
       
       longPressTimer.current = window.setTimeout(() => {
-        // تحقق إذا كان هناك حركة كبيرة
-        if (startTouchRef.current) {
-          const now = Date.now();
-          const elapsed = now - startTouchRef.current.time;
-          
-          // إذا كان الوقت أقل من 200ms، قد تكون حركة scrolling
-          if (elapsed < 200) {
-            return;
-          }
-        }
-        
-        // Prevent opening if another verse's menu is already open
+        const elapsed = Date.now() - (startTouchRef.current?.time || 0);
+        if (elapsed < 200) return;
+
         const current = (window as any).__currentVerseSpeedDialOpenId;
         if (current && current !== verseId) return;
         (window as any).__currentVerseSpeedDialOpenId = verseId;
@@ -238,8 +221,6 @@ export default function VerseSpeedDial({
         const touch = e.touches[0];
         const deltaX = Math.abs(touch.clientX - startTouchRef.current.x);
         const deltaY = Math.abs(touch.clientY - startTouchRef.current.y);
-        
-        // إذا تجاوزت الحركة 15px في أي اتجاه، ألغ الضغط المطول
         if (deltaX > 15 || deltaY > 15) {
           cancel();
         }
@@ -266,28 +247,26 @@ export default function VerseSpeedDial({
     };
   }, [verseId]);
 
-  // Apply a very simple press/hover feedback on the verse element itself
+  // Apply press/hover feedback on the verse element
   useEffect(() => {
     const el = document.getElementById(verseId) as HTMLElement | null;
     if (!el) return;
 
     if (isPressed) {
-      originalBgRef.current = el.style.backgroundColor || "";
       el.style.transition = "background-color 120ms ease";
       el.style.backgroundColor = isDarkMode
         ? "rgba(255,255,255,0.04)"
         : "rgba(0,0,0,0.04)";
     } else {
-      // restore previous background
-      el.style.backgroundColor = originalBgRef.current || "";
+      el.style.backgroundColor = "";
     }
 
     return () => {
-      if (el) el.style.backgroundColor = originalBgRef.current || "";
+      if (el) el.style.backgroundColor = "";
     };
   }, [isPressed, verseId, isDarkMode]);
 
-  // Detect if a tafsir panel is present/open so the menu can stay above it
+  // Detect if a tafsir panel is present/open
   useEffect(() => {
     const checkTafsir = () => {
       const candidate = document.querySelector(
@@ -308,47 +287,14 @@ export default function VerseSpeedDial({
   }, []);
 
   useEffect(() => {
-    if (menuVisible && menuRef.current) {
-      gsap.fromTo(
-        menuRef.current,
-        {
-          opacity: 0,
-          y: 20,
-          scale: 0.8,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.4,
-          ease: "back.out(1.7)",
-        }
-      );
-    }
+    if (!menuVisible || !menuRef.current) return;
+    
+    gsap.fromTo(
+      menuRef.current,
+      { opacity: 0, y: 20, scale: 0.8 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.7)" }
+    );
   }, [menuVisible]);
-
-  const [isTafsirLoading, setIsTafsirLoading] = useState(false);
-
-  useEffect(() => {
-    const onLoaded = (ev: Event) => {
-      try {
-        const d = (ev as CustomEvent).detail;
-        if (d && d.verseId === verseId) setIsTafsirLoading(false);
-      } catch (e) {}
-    };
-    const onClosed = (ev: Event) => {
-      try {
-        const d = (ev as CustomEvent).detail;
-        if (d && d.verseId === verseId) setIsTafsirLoading(false);
-      } catch (e) {}
-    };
-    window.addEventListener("tafsirLoaded", onLoaded as EventListener);
-    window.addEventListener("tafsirClosed", onClosed as EventListener);
-    return () => {
-      window.removeEventListener("tafsirLoaded", onLoaded as EventListener);
-      window.removeEventListener("tafsirClosed", onClosed as EventListener);
-    };
-  }, [verseId]);
 
   const handleCopy = () => {
     const text = `${verseText}\n\n${surahName}:${verseNumber}`;
@@ -356,8 +302,7 @@ export default function VerseSpeedDial({
       setIsCopying(true);
       setTimeout(() => {
         setIsCopying(false);
-        // close and clear global flag
-        if ((window as any).__currentVerseSpeedDialOpenId === verseId) delete (window as any).__currentVerseSpeedDialOpenId;
+        closeMenuAndClear(verseId);
         setMenuVisible(false);
       }, 1000);
     });
@@ -373,7 +318,7 @@ export default function VerseSpeedDial({
         favs = favs.filter((v: any) => v.id !== verseId);
       } else {
         favs.push({
-          id: `${surahId}_${verseNumber}`,
+          id: verseId,
           verseNumber,
           surahName,
           text: verseText,
@@ -386,7 +331,7 @@ export default function VerseSpeedDial({
       window.dispatchEvent(new CustomEvent("favoriteVerseChanged", { detail: { favorites: favs } }));
       
       setTimeout(() => {
-        if ((window as any).__currentVerseSpeedDialOpenId === verseId) delete (window as any).__currentVerseSpeedDialOpenId;
+        closeMenuAndClear(verseId);
         setMenuVisible(false);
       }, 500);
     } catch (e) {
@@ -431,13 +376,12 @@ export default function VerseSpeedDial({
       console.error(err);
     } finally {
       setIsDownloading(false);
-      if ((window as any).__currentVerseSpeedDialOpenId === verseId) delete (window as any).__currentVerseSpeedDialOpenId;
+      closeMenuAndClear(verseId);
       setMenuVisible(false);
     }
   };
 
   const handleOpenTafsir = () => {
-    // notify other parts of the app to open tafsir for this verse
     try {
       const ev = new CustomEvent("openTafsir", { detail: { verseId } });
       window.dispatchEvent(ev);
@@ -446,7 +390,7 @@ export default function VerseSpeedDial({
     setMenuVisible(false);
   };
 
-  // Inform other UI to hide inline tafsir buttons while the speed-dial is visible
+  // Inform UI to hide/show inline tafsir buttons
   useEffect(() => {
     try {
       const ev = new CustomEvent(menuVisible ? "versespeeddial:hideInlineTafsir" : "versespeeddial:showInlineTafsir");
@@ -454,12 +398,11 @@ export default function VerseSpeedDial({
     } catch (e) {}
   }, [menuVisible]);
 
-  // Close when clicking/tapping outside the menu or the verse element
+  // Close when clicking outside
   useEffect(() => {
     if (!menuVisible) return;
     
     const handler = (e: Event) => {
-      // لا تغلق القائمة إذا كانت بسبب نفس اللمسة التي فتحتها
       if (isLongPressTriggeredRef.current && e.type === 'touchstart') {
         isLongPressTriggeredRef.current = false;
         return;
@@ -468,16 +411,16 @@ export default function VerseSpeedDial({
       const target = e.target as Node | null;
       const menuEl = menuRef.current;
       const verseEl = document.getElementById(verseId);
-      if (menuEl && target && menuEl.contains(target)) return;
-      if (verseEl && target && verseEl.contains(target)) return;
-      if ((window as any).__currentVerseSpeedDialOpenId === verseId) delete (window as any).__currentVerseSpeedDialOpenId;
+      
+      if ((menuEl?.contains(target || null)) || (verseEl?.contains(target || null))) return;
+      
+      closeMenuAndClear(verseId);
       setMenuVisible(false);
       try {
         window.dispatchEvent(new CustomEvent('versespeeddial:closed', { detail: { verseId } }));
       } catch (e) {}
     };
     
-    // أضف تأخير صغير لمنع الـ immediate close
     const timeoutId = window.setTimeout(() => {
       document.addEventListener('mousedown', handler);
       document.addEventListener('touchstart', handler);
