@@ -51,12 +51,17 @@ export default function VerseFavorites() {
 
   const handleSelectVerse = (verse: FavoriteVerse) => {
     try {
-      // Extract surah number from verseId (format: "surahNumber_verseNumber")
-      // or use surahId directly if available
-      const surahNumber = verse.surahId || parseInt(verse.id.split('_')[0]);
+      // Extract surah number from verseId or use surahId
+      let surahNumber = verse.surahId;
       
-      if (isNaN(surahNumber)) {
-        console.error('Invalid surah number');
+      if (!surahNumber) {
+        // Fallback: try to parse from verseId (format: "surahNumber-verseNumber" or similar)
+        const parts = verse.id.split('-');
+        surahNumber = parseInt(parts[0]);
+      }
+      
+      if (isNaN(surahNumber) || surahNumber < 1 || surahNumber > 114) {
+        console.error('Invalid surah number:', surahNumber);
         return;
       }
 

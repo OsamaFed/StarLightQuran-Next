@@ -34,34 +34,60 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
   const clone = el.cloneNode(true) as HTMLElement;
   clone.setAttribute("dir", "rtl");
   clone.style.direction = "rtl";
-  const rect = el.getBoundingClientRect();
-  clone.style.width = `${rect.width}px`;
-  clone.style.boxSizing = "border-box";
+  
+  // Hide speed dial buttons in the clone
+  const speedDialButtons = clone.querySelectorAll('[data-verse-speedial], [class*="SpeedDial"]');
+  speedDialButtons.forEach((btn) => {
+    (btn as HTMLElement).style.display = "none";
+  });
 
+  const rect = el.getBoundingClientRect();
+  const width = rect.width;
+  const height = rect.height;
+  
+  clone.style.width = `${width}px`;
+  clone.style.height = `${height}px`;
+  clone.style.boxSizing = "border-box";
+  clone.style.margin = "0";
+  clone.style.padding = clone.style.padding || "20px";
+
+  let isDarkMode = false;
   let exportBg: string | null = null;
+  
   try {
     const theme = document.documentElement.getAttribute("data-theme") || (document.body.classList.contains("darkMode") ? "dark" : "light");
+    isDarkMode = theme === "dark";
     const computedBg = getComputedStyle(document.documentElement).getPropertyValue("--background") || "";
-    exportBg = theme === "dark" ? (computedBg.trim() || "#0D1B2A") : "#ffffff";
-    clone.style.backgroundColor = exportBg;
+    exportBg = isDarkMode ? (computedBg.trim() || "#0D1B2A") : "#FFF8F0";
   } catch (e) {}
 
+  // Create container with Aurora background
   const container = document.createElement("div");
   container.style.position = "fixed";
   container.style.left = "-9999px";
   container.style.top = "0";
+  container.style.width = `${width}px`;
+  container.style.height = `${height}px`;
   container.style.zIndex = "2147483647";
+  container.style.backgroundColor = exportBg || "#FFF8F0";
+  container.style.backgroundImage = isDarkMode 
+    ? "radial-gradient(circle at 20% 30%, rgba(74, 144, 226, 0.25) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(147, 112, 219, 0.25) 0%, transparent 50%)"
+    : "radial-gradient(circle at 20% 30%, rgba(139, 143, 197, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(197, 163, 115, 0.15) 0%, transparent 50%)";
+  container.style.overflow = "hidden";
+  
   container.appendChild(clone);
   document.body.appendChild(container);
 
   try {
-    const canvas = await html2canvas(clone, {
+    const canvas = await html2canvas(container, {
       backgroundColor: exportBg || undefined,
-      scale: 3,
+      scale: 4,
       useCORS: true,
+      logging: false,
+      allowTaint: true,
     });
     const blob: Blob | null = await new Promise((resolve) =>
-      canvas.toBlob((b) => resolve(b))
+      canvas.toBlob((b) => resolve(b), "image/png", 1)
     );
     return blob;
   } finally {

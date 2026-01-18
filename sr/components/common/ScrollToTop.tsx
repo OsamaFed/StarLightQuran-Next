@@ -14,8 +14,9 @@ export default function ScrollToTop({ isDarkMode = false }: ScrollToTopProps) {
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
-      const viewportHeight = window.innerHeight;
-      setIsVisible(scrollTop > viewportHeight * 0.5);
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = (scrollTop / docHeight) * 100;
+      setIsVisible(scrollPercent > 70);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });

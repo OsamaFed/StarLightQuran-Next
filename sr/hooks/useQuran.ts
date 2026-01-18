@@ -125,6 +125,14 @@ export function useQuran() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
+  const goToVerse = useCallback((verseNumber: number) => {
+    if (currentSurah && verseNumber > 0 && verseNumber <= currentSurah.ayahs.length) {
+      const pageNumber = Math.ceil(verseNumber / VERSES_PER_PAGE);
+      setCurrentPage(pageNumber);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [currentSurah]);
+
   const nextSurah = useCallback(() => {
     if (currentSurah && currentSurah.number < 114) {
       loadSurah(currentSurah.number + 1);
@@ -151,6 +159,7 @@ export function useQuran() {
     nextPage,
     prevPage,
     goToPage,
+    goToVerse,
     nextSurah,
     prevSurah,
   };

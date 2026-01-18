@@ -59,16 +59,16 @@
   justify-content: center;
   width: 56px;
   height: 56px;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid rgba(212, 163, 115, 0.3);
-  color: var(--accent-color-1);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(212, 163, 115, 0.15);
+  color: var(--text-secondary);
   border-radius: 50%;
   margin: 0 0 0 16px;
   font-size: 1.25rem;
   font-weight: bold;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   user-select: none;
   transition: all var(--transition-spring);
   position: relative;
@@ -80,8 +80,8 @@
   position: absolute;
   inset: -3px;
   border-radius: 50%;
-  border: 1.5px solid rgba(212, 163, 115, 0.4);
-  opacity: 0.5;
+  border: 1.5px solid rgba(212, 163, 115, 0.2);
+  opacity: 0.3;
 }
 
 .verseNumber::after {
@@ -90,7 +90,7 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(212, 163, 115, 0.15) 0%, transparent 70%);
+  background: transparent;
   top: -20%;
   left: -10%;
   pointer-events: none;
@@ -98,13 +98,13 @@
 
 
 :global(.darkMode) .verseNumber {
-  background: rgba(34, 50, 64, 0.6);
-  border-color: rgba(197, 108, 240, 0.3);
-  color: #c56cf0;
+  background: rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 255, 255, 0.05);
+  color: var(--dark-text-secondary);
 }
 
 :global(.darkMode) .verseNumber::before {
-  border-color: rgba(197, 108, 240, 0.4);
+  border-color: rgba(255, 255, 255, 0.05);
 }
 
 .verseText {

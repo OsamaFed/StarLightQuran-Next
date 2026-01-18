@@ -30,6 +30,7 @@ export default function MushafPage() {
     nextPage,
     prevPage,
     goToPage,
+    goToVerse,
     nextSurah,
     prevSurah,
   } = useQuran();
@@ -72,22 +73,44 @@ export default function MushafPage() {
     const handleNavigateToVerse = (event: Event) => {
       try {
         const detail = (event as CustomEvent).detail;
-        if (detail && detail.surahNumber && detail.verseNumber) {
+        if (detail && detail.surahNumber && detail.verseNumber !== undefined) {
           const { surahNumber, verseNumber } = detail;
-          loadSurah(surahNumber);
           
-          // Scroll to verse element after surah loads
-          setTimeout(() => {
-            const verseElement = document.getElementById(`verse-${verseNumber}`);
-            if (verseElement) {
-              verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              // Add highlight effect
-              verseElement.style.backgroundColor = 'rgba(212, 163, 115, 0.1)';
+          // Check if we're already on the same surah
+          if (currentSurah?.number === surahNumber) {
+            // Just navigate to the correct page
+            goToVerse(verseNumber);
+            setTimeout(() => {
+              const verseElement = document.getElementById(`verse-${verseNumber}`);
+              if (verseElement) {
+                verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Add highlight effect
+                verseElement.style.backgroundColor = 'rgba(212, 163, 115, 0.1)';
+                setTimeout(() => {
+                  verseElement.style.backgroundColor = '';
+                }, 2000);
+              }
+            }, 100);
+          } else {
+            // Load new surah first
+            loadSurah(surahNumber);
+            
+            // Navigate to verse after surah loads
+            setTimeout(() => {
+              goToVerse(verseNumber);
               setTimeout(() => {
-                verseElement.style.backgroundColor = '';
-              }, 2000);
-            }
-          }, 300);
+                const verseElement = document.getElementById(`verse-${verseNumber}`);
+                if (verseElement) {
+                  verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  // Add highlight effect
+                  verseElement.style.backgroundColor = 'rgba(212, 163, 115, 0.1)';
+                  setTimeout(() => {
+                    verseElement.style.backgroundColor = '';
+                  }, 2000);
+                }
+              }, 100);
+            }, 300);
+          }
         }
       } catch (e) {
         console.error('Error navigating to verse:', e);
@@ -96,7 +119,7 @@ export default function MushafPage() {
 
     window.addEventListener('navigateToVerse', handleNavigateToVerse as EventListener);
     return () => window.removeEventListener('navigateToVerse', handleNavigateToVerse as EventListener);
-  }, [loadSurah]);
+  }, [currentSurah, loadSurah, goToVerse]);
 
   return (
     <div className={`${styles.wrapper} ${isDarkMode ? styles.darkMode : ""}`}>
