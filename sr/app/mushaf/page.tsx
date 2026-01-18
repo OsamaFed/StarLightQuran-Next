@@ -108,7 +108,7 @@ export default function MushafPage() {
           onToggle={toggleDarkMode}
           backLink="/"
           backText="العودة للرئيسية"
-          showDarkModeToggle={false}
+          showDarkModeToggle={true}
         />
         <header className={styles.header}>
           <div className={styles.titleSection}>
@@ -144,9 +144,6 @@ export default function MushafPage() {
               <VerseFavorites />
             </div>
 
-            <div className={styles.toolsSection}>
-              <DarkModeToggle isDarkMode={isDarkMode} onToggle={toggleDarkMode} />
-            </div>
           </div>
         </header>
 
