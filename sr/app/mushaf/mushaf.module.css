@@ -101,6 +101,12 @@
   border-radius: 2rem;
   padding: 0.6rem;
   border: 1px solid rgba(212, 163, 115, 0.2);
+  width: 100%;
+}
+
+.favoritesSection > * {
+  flex: 1;
+  text-align: center;
 }
 
 .darkMode .favoritesSection {
