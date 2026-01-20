@@ -21,19 +21,21 @@
 }
 
 .header {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(212, 163, 115, 0.2);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(208, 216, 239, 0.4);
   border-radius: 1.5rem;
   padding: 1rem;
   margin-bottom: 2rem;
   transition: background 0.2s ease, border-color 0.2s ease;
   position: relative;
 }
+
+:root[data-theme="dark"] .header,
 .darkMode .header {
-  background: rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.05)
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(91, 143, 227, 0.25);
 }
 
 .titleContainer {
@@ -77,15 +79,17 @@
   display: flex;
   gap: 0.6rem;
   flex-direction: row;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 2rem;
   position: relative;
   z-index: 50;
 }
+
+:root[data-theme="dark"] .searchAndSurahSection,
 .darkMode .searchAndSurahSection {
-  background: rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.05)
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(91, 143, 227, 0.25);
 }
 
 
@@ -96,11 +100,11 @@
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 2rem;
   padding: 0.6rem;
-  border: 1px solid rgba(212, 163, 115, 0.2);
+  border: 1px solid rgba(208, 216, 239, 0.4);
   width: 100%;
 }
 
@@ -109,23 +113,25 @@
   text-align: center;
 }
 
+:root[data-theme="dark"] .favoritesSection,
 .darkMode .favoritesSection {
-  background: rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(91, 143, 227, 0.25);
 }
 
 .favoritesSection > * {
-  background: rgba(255, 255, 255, 0.03) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
-  border: 1px solid rgba(212, 163, 115, 0.2) !important;
+  background: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(208, 216, 239, 0.4) !important;
   border-radius: 1.5rem !important;
   padding: 0.75rem 1.25rem !important;
 }
 
+:root[data-theme="dark"] .favoritesSection > *,
 .darkMode .favoritesSection > * {
-  background: rgba(0, 0, 0, 0.15) !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(91, 143, 227, 0.25) !important;
 }
 
 .fontControlsCenter {
@@ -169,17 +175,18 @@
 }
 
 .toolsSection > * {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(212, 163, 115, 0.2);
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(208, 216, 239, 0.4);
   border-radius: 2rem;
   padding: 0.75rem 1.25rem;
 }
 
+:root[data-theme="dark"] .toolsSection > *,
 .darkMode .toolsSection > * {
-  background: rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(91, 143, 227, 0.25);
 }
 
 .toolsSection {
@@ -196,20 +203,21 @@
 }
 
 .quranFrame {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(212, 163, 115, 0.2);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(208, 216, 239, 0.4);
   border-radius: 1.5rem;
   padding: 2rem;
   min-height: 400px;
   margin-bottom: 2rem;
-  opacity: 7;
+  opacity: 1;
 }
 
+:root[data-theme="dark"] .quranFrame,
 .darkMode .quranFrame {
-  background: rgb(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(91, 143, 227, 0.25);
 }
 
 .quranContent {
@@ -224,19 +232,20 @@
 }
 
 .versesContainer > div {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 1rem;
   padding: 1.5rem;
-  border: 1px solid rgba(212, 163, 115, 0.15);
-  box-shadow: 0 8px 22px rgba(212, 163, 115, 0.08);
+  border: 1px solid rgba(208, 216, 239, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
+:root[data-theme="dark"] .versesContainer > div,
 .darkMode .versesContainer > div {
-  background: rgba(0, 0, 0, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(91, 143, 227, 0.25);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
 }
 
 .introContainer {
