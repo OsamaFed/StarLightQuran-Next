@@ -69,35 +69,29 @@ export default function VerseCard({
 
   // Calculate size based on verse length
   const verseLength = ayah.text.length;
-  let sizeClass = "";
   let dynamicStyle: React.CSSProperties = {};
 
   if (verseLength < 50) {
-    sizeClass = styles.sizeVerySmall;
     dynamicStyle = {
       padding: "12px 16px",
       marginBottom: "16px",
     };
   } else if (verseLength < 100) {
-    sizeClass = styles.sizeSmall;
     dynamicStyle = {
       padding: "14px 18px",
       marginBottom: "18px",
     };
   } else if (verseLength < 200) {
-    sizeClass = styles.sizeMedium;
     dynamicStyle = {
       padding: "20px",
       marginBottom: "24px",
     };
   } else if (verseLength < 300) {
-    sizeClass = styles.sizeLarge;
     dynamicStyle = {
       padding: "24px",
       marginBottom: "28px",
     };
   } else {
-    sizeClass = styles.sizeVeryLarge;
     dynamicStyle = {
       padding: "28px",
       marginBottom: "32px",
@@ -107,7 +101,7 @@ export default function VerseCard({
   return (
     <div
       id={`verse-${ayah.number}`}
-      className={`${styles.verse} ${sizeClass}`}
+      className={styles.verse}
       style={{ ...dynamicStyle, fontSize: `${fontSize}px` }}
     >
       <span className={styles.verseNumber}>{verseNumber}</span>

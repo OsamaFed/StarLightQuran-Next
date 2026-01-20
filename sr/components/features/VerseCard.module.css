@@ -96,30 +96,11 @@
   pointer-events: none;
 }
 
-
-:global(.darkMode) .verseNumber {
-  background: rgba(0, 0, 0, 0.15);
-  border-color: rgba(255, 255, 255, 0.05);
-  color: var(--dark-text-secondary);
-}
-
-:global(.darkMode) .verseNumber::before {
-  border-color: rgba(255, 255, 255, 0.05);
-}
-
 .verseText {
   display: inline;
   line-height: 2.4;
   font-size: inherit;
   font-family: 'Othmani', 'Amiri Quran', 'Amiri', serif !important;
-}
-
-.verseActions {
-  display: flex;
-  justify-content: flex-start;
-  margin-top: 16px;
-  gap: 8px;
-  opacity: 0.8;
 }
 
 .tafseerBtn {
