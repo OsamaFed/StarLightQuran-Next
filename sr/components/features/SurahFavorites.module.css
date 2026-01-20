@@ -7,6 +7,10 @@
   backdrop-filter: none !important;
   border: none !important;
   padding: 0 !important;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto;
 }
 
 :global(.darkMode) .container {
@@ -28,7 +32,6 @@
   list-style: none;
   transition: color 0.2s ease;
   text-align: center;
-  width: 100%;
 }
 
 .summary:hover {
