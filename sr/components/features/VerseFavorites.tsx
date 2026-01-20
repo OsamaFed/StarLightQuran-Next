@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import styles from "./SurahFavorites.module.css";
 import { useTheme } from "@/hooks/useTheme";
 import CloseIcon from '@mui/icons-material/Close';
 
-// Constants
 const STORAGE_KEY = "favoriteVerses";
 const EVENT_NAME = "favoriteVerseChanged";
 const NAVIGATE_EVENT = "navigateToVerse";
@@ -21,7 +20,6 @@ interface FavoriteVerse {
   surahId?: number;
 }
 
-// Utility functions
 const isValidSurahNumber = (num: number): boolean => {
   return !isNaN(num) && num >= MIN_SURAH && num <= MAX_SURAH;
 };
@@ -56,9 +54,6 @@ export default function VerseFavorites() {
   const [favorites, setFavorites] = useState<FavoriteVerse[]>([]);
   const listRef = useRef<HTMLDivElement | null>(null);
 
-  const hasFavorites = useMemo(() => favorites.length > 0, [favorites]);
-
-  // Load favorites on mount
   useEffect(() => {
     setFavorites(loadFavorites());
 
@@ -73,7 +68,6 @@ export default function VerseFavorites() {
     return () => window.removeEventListener(EVENT_NAME, handler as EventListener);
   }, []);
 
-  // Animate list items
   useEffect(() => {
     if (listRef.current?.children.length) {
       gsap.from(listRef.current.children, {
@@ -101,28 +95,17 @@ export default function VerseFavorites() {
         return;
       }
 
-
       window.dispatchEvent(
         new CustomEvent(NAVIGATE_EVENT, {
           detail: {
             surahNumber,
-            verseNumber: verse.verseNumber,
-            scrollToVerse: true 
+            verseNumber: verse.verseNumber
           }
         })
       );
     } catch (e) {
       console.error('Error navigating to verse:', e);
     }
-  };
-
-
-  const handleItemClick = (e: React.MouseEvent, verse: FavoriteVerse) => {
-    // Don't navigate if clicking the remove button
-    if ((e.target as HTMLElement).closest(`.${styles.remove}`)) {
-      return;
-    }
-    handleSelectVerse(verse);
   };
 
   return (
@@ -132,14 +115,14 @@ export default function VerseFavorites() {
           الآيات المفضلة ({favorites.length})
         </summary>
         <div ref={listRef} className={styles.list}>
-          {!hasFavorites && (
+          {favorites.length === 0 && (
             <div className={styles.empty}>لا توجد آيات مفضلة بعد</div>
           )}
           {favorites.map((verse) => (
             <div
               key={verse.id}
               className={styles.item}
-              onClick={(e) => handleItemClick(e, verse)}
+              onClick={() => handleSelectVerse(verse)}
               role="button"
               tabIndex={0}
             >
@@ -151,7 +134,10 @@ export default function VerseFavorites() {
               </span>
               <button
                 className={styles.remove}
-                onClick={() => removeFavorite(verse.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeFavorite(verse.id);
+                }}
                 aria-label={`إزالة ${verse.surahName}:${verse.verseNumber} من المفضلة`}
               >
                 <CloseIcon fontSize="small" />

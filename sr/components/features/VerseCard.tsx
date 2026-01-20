@@ -5,7 +5,6 @@ import { Ayah } from "@/types";
 import VerseSpeedDial from "./VerseSpeedDial";
 import styles from "./VerseCard.module.css";
 
-
 interface VerseCardProps {
   ayah: Ayah;
   verseNumber: number;
@@ -101,12 +100,12 @@ export default function VerseCard({
   return (
     <div
       id={`verse-${ayah.number}`}
+      data-verse-number={ayah.number}
       className={styles.verse}
       style={{ ...dynamicStyle, fontSize: `${fontSize}px` }}
     >
       <span className={styles.verseNumber}>{verseNumber}</span>
       <span className={styles.verseText}>{ayah.text}</span>
-      {/* Tafsir is opened by the small tafsir icon (VerseSpeedDial) via `openTafsir` event */}
       {showTafseer && (
         <div className={styles.tafseerText}>
           {loading ? "جاري تحميل التفسير..." : tafseer}

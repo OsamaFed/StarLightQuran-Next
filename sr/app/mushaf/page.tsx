@@ -15,7 +15,6 @@ import { WaqfGuide } from "@/components/common";
 import styles from "./mushaf.module.css";
 import { Aurora } from "@/components/ui/";
 
-
 export default function MushafPage() {
   const { isDarkMode, toggleDarkMode } = useTheme();
   const {
@@ -41,6 +40,9 @@ export default function MushafPage() {
   const [showWaqfGuide, setShowWaqfGuide] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showResults, setShowResults] = useState(false);
+  const [pendingVerseScroll, setPendingVerseScroll] = useState<number | null>(null);
+
+  const versesContainerRef = useRef<HTMLDivElement>(null);
 
   const filteredSurahs = searchTerm.length > 0
     ? surahs.filter((surah) =>
@@ -68,49 +70,46 @@ export default function MushafPage() {
     setShowResults(value.length > 0);
   };
 
+  // دالة للـ scroll مع highlight
+  const scrollToVerseWithHighlight = (verseNumber: number) => {
+    const verseElement = document.querySelector(`[data-verse-number="${verseNumber}"]`) as HTMLElement;
+
+    if (verseElement) {
+      verseElement.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center',
+        inline: 'nearest'
+      });
+
+      verseElement.style.transition = 'background-color 0.5s ease';
+      verseElement.style.backgroundColor = 'rgba(212, 163, 115, 0.2)';
+
+      setTimeout(() => {
+        verseElement.style.backgroundColor = '';
+      }, 2500);
+    }
+  };
+
   // Handle navigation to favorite verse
   useEffect(() => {
     const handleNavigateToVerse = (event: Event) => {
       try {
         const detail = (event as CustomEvent).detail;
-        if (detail && detail.surahNumber && detail.verseNumber !== undefined) {
-          const { surahNumber, verseNumber } = detail;
-          
-          // Check if we're already on the same surah
-          if (currentSurah?.number === surahNumber) {
-            // Just navigate to the correct page
+        if (!detail?.surahNumber || detail.verseNumber === undefined) return;
+
+        const { surahNumber, verseNumber } = detail;
+
+        // Same surah - just navigate to page
+        if (currentSurah?.number === surahNumber) {
+          goToVerse(verseNumber);
+          setPendingVerseScroll(verseNumber);
+        } else {
+          // Different surah - load it first
+          loadSurah(surahNumber);
+          setTimeout(() => {
             goToVerse(verseNumber);
-            setTimeout(() => {
-              const verseElement = document.getElementById(`verse-${verseNumber}`);
-              if (verseElement) {
-                verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                // Add highlight effect
-                verseElement.style.backgroundColor = 'rgba(212, 163, 115, 0.1)';
-                setTimeout(() => {
-                  verseElement.style.backgroundColor = '';
-                }, 2000);
-              }
-            }, 100);
-          } else {
-            // Load new surah first
-            loadSurah(surahNumber);
-            
-            // Navigate to verse after surah loads
-            setTimeout(() => {
-              goToVerse(verseNumber);
-              setTimeout(() => {
-                const verseElement = document.getElementById(`verse-${verseNumber}`);
-                if (verseElement) {
-                  verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  // Add highlight effect
-                  verseElement.style.backgroundColor = 'rgba(212, 163, 115, 0.1)';
-                  setTimeout(() => {
-                    verseElement.style.backgroundColor = '';
-                  }, 2000);
-                }
-              }, 100);
-            }, 300);
-          }
+            setPendingVerseScroll(verseNumber);
+          }, 300);
         }
       } catch (e) {
         console.error('Error navigating to verse:', e);
@@ -120,6 +119,18 @@ export default function MushafPage() {
     window.addEventListener('navigateToVerse', handleNavigateToVerse as EventListener);
     return () => window.removeEventListener('navigateToVerse', handleNavigateToVerse as EventListener);
   }, [currentSurah, loadSurah, goToVerse]);
+
+  // Effect للـ scroll بعد تحميل الآيات
+  useEffect(() => {
+    if (pendingVerseScroll !== null && !loading && currentVerses.length > 0) {
+      const timer = setTimeout(() => {
+        scrollToVerseWithHighlight(pendingVerseScroll);
+        setPendingVerseScroll(null);
+      }, 150);
+
+      return () => clearTimeout(timer);
+    }
+  }, [pendingVerseScroll, loading, currentVerses]);
 
   return (
     <div className={`${styles.wrapper} ${isDarkMode ? styles.darkMode : ""}`}>
@@ -165,14 +176,12 @@ export default function MushafPage() {
               </div>
               <VerseFavorites />
             </div>
-
           </div>
         </header>
 
         <div className={styles.quranFrame}>
-
           <div className={styles.quranContent} style={{ fontSize: `${fontSize}px` }}>
-            <div className={styles.versesContainer}>
+            <div className={styles.versesContainer} ref={versesContainerRef}>
               {loading && <p className={styles.loadingText}>جاري تحميل السورة...</p>}
               {error && <p className={styles.errorText}>{error}</p>}
               {!loading && !error && !currentSurah && (
@@ -183,7 +192,6 @@ export default function MushafPage() {
                     <li>حفظ صورة الآية</li>
                     <li>مشاركة الآية مع غيرك</li>
                     <li>نسخ نص الآية</li>
-                    
                   </ul>
                   <p className={styles.introFooter}>خذ وقتك مع الآيات… فالقرآن يُقرأ بتدبّر 🤍</p>
                 </div>
@@ -206,7 +214,7 @@ export default function MushafPage() {
                   </div>
                   <div className={styles.surahIndicator}>
                     <span className={styles.surahName}>{currentSurah.name.replace(/\s+/g, ' ')}</span>
-                            <SurahStarButton surahNumber={currentSurah.number} />
+                    <SurahStarButton surahNumber={currentSurah.number} />
                   </div>
                   {currentVerses.map((ayah, index) => (
                     <VerseCard
@@ -224,7 +232,6 @@ export default function MushafPage() {
               )}
             </div>
           </div>
-          
         </div>
 
         {currentSurah && (
@@ -242,7 +249,6 @@ export default function MushafPage() {
           />
         )}
         <ScrollToTop isDarkMode={isDarkMode} />
-
       </div>
     </div>
   );
