@@ -75,18 +75,26 @@ export default function MushafPage() {
     const verseElement = document.querySelector(`[data-verse-number="${verseNumber}"]`) as HTMLElement;
 
     if (verseElement) {
+      // Smooth scroll to verse
       verseElement.scrollIntoView({ 
         behavior: 'smooth', 
         block: 'center',
         inline: 'nearest'
       });
 
-      verseElement.style.transition = 'background-color 0.5s ease';
-      verseElement.style.backgroundColor = 'rgba(212, 163, 115, 0.2)';
+      // Apply highlight style with smooth transition
+      verseElement.style.transition = 'background-color 0.3s ease-in-out';
+      verseElement.style.backgroundColor = 'rgba(212, 163, 115, 0.3)';
 
-      setTimeout(() => {
+      // Remove highlight after 3 seconds
+      const highlightTimeout = setTimeout(() => {
         verseElement.style.backgroundColor = '';
-      }, 2500);
+        verseElement.style.transition = 'background-color 0.3s ease-in-out';
+      }, 3000);
+
+      return () => clearTimeout(highlightTimeout);
+    } else {
+      console.warn(`Verse element not found for verse number: ${verseNumber}`);
     }
   };
 
@@ -95,21 +103,47 @@ export default function MushafPage() {
     const handleNavigateToVerse = (event: Event) => {
       try {
         const detail = (event as CustomEvent).detail;
-        if (!detail?.surahNumber || detail.verseNumber === undefined) return;
+        if (!detail?.surahNumber || detail.verseNumber === undefined) {
+          console.warn('Invalid navigation event detail:', detail);
+          return;
+        }
 
-        const { surahNumber, verseNumber } = detail;
+        const { surahNumber, verseNumber, scrollIntoView = true } = detail;
 
-        // Same surah - just navigate to page
+        // Validate surah number
+        if (isNaN(surahNumber) || surahNumber < 1 || surahNumber > 114) {
+          console.error('Invalid surah number:', surahNumber);
+          return;
+        }
+
+        // Validate verse number
+        if (isNaN(verseNumber) || verseNumber < 1) {
+          console.error('Invalid verse number:', verseNumber);
+          return;
+        }
+
+        // Same surah - direct navigation
         if (currentSurah?.number === surahNumber) {
           goToVerse(verseNumber);
-          setPendingVerseScroll(verseNumber);
+          if (scrollIntoView) {
+            // Small delay to ensure page change is rendered
+            setTimeout(() => {
+              setPendingVerseScroll(verseNumber);
+            }, 50);
+          }
         } else {
-          // Different surah - load it first
+          // Different surah - load it first, then navigate
           loadSurah(surahNumber);
-          setTimeout(() => {
+          
+          // Schedule navigation after surah loads and renders
+          const navTimeout = setTimeout(() => {
             goToVerse(verseNumber);
-            setPendingVerseScroll(verseNumber);
-          }, 300);
+            if (scrollIntoView) {
+              setPendingVerseScroll(verseNumber);
+            }
+          }, 500);
+
+          return () => clearTimeout(navTimeout);
         }
       } catch (e) {
         console.error('Error navigating to verse:', e);
@@ -118,15 +152,25 @@ export default function MushafPage() {
 
     window.addEventListener('navigateToVerse', handleNavigateToVerse as EventListener);
     return () => window.removeEventListener('navigateToVerse', handleNavigateToVerse as EventListener);
-  }, [currentSurah, loadSurah, goToVerse]);
+  }, [currentSurah?.number, loadSurah, goToVerse, setPendingVerseScroll]);
 
   // Effect للـ scroll بعد تحميل الآيات
   useEffect(() => {
     if (pendingVerseScroll !== null && !loading && currentVerses.length > 0) {
+      // Wait for DOM to fully update
       const timer = setTimeout(() => {
-        scrollToVerseWithHighlight(pendingVerseScroll);
+        const verseElement = document.querySelector(
+          `[data-verse-number="${pendingVerseScroll}"]`
+        ) as HTMLElement;
+
+        if (verseElement) {
+          scrollToVerseWithHighlight(pendingVerseScroll);
+        } else {
+          console.warn(`Verse ${pendingVerseScroll} not found in DOM`);
+        }
+
         setPendingVerseScroll(null);
-      }, 150);
+      }, 200);
 
       return () => clearTimeout(timer);
     }

@@ -17,7 +17,7 @@
 
 :root[data-theme="dark"] .verse,
 :global(.darkMode) .verse {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.08);
   border-color: rgba(91, 143, 227, 0.25);
 }
 
@@ -46,6 +46,12 @@
   transition: all var(--transition-spring);
   position: relative;
   flex-shrink: 0;
+}
+
+:root[data-theme="dark"] .verseNumber,
+:global(.darkMode) .verseNumber {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(91, 143, 227, 0.25);
 }
 
 .verseNumber::before {
@@ -145,7 +151,7 @@
 }
 
 :global(.darkMode) .tafseerText {
-  background: linear-gradient(145deg, rgba(197, 108, 240, 0.08), rgba(139, 92, 246, 0.05));
+  background: rgba(0, 0, 0, 0.08);
   border-right-color: var(--dark-highlight-color);
   color: rgba(230, 230, 230, 0.9);
 }

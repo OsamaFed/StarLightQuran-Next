@@ -125,8 +125,8 @@
   --dark-accent-1: #3A5A8C;
   --dark-accent-2: #5B8FE3;
   --dark-border-color: rgba(91, 143, 227, 0.25);
-  --dark-card-bg: rgba(255, 255, 255, 0.08);
-  --dark-card-bg-hover: rgba(255, 255, 255, 0.14);
+  --dark-card-bg: rgba(0, 0, 0, 0.08);
+  --dark-card-bg-hover: rgba(0, 0, 0, 0.12);
   --dark-button-gradient: linear-gradient(135deg, #3A5A8C, #5B8FE3);
 
   /* Decorative colors */
@@ -240,7 +240,7 @@ h6 {
   --highlight-color: var(--dark-highlight-color);
   --accent-color-1: var(--dark-accent-1);
   --accent-color-2: var(--dark-accent-2);
-  --glass-bg: rgba(26, 35, 50, 0.85);
+  --glass-bg: rgba(0, 0, 0, 0.08);
   --glass-border: 1px solid rgba(91, 143, 227, 0.35);
   --shadow-glow: var(--shadow-glow-dark);
   --button-gradient: var(--dark-button-gradient);

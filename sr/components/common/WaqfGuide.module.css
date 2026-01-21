@@ -34,6 +34,16 @@
   border-color: rgba(255, 255, 255, 0.1);
 }
 
+:global(.darkMode) .waqfItem {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+:global(.darkMode) .waqfItem:hover {
+  background: rgba(0, 0, 0, 0.12);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
 .waqfSymbol {
   font-size: 1.5rem;
   font-weight: bold;

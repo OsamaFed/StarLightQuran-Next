@@ -18,13 +18,13 @@
 
 /* Dark Mode Styles */
 .darkMode {
-  --pagination-bg: rgba(0, 0, 0, 0.15);
+  --pagination-bg: rgba(0, 0, 0, 0.08);
   --pagination-text: #ffffff;
   --pagination-border: rgba(255, 255, 255, 0.05);
   --pagination-btn-border: rgba(255, 255, 255, 0.04);
   --pagination-btn-hover: rgba(255, 255, 255, 0.1);
   --pagination-select-bg: rgba(255, 255, 255, 0.05);
-  --pagination-number-bg: rgba(0, 0, 0, 0.12);
+  --pagination-number-bg: rgba(0, 0, 0, 0.08);
 }
 
 .card {

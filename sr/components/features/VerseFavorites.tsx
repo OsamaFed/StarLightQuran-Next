@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import gsap from "gsap";
 import styles from "./SurahFavorites.module.css";
 import { useTheme } from "@/hooks/useTheme";
@@ -25,10 +25,12 @@ const isValidSurahNumber = (num: number): boolean => {
 };
 
 const getSurahNumber = (verse: FavoriteVerse): number => {
-  return verse.surahId ?? parseInt(verse.id.split('-')[0]);
+  const surahId = verse.surahId ?? parseInt(verse.id.split('-')[0]);
+  return isValidSurahNumber(surahId) ? surahId : MIN_SURAH;
 };
 
 const loadFavorites = (): FavoriteVerse[] => {
+  if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
@@ -38,11 +40,12 @@ const loadFavorites = (): FavoriteVerse[] => {
   }
 };
 
-const saveFavorites = (favorites: FavoriteVerse[]) => {
+const saveFavorites = (favorites: FavoriteVerse[]): void => {
+  if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
     window.dispatchEvent(
-      new CustomEvent(EVENT_NAME, { detail: { favorites } })
+      new CustomEvent(EVENT_NAME, { detail: { favorites }, bubbles: true })
     );
   } catch (e) {
     console.error('Error saving favorites:', e);
@@ -52,22 +55,27 @@ const saveFavorites = (favorites: FavoriteVerse[]) => {
 export default function VerseFavorites() {
   const { isDarkMode } = useTheme();
   const [favorites, setFavorites] = useState<FavoriteVerse[]>([]);
+  const [selectedVerseId, setSelectedVerseId] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
+  const isNavigatingRef = useRef(false);
+  const navigationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Initialize favorites from localStorage on mount
   useEffect(() => {
     setFavorites(loadFavorites());
 
-    const handler = (ev: Event) => {
+    const handleFavoriteChange = (ev: Event) => {
       const favs = (ev as CustomEvent).detail?.favorites as FavoriteVerse[] | undefined;
       if (Array.isArray(favs)) {
         setFavorites(favs);
       }
     };
 
-    window.addEventListener(EVENT_NAME, handler as EventListener);
-    return () => window.removeEventListener(EVENT_NAME, handler as EventListener);
+    window.addEventListener(EVENT_NAME, handleFavoriteChange as EventListener);
+    return () => window.removeEventListener(EVENT_NAME, handleFavoriteChange as EventListener);
   }, []);
 
+  // Animate favorites list on change
   useEffect(() => {
     if (listRef.current?.children.length) {
       gsap.from(listRef.current.children, {
@@ -80,13 +88,24 @@ export default function VerseFavorites() {
     }
   }, [favorites]);
 
-  const removeFavorite = (id: string) => {
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (navigationTimeoutRef.current) {
+        clearTimeout(navigationTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const removeFavorite = useCallback((id: string) => {
     const updated = favorites.filter((v) => v.id !== id);
     setFavorites(updated);
     saveFavorites(updated);
-  };
+  }, [favorites]);
 
-  const handleSelectVerse = (verse: FavoriteVerse) => {
+  const handleSelectVerse = useCallback((verse: FavoriteVerse) => {
+    if (isNavigatingRef.current) return;
+    
     try {
       const surahNumber = getSurahNumber(verse);
 
@@ -95,18 +114,49 @@ export default function VerseFavorites() {
         return;
       }
 
+      isNavigatingRef.current = true;
+      setSelectedVerseId(verse.id);
+
+      // Dispatch navigation event
       window.dispatchEvent(
         new CustomEvent(NAVIGATE_EVENT, {
           detail: {
             surahNumber,
-            verseNumber: verse.verseNumber
-          }
+            verseNumber: verse.verseNumber,
+            scrollIntoView: true,
+            source: 'favorites'
+          },
+          bubbles: true,
+          cancelable: false
         })
       );
+
+      // Reset navigation flag after timeout
+      if (navigationTimeoutRef.current) {
+        clearTimeout(navigationTimeoutRef.current);
+      }
+
+      navigationTimeoutRef.current = setTimeout(() => {
+        isNavigatingRef.current = false;
+      }, 1500);
     } catch (e) {
       console.error('Error navigating to verse:', e);
+      isNavigatingRef.current = false;
     }
-  };
+  }, []);
+
+  if (!favorites.length) {
+    return (
+      <div className={styles.container}>
+        <details className={styles.details}>
+          <summary className={styles.summary}>الآيات المفضلة</summary>
+          <div className={styles.list}>
+            <div className={styles.empty}>لا توجد آيات مفضلة بعد</div>
+          </div>
+        </details>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -115,16 +165,20 @@ export default function VerseFavorites() {
           الآيات المفضلة ({favorites.length})
         </summary>
         <div ref={listRef} className={styles.list}>
-          {favorites.length === 0 && (
-            <div className={styles.empty}>لا توجد آيات مفضلة بعد</div>
-          )}
           {favorites.map((verse) => (
             <div
               key={verse.id}
-              className={styles.item}
+              className={`${styles.item} ${
+                selectedVerseId === verse.id ? styles.selected : ''
+              }`}
               onClick={() => handleSelectVerse(verse)}
               role="button"
               tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleSelectVerse(verse);
+                }
+              }}
             >
               <span
                 className={styles.name}
@@ -137,6 +191,7 @@ export default function VerseFavorites() {
                 onClick={(e) => {
                   e.stopPropagation();
                   removeFavorite(verse.id);
+                  setSelectedVerseId(null);
                 }}
                 aria-label={`إزالة ${verse.surahName}:${verse.verseNumber} من المفضلة`}
               >
