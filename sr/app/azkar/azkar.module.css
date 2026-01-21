@@ -3,57 +3,6 @@
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
-  background: var(--background);
-}
-
-.auroraBg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.backgroundDecor {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.gradientOrb1,
-.gradientOrb2 {
-  position: absolute;
-  border-radius: 50%;
-  animation: floatSoft 8s ease-in-out infinite;
-}
-
-.gradientOrb1 {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(197, 205, 234, 0.35) 0%, transparent 70%);
-  top: -150px;
-  right: -150px;
-}
-
-.gradientOrb2 {
-  width: 350px;
-  height: 350px;
-  background: radial-gradient(circle, rgba(163, 171, 209, 0.3) 0%, transparent 70%);
-  bottom: -100px;
-  left: -100px;
-  animation-direction: reverse;
-  animation-duration: 10s;
-}
-
-.darkMode .gradientOrb1 {
-  background: radial-gradient(circle, rgba(58, 123, 213, 0.18) 0%, transparent 70%);
-}
-
-.darkMode .gradientOrb2 {
-  background: radial-gradient(circle, rgba(42, 82, 152, 0.15) 0%, transparent 70%);
 }
 
 .container {
@@ -579,11 +528,6 @@
 
 @keyframes spin {
   to { transform: rotate(360deg); }
-}
-
-@keyframes floatSoft {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-15px) scale(1.02); }
 }
 
 @media (max-width: 768px) {

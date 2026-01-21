@@ -181,7 +181,7 @@ html {
 
 body {
   font-family: 'KoGaliModern', sans-serif;
-  background-color: var(--main-bg-color);
+  background-color: transparent;
   color: var(--text-primary);
   transition: background-color var(--transition-slow), color var(--transition-slow);
   padding: 0;
@@ -189,6 +189,8 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   font-weight: 400;
+  position: relative;
+  z-index: 1;
 }
 .aurorabg {
   position: fixed;
@@ -198,6 +200,7 @@ body {
   height: 100%;
   z-index: 0;
   pointer-events: none;
+  background-color: var(--main-bg-color);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -239,7 +242,7 @@ h6 {
 .darkMode,
 [data-theme="dark"],
 :root[data-theme="dark"] {
-  background-color: var(--dark-bg-primary);
+  background-color: transparent;
   color: var(--dark-text-primary);
   --main-bg-color: var(--dark-bg-primary);
   --secondary-bg-color: var(--dark-bg-secondary);

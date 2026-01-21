@@ -77,11 +77,6 @@ export default function DuaCategoryPage() {
 
   return (
     <div className={`${styles.pageWrapper} ${isDarkMode ? styles.darkMode : ""}`}>
-      <div className={styles.backgroundDecor}>
-        <div className={styles.gradientOrb1} />
-        <div className={styles.gradientOrb2} />
-      </div>
-
       <div className={styles.container}>
         <PageHeader
           isDarkMode={isDarkMode}

@@ -13,7 +13,6 @@ import VerseFavorites from "@/components/features/VerseFavorites";
 import { FontControls, DarkModeToggle } from "@/components/ui";
 import { WaqfGuide } from "@/components/common";
 import styles from "./mushaf.module.css";
-import { Aurora } from "@/components/ui/";
 
 export default function MushafPage() {
   const { isDarkMode, toggleDarkMode } = useTheme();
@@ -178,7 +177,6 @@ export default function MushafPage() {
 
   return (
     <div className={`${styles.wrapper} ${isDarkMode ? styles.darkMode : ""}`}>
-      <div className={styles.aurorabg}><Aurora /></div>
       <div className={styles.container}>
         <PageHeader
           isDarkMode={isDarkMode}

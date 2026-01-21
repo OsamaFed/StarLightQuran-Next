@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useTheme } from "@/hooks/useTheme";
 import PageHeader from "@/components/layout/PageHeader";
 import ScrollToTop from "@/components/common/ScrollToTop";
-import { Aurora } from "@/components/ui";
 import styles from "../azkar/azkar.module.css";
 
 interface DuaCategory {
@@ -178,18 +177,6 @@ export default function DuasPage() {
 
   return (
     <div className={`${styles.pageWrapper} ${isDarkMode ? styles.darkMode : ""}`}>
-      <div className={styles.auroraBg}>
-        <Aurora
-          colorStops={isDarkMode ? ['#000000', '#1a1a2e', '#16213e'] : ['#f0f4f8', '#d9e2ec', '#bcccdc']}
-          blend={0.8}
-          amplitude={1.2}
-        />
-      </div>
-      <div className={styles.backgroundDecor}>
-        <div className={styles.gradientOrb1} />
-        <div className={styles.gradientOrb2} />
-      </div>
-
       <div className={styles.container}>
         <PageHeader
           isDarkMode={isDarkMode}
