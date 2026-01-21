@@ -34,8 +34,8 @@
 
 :root[data-theme="dark"] .header,
 .darkMode .header {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(91, 143, 227, 0.25);
+  background: rgb(0, 0, 0, 0.08);
+  border: none;
 }
 
 .titleContainer {
@@ -88,8 +88,8 @@
 
 :root[data-theme="dark"] .searchAndSurahSection,
 .darkMode .searchAndSurahSection {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(91, 143, 227, 0.25);
+  background: rgb(0, 0, 0, 0.08);
+  border: none;
 }
 
 
@@ -115,8 +115,8 @@
 
 :root[data-theme="dark"] .favoritesSection,
 .darkMode .favoritesSection {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(91, 143, 227, 0.25);
+  background: rgb(0, 0, 0, 0.08);
+  border: none;
 }
 
 .favoritesSection > * {
@@ -130,8 +130,8 @@
 
 :root[data-theme="dark"] .favoritesSection > *,
 .darkMode .favoritesSection > * {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border: 1px solid rgba(91, 143, 227, 0.25) !important;
+  background: rgb(0, 0, 0, 0.08) !important;
+  border: none !important;
 }
 
 .fontControlsCenter {
@@ -185,8 +185,8 @@
 
 :root[data-theme="dark"] .toolsSection > *,
 .darkMode .toolsSection > * {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(91, 143, 227, 0.25);
+  background: rgb(0, 0, 0, 0.08);
+  border: none;
 }
 
 .toolsSection {
@@ -216,8 +216,8 @@
 
 :root[data-theme="dark"] .quranFrame,
 .darkMode .quranFrame {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(91, 143, 227, 0.25);
+  background: rgb(0, 0, 0, 0.08);
+  border: none;
 }
 
 .quranContent {
@@ -243,8 +243,8 @@
 
 :root[data-theme="dark"] .versesContainer > div,
 .darkMode .versesContainer > div {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(91, 143, 227, 0.25);
+  background: rgb(0, 0, 0, 0.08);
+  border: none;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
 }
 
@@ -259,8 +259,8 @@
 }
 
 .darkMode .introContainer {
-  background: rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgb(0, 0, 0, 0.08);
+  border: none;
 }
 
 .waqfDropdownContainer {
@@ -275,8 +275,8 @@
 }
 
 .darkMode .waqfDropdownContainer {
-  background: rgba(0, 0, 0, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgb(0, 0, 0, 0.08);
+  border: none;
 }
 
 .waqfDropdownBtn {
@@ -321,8 +321,8 @@
 }
 
 .darkMode .surahIndicator {
-  background: rgba(0, 0, 0, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgb(0, 0, 0, 0.08);
+  border: none;
 }
 
 .surahName {
