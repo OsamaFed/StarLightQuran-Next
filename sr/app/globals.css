@@ -190,6 +190,15 @@ body {
   overflow-x: hidden;
   font-weight: 400;
 }
+.aurorabg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'KoGaliModern', sans-serif;
@@ -245,7 +254,6 @@ h6 {
   --shadow-glow: var(--shadow-glow-dark);
   --button-gradient: var(--dark-button-gradient);
 
-  /* Cortexgarden dark theme variables - Enhanced */
   --background: #0F1419;
   --foreground: #E8ECFF;
   --primary: #5B8FE3;
@@ -374,91 +382,6 @@ select {
   100% { transform: translateX(22px) rotate(360deg); }
 }
 
-@keyframes cloudMove {
-  0% { transform: translateX(0px); }
-  40% { transform: translateX(5px); }
-  80% { transform: translateX(-5px); }
-  100% { transform: translateX(0px); }
-}
-
-@keyframes starTwinkle {
-  0%, 100% { 
-    transform: scale(0.8); 
-    opacity: 0.4;
-  }
-  50% { 
-    transform: scale(1.2); 
-    opacity: 1;
-  }
-}
-
-@keyframes wind {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes slay1 {
-  0% { top: 0; right: 0; }
-  25% { top: 0; right: 100%; }
-  50% { top: 100%; right: 100%; }
-  75% { top: 100%; right: 0; }
-  100% { top: 0; right: 0; }
-}
-
-@keyframes slay2 {
-  0% { top: 0; left: 25px; }
-  25% { top: 100%; left: 25px; }
-  50% { top: 100%; left: 100%; }
-  75% { top: 0; left: 100%; }
-  100% { top: 0; left: 25px; }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-12px); }
-}
-
-@keyframes floatSoft {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(2deg); }
-}
-
-@keyframes twinkle {
-  0%, 100% { 
-    transform: scale(0.8); 
-    opacity: 0.5;
-  }
-  50% { 
-    transform: scale(1); 
-    opacity: 1;
-  } 
-}
-
-@keyframes leafWave {
-  0%, 100% { transform: rotate(45deg) translateY(0); }
-  50% { transform: rotate(52deg) translateY(-3px); }
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.05); opacity: 0.8; }
-}
-
-@keyframes pulseSoft {
-  0%, 100% { transform: scale(1); box-shadow: var(--shadow-md); }
-  50% { transform: scale(1.02); box-shadow: var(--shadow-lg); }
-}
-
-@keyframes floatCloud {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(100vw); }
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
 
 @keyframes glow {
   0%, 100% { 

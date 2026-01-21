@@ -69,13 +69,7 @@ export default function Home() {
       className={`${styles.pageWrapper} ${isDarkMode ? styles.darkMode : ""}`}
       data-theme={isDarkMode ? "dark" : "light"}
     >
-      <div className={styles.auroraBg}>
-        <Aurora
-          colorStops={isDarkMode ? ['#000000', '#1a1a2e', '#16213e'] : ['#f0f4f8', '#d9e2ec', '#bcccdc']}
-          blend={0.8}
-          amplitude={1.2}
-        />
-      </div>
+
       <div className={styles.toggleWrapper}>
         <LightModeToggle isDarkMode={isDarkMode} onToggle={toggleDarkMode} />
       </div>

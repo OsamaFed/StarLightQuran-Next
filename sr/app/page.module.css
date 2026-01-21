@@ -1,20 +1,10 @@
 .pageWrapper {
   min-height: 100vh;
   position: relative;
-  background: var(--background);
   transition: background-color 0.3s ease;
   overflow: hidden;
 }
 
-.auroraBg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
 
 .container {
   max-width: 1000px;
