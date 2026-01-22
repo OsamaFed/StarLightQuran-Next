@@ -1,7 +1,6 @@
 .pageWrapper {
   min-height: 100vh;
   position: relative;
-  transition: background-color 0.3s ease;
   overflow: hidden;
 }
 
@@ -36,7 +35,7 @@
   margin: 0 0 16px 0;
   line-height: 1.3;
   color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+  font-family: 'KoGaliModern', sans-serif;
 }
 
 .subtitle {

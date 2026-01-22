@@ -13,7 +13,6 @@
   text-decoration: none;
   color: inherit;
   min-height: 160px;
-  animation: fadeInCard 0.4s ease-out;
 }
 
 :root[data-theme="dark"] .card,
@@ -92,22 +91,4 @@
   opacity: 0.9;
   margin: 0;
   line-height: 1.5;
-}
-
-@keyframes fadeInCard {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .card {
-    animation: none;
-    transition: none;
-  }
 }
