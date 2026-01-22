@@ -6,9 +6,9 @@
   justify-content: center;
   text-align: center;
   padding: 2rem 1.5rem;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  background: var(--glass-effect-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  background: transparent;
   border: 1px solid var(--glass-effect-border);
   border-radius: var(--radius-lg);
   cursor: pointer;
@@ -22,7 +22,7 @@
   transform: translateY(-4px);
   border-color: var(--brand-primary);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  background: var(--glass-effect-bg);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .card:active:not(.disabled) {

@@ -13,10 +13,10 @@
 }
 
 .header {
-  background: var(--glass-effect-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: none;
+  background: transparent;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-effect-border);
   border-radius: var(--radius-lg);
   padding: 1rem;
   margin-bottom: 2rem;
@@ -65,10 +65,10 @@
 
 .searchAndSurahSection,
 .favoritesSection {
-  background: var(--glass-effect-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: none;
+  background: transparent;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-effect-border);
   border-radius: var(--radius-xl);
   display: flex;
   gap: 0.6rem;
@@ -93,10 +93,10 @@
 .favoritesSection > * {
   flex: 1;
   text-align: center;
-  background: var(--glass-effect-bg);
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border: none !important;
+  background: transparent;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1px solid var(--glass-effect-border) !important;
   border-radius: var(--radius-lg) !important;
   padding: 0.75rem 1.25rem !important;
 }
@@ -125,10 +125,10 @@
 }
 
 .toolsSection > * {
-  background: var(--glass-effect-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: none;
+  background: transparent;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-effect-border);
   border-radius: var(--radius-xl);
   padding: 0.75rem 1.25rem;
 }
@@ -142,10 +142,10 @@
 }
 
 .quranFrame {
-  background: var(--glass-effect-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: none;
+  background: transparent;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-effect-border);
   border-radius: var(--radius-lg);
   padding: 2rem;
   min-height: 400px;
@@ -165,21 +165,21 @@
 }
 
 .versesContainer > div {
-  background: var(--glass-effect-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: transparent;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border-radius: var(--radius-md);
   padding: 1.5rem;
-  border: none;
+  border: 1px solid var(--glass-effect-border);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
 }
 
 .introContainer,
 .waqfDropdownContainer {
-  background: var(--glass-effect-bg);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: none;
+  background: transparent;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-effect-border);
   border-radius: var(--radius-md);
   padding: 2rem;
 }
@@ -200,7 +200,7 @@
   justify-content: space-between;
   width: 100%;
   padding: 0.75rem 1rem;
-  background: var(--glass-effect-bg);
+  background: transparent;
   border: none;
   color: inherit;
   cursor: pointer;
@@ -210,7 +210,7 @@
 }
 
 .waqfDropdownContent {
-  background: var(--glass-effect-bg);
+  background: transparent;
   border-top: none;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   padding: 1rem;
@@ -222,10 +222,10 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  background: var(--glass-effect-bg);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: none;
+  background: transparent;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-effect-border);
   border-radius: var(--radius-md);
   padding: 1rem 1.5rem;
   margin-bottom: 1.5rem;
@@ -274,9 +274,12 @@
 }
 
 .introList li {
-  background: var(--glass-effect-bg);
+  background: transparent;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   padding: 0.75rem 1rem;
   border-radius: var(--radius-xs);
+  border: 1px solid var(--glass-effect-border);
   border-left: 3px solid rgba(82, 39, 255, 0.5);
 }
 
