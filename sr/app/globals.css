@@ -183,7 +183,7 @@ html {
 body {
   font-family: 'KoGaliModern', sans-serif;
   background-color: transparent;
-  color: var(--text-primary);
+  color: #ffffff;
   transition: background-color var(--transition-slow), color var(--transition-slow);
   padding: 0;
   line-height: 1.6;
