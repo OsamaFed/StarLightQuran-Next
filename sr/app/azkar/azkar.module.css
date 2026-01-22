@@ -26,17 +26,11 @@
   letter-spacing: -0.5px;
 }
 
-.darkMode .title {
-}
-
 .subtitle {
   font-size: 1rem;
   opacity: 0.85;
   font-weight: 500;
   letter-spacing: 0.3px;
-}
-
-.darkMode .subtitle {
 }
 
 .decorLine {
@@ -126,15 +120,9 @@
   margin-bottom: 0.5rem;
 }
 
-.darkMode .cardTitle {
-}
-
 .cardDescription {
   font-size: 0.9rem;
   line-height: 1.4;
-}
-
-.darkMode .cardDescription {
 }
 
 .cardShine {
@@ -162,9 +150,6 @@
   margin-bottom: 1.5rem;
   text-align: center;
   letter-spacing: 0.2px;
-}
-
-.darkMode .sectionTitle {
 }
 
 .categoriesGrid {
@@ -219,16 +204,10 @@
   letter-spacing: 0.2px;
 }
 
-.darkMode .categoryTitle {
-}
-
 .categoryCount {
   font-size: 0.85rem;
   margin-top: 0.5rem;
   font-weight: 500;
-}
-
-.darkMode .categoryCount {
 }
 
 .adhkarList {
@@ -265,9 +244,6 @@
   font-family: 'KoGaliModern', sans-serif;
   text-align: center;
   margin-bottom: 1rem;
-}
-
-.darkMode .adhkarText {
 }
 
 .adhkarMeta {
