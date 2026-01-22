@@ -49,14 +49,18 @@ export default function RootLayout({
 
       <body>
         <div className="aurorabg">
-          <Aurora />
+          <Aurora
+            blend={0.2}
+            amplitude={1.0}
+            speed={0.4}
+          />
         </div>
         <div className="iridescencebg">
           <Iridescence 
           color={[0.5, 0.6, 0.8]}
           mouseReact
           amplitude={0.1}
-          speed={0.4}
+          speed={0.1}
 
           />
         </div>
