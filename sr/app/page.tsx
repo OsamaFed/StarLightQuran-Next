@@ -134,7 +134,9 @@ export default function Home() {
               </svg>
             </a>
           </div>
-          <p className={styles.footerText}>صُنع بحب لخدمة كتاب الله</p>
+          <p className={styles.footerText}>
+          صُنع بحب لخدمة ‏كتابَ الله،‏وسُنَّةَ نبيِّه
+          </p>
         </footer>
       </div>
     </div>
