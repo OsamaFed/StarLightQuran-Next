@@ -1,17 +1,4 @@
-/* ============================================
-   المتغيرات العامة
-   ============================================ */
 .wrapper {
-  --glass-bg-light: rgba(255, 255, 255, 0.08);
-  --glass-bg-dark: rgba(0, 0, 0, 0.08);
-  --glass-blur: blur(12px);
-  --radius-sm: 0.5rem;
-  --radius-md: 1rem;
-  --radius-lg: 1.5rem;
-  --radius-xl: 2rem;
-  --padding-base: 0.75rem 1.25rem;
-  --gap-base: 0.8rem;
-
   position: relative;
   min-height: 100vh;
   width: 100%;
@@ -25,24 +12,16 @@
   padding: 2rem 1.5rem;
 }
 
-/* ============================================
-   الهيدر والعناوين
-   ============================================ */
 .header {
-  background: var(--glass-bg-light);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  background: var(--glass-effect-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: none;
   border-radius: var(--radius-lg);
   padding: 1rem;
   margin-bottom: 2rem;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition: background var(--timing-fast), border-color var(--timing-fast);
   position: relative;
-}
-
-:root[data-theme="dark"] .header,
-.darkMode .header {
-  background: var(--glass-bg-dark);
 }
 
 .titleContainer {
@@ -59,7 +38,7 @@
 .titleText {
   font-size: 2rem;
   font-weight: 700;
-  background: white;
+  background: var(--global-text-color);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -76,37 +55,24 @@
   margin: 0;
 }
 
-/* ============================================
-   الشبكة والتحكمات
-   ============================================ */
 .controlsGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--gap-base);
+  gap: 0.8rem;
   margin: 0;
   width: 100%;
 }
 
-/* ============================================
-   أقسام البحث والسور والمفضلة
-   ============================================ */
 .searchAndSurahSection,
 .favoritesSection {
-  background: var(--glass-bg-light);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  background: var(--glass-effect-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: none;
   border-radius: var(--radius-xl);
   display: flex;
   gap: 0.6rem;
   position: relative;
-}
-
-:root[data-theme="dark"] .searchAndSurahSection,
-.darkMode .searchAndSurahSection,
-:root[data-theme="dark"] .favoritesSection,
-.darkMode .favoritesSection {
-  background: var(--glass-bg-dark);
 }
 
 .searchAndSurahSection {
@@ -127,17 +93,12 @@
 .favoritesSection > * {
   flex: 1;
   text-align: center;
-  background: var(--glass-bg-light);
-  backdrop-filter: var(--glass-blur) !important;
-  -webkit-backdrop-filter: var(--glass-blur) !important;
+  background: var(--glass-effect-bg);
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
   border: none !important;
   border-radius: var(--radius-lg) !important;
-  padding: var(--padding-base) !important;
-}
-
-:root[data-theme="dark"] .favoritesSection > *,
-.darkMode .favoritesSection > * {
-  background: var(--glass-bg-dark) !important;
+  padding: 0.75rem 1.25rem !important;
 }
 
 .fontControlsCenter {
@@ -157,9 +118,6 @@
   padding: 0 !important;
 }
 
-/* ============================================
-   قسم الأدوات
-   ============================================ */
 .toolsSection {
   display: grid;
   gap: 1rem;
@@ -167,17 +125,12 @@
 }
 
 .toolsSection > * {
-  background: var(--glass-bg-light);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  background: var(--glass-effect-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: none;
   border-radius: var(--radius-xl);
-  padding: var(--padding-base);
-}
-
-:root[data-theme="dark"] .toolsSection > *,
-.darkMode .toolsSection > * {
-  background: var(--glass-bg-dark);
+  padding: 0.75rem 1.25rem;
 }
 
 .SearchResults {
@@ -188,24 +141,16 @@
   z-index: 100;
 }
 
-/* ============================================
-   إطار القرآن والآيات
-   ============================================ */
 .quranFrame {
-  background: var(--glass-bg-light);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  background: var(--glass-effect-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: none;
   border-radius: var(--radius-lg);
   padding: 2rem;
   min-height: 400px;
   margin-bottom: 2rem;
   opacity: 1;
-}
-
-:root[data-theme="dark"] .quranFrame,
-.darkMode .quranFrame {
-  background: var(--glass-bg-dark);
 }
 
 .quranContent {
@@ -220,38 +165,23 @@
 }
 
 .versesContainer > div {
-  background: var(--glass-bg-light);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  background: var(--glass-effect-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: var(--radius-md);
   padding: 1.5rem;
   border: none;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
 }
 
-:root[data-theme="dark"] .versesContainer > div,
-.darkMode .versesContainer > div {
-  background: var(--glass-bg-dark);
-}
-
-/* ============================================
-   المقدمة والوقف
-   ============================================ */
 .introContainer,
 .waqfDropdownContainer {
-  background: var(--glass-bg-light);
+  background: var(--glass-effect-bg);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: none;
   border-radius: var(--radius-md);
   padding: 2rem;
-}
-
-:root[data-theme="dark"] .introContainer,
-.darkMode .introContainer,
-:root[data-theme="dark"] .waqfDropdownContainer,
-.darkMode .waqfDropdownContainer {
-  background: var(--glass-bg-dark);
 }
 
 .introContainer {
@@ -261,7 +191,7 @@
 .waqfDropdownContainer {
   padding: 1rem;
   margin-bottom: 1.5rem;
-  transition: all 0.2s ease;
+  transition: all var(--timing-fast);
 }
 
 .waqfDropdownBtn {
@@ -270,42 +200,29 @@
   justify-content: space-between;
   width: 100%;
   padding: 0.75rem 1rem;
-  background: var(--glass-bg-light);
+  background: var(--glass-effect-bg);
   border: none;
   color: inherit;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-:root[data-theme="dark"] .waqfDropdownBtn,
-.darkMode .waqfDropdownBtn {
-  background: var(--glass-bg-dark);
+  transition: all var(--timing-fast);
 }
 
 .waqfDropdownContent {
-  background: var(--glass-bg-light);
+  background: var(--glass-effect-bg);
   border-top: none;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   padding: 1rem;
   margin-top: 0.5rem;
 }
 
-:root[data-theme="dark"] .waqfDropdownContent,
-.darkMode .waqfDropdownContent {
-  background: var(--glass-bg-dark);
-}
-
-/* ============================================
-   مؤشر السورة
-   ============================================ */
 .surahIndicator {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  background: var(--glass-bg-light);
+  background: var(--glass-effect-bg);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: none;
@@ -314,28 +231,20 @@
   margin-bottom: 1.5rem;
 }
 
-:root[data-theme="dark"] .surahIndicator,
-.darkMode .surahIndicator {
-  background: var(--glass-bg-dark);
-}
-
 .surahName {
   font-size: 1.35rem;
   font-weight: 700;
 }
 
-/* ============================================
-   حالات التحميل والأخطاء
-   ============================================ */
 .loadingText,
 .errorText {
   padding: 1rem;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-xs);
   text-align: center;
 }
 
 .loadingText {
-  color: var(--text-secondary);
+  color: var(--text-dim);
 }
 
 .errorText {
@@ -343,9 +252,6 @@
   background: rgba(229, 62, 62, 0.1);
 }
 
-/* ============================================
-   عناصر المقدمة
-   ============================================ */
 .introTitle {
   font-size: 1.25rem;
   font-weight: 700;
@@ -368,15 +274,10 @@
 }
 
 .introList li {
-  background: var(--glass-bg-light);
+  background: var(--glass-effect-bg);
   padding: 0.75rem 1rem;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-xs);
   border-left: 3px solid rgba(82, 39, 255, 0.5);
-}
-
-:root[data-theme="dark"] .introList li,
-.darkMode .introList li {
-  background: var(--glass-bg-dark);
 }
 
 .introFooter {
@@ -386,7 +287,7 @@
 }
 
 .dropdownArrow {
-  transition: transform 0.3s ease;
+  transition: transform var(--timing-base);
   display: inline-block;
 }
 
@@ -394,9 +295,6 @@
   transform: rotate(180deg);
 }
 
-/* ============================================
-   Media Queries
-   ============================================ */
 @media (max-width: 1024px) {
   .searchAndSurahSection {
     grid-template-columns: 1fr 1fr;
@@ -423,7 +321,7 @@
 
   .favoritesSection {
     justify-content: center;
-    gap: var(--gap-base);
+    gap: 0.8rem;
   }
 
   .fontControlsCenter {
