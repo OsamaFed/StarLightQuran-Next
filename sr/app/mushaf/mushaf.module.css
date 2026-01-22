@@ -43,6 +43,10 @@
 .titleText {
   font-size: 2rem;
   font-weight: 700;
+  background: white;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin: 0;
   padding: 0;
   letter-spacing: 0.05em;
@@ -104,6 +108,15 @@
 .darkMode .favoritesSection {
   background: rgba(0, 0, 0, 0.08);
   border: none;
+}
+
+.favoritesSection > * {
+  background: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(208, 216, 239, 0.4) !important;
+  border-radius: 1.5rem !important;
+  padding: 0.75rem 1.25rem !important;
 }
 
 :root[data-theme="dark"] .favoritesSection > *,

@@ -46,8 +46,8 @@
   padding: 10px 14px;
   cursor: pointer;
   transition: all 0.15s ease;
-  color: var(--foreground);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
   font-size: 0.95rem;
   display: flex;
   align-items: center;
@@ -79,7 +79,7 @@
 }
 
 :global(.darkMode) .resultItem {
-  color: var(--foreground);
+  color: var(--dark-text-primary);
   border-bottom-color: rgba(255, 255, 255, 0.02);
 }
 
