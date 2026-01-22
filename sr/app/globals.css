@@ -152,7 +152,7 @@
   --shadow-glow-dark: 0 0 28px rgba(91, 143, 227, 0.4);
 
   /* Glass effect - More visible */
-  --glass-bg: rgba(255, 255, 255, 0.88);
+  --glass-bg: rgb(0, 0, 0, 0.1);
   --glass-blur: blur(12px);
   --glass-border: 1px solid rgba(208, 216, 239, 0.5);
 
