@@ -83,12 +83,10 @@
   font-size: 1.35rem;
   font-weight: 700;
   margin: 0 0 0.5rem 0;
-  color: var(--foreground);
 }
 
 .description {
   font-size: 0.95rem;
-  color: var(--foreground);
   opacity: 0.85;
   margin: 0;
   line-height: 1.5;

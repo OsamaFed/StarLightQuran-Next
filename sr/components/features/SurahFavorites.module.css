@@ -28,7 +28,6 @@
 .summary {
   cursor: pointer;
   font-weight: 600;
-  color: #ffffff;
   list-style: none;
   transition: color 0.2s ease;
   text-align: center;
@@ -74,7 +73,6 @@
 .name {
   background: transparent;
   border: none;
-  color: #ffffff; /* white text */
   text-align: center;
   font-size: 0.95rem;
   cursor: pointer;

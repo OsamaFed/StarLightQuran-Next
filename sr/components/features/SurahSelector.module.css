@@ -44,7 +44,6 @@
   appearance: none;
   position: relative;
   background: transparent;
-  color: #ffffff;
   border: none;
   outline: none;
   padding: 14px 44px 14px 16px;
@@ -59,11 +58,9 @@
 }
 
 :global(.darkMode) .select {
-  color: #ffffff;
 }
 
 :global(.lightMode) .select {
-  color: #ffffff;
 }
 
 

@@ -24,23 +24,19 @@
   margin-bottom: 0.75rem;
   line-height: 1.2;
   letter-spacing: -0.5px;
-  color: #ffffff;
 }
 
 .darkMode .title {
-  color: #ffffff;
 }
 
 .subtitle {
   font-size: 1rem;
-  color: var(--text-secondary);
   opacity: 0.85;
   font-weight: 500;
   letter-spacing: 0.3px;
 }
 
 .darkMode .subtitle {
-  color: var(--text-secondary);
 }
 
 .decorLine {
@@ -127,22 +123,18 @@
 .cardTitle {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
 .darkMode .cardTitle {
-  color: var(--text-primary);
 }
 
 .cardDescription {
   font-size: 0.9rem;
-  color: var(--text-secondary);
   line-height: 1.4;
 }
 
 .darkMode .cardDescription {
-  color: var(--text-secondary);
 }
 
 .cardShine {
@@ -167,14 +159,12 @@
 .sectionTitle {
   font-size: 1.3rem;
   font-weight: 600;
-  color: var(--text-primary);
   margin-bottom: 1.5rem;
   text-align: center;
   letter-spacing: 0.2px;
 }
 
 .darkMode .sectionTitle {
-  color: var(--text-primary);
 }
 
 .categoriesGrid {
@@ -225,24 +215,20 @@
 .categoryTitle {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-primary);
   line-height: 1.4;
   letter-spacing: 0.2px;
 }
 
 .darkMode .categoryTitle {
-  color: var(--text-primary);
 }
 
 .categoryCount {
   font-size: 0.85rem;
-  color: var(--text-secondary);
   margin-top: 0.5rem;
   font-weight: 500;
 }
 
 .darkMode .categoryCount {
-  color: var(--text-secondary);
 }
 
 .adhkarList {
@@ -276,14 +262,12 @@
 .adhkarText {
   font-size: 1.5rem;
   line-height: 2;
-  color: var(--text-primary);
   font-family: 'KoGaliModern', sans-serif;
   text-align: center;
   margin-bottom: 1rem;
 }
 
 .darkMode .adhkarText {
-  color: var(--text-primary);
 }
 
 .adhkarMeta {
@@ -366,7 +350,6 @@
 
 .endOfList span {
   font-size: 0.95rem;
-  color: var(--text-secondary);
   font-weight: 500;
   opacity: 0.8;
   padding: 0.75rem 1.5rem;
@@ -376,7 +359,6 @@
 }
 
 .darkMode .endOfList span {
-  color: var(--text-secondary);
   background: rgba(58, 123, 213, 0.1);
   border-color: rgba(58, 123, 213, 0.2);
 }
@@ -402,7 +384,6 @@
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  color: var(--text-primary);
   outline: none;
   transition: all var(--transition-base);
   text-align: right;
@@ -413,7 +394,6 @@
 }
 
 .searchInput::placeholder {
-  color: var(--text-secondary);
   opacity: 0.5;
 }
 
@@ -426,7 +406,6 @@
 .darkMode .searchInput {
   background: rgba(0, 0, 0, 0.08);
   border-color: rgba(255, 255, 255, 0.08);
-  color: var(--text-primary);
 }
 
 .filterBarContainer {
@@ -458,7 +437,6 @@
   border: 2px solid var(--border-color);
   border-radius: var(--radius-md);
   background: transparent;
-  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
@@ -470,7 +448,6 @@
 .filterButton:hover {
   background: rgba(163, 171, 209, 0.2);
   border-color: var(--accent-color-1);
-  color: var(--text-primary);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(163, 171, 209, 0.3);
 }
@@ -492,13 +469,11 @@
 
 .darkMode .filterButton {
   border-color: rgba(255, 255, 255, 0.2);
-  color: var(--text-secondary);
 }
 
 .darkMode .filterButton:hover {
   background: rgba(58, 123, 213, 0.2);
   border-color: var(--dark-accent-1);
-  color: var(--text-primary);
   box-shadow: 0 4px 12px rgba(58, 123, 213, 0.3);
 }
 
