@@ -94,12 +94,12 @@
   --main-bg-color: #FFF9F5;
   --secondary-bg-color: #F9F7F2;
   --tertiary-bg-color: #EEE9E4;
-  --text-primary: #2B3A47;
-  --text-secondary: #5F6B78;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.85);
   --accent-color-1: #9BA4C4;
   --accent-color-2: #8891BD;
   --accent-color-3: #D0D8EF;
-  --border-color: rgba(139, 143, 197, 0.25);
+  --border-color: rgba(255, 255, 255, 0.25);
   --highlight-color: #8B8FBD;
   --card-bg: rgba(255, 255, 255, 0.2);
   --card-bg-hover: rgba(255, 255, 255, 0.3);
@@ -108,11 +108,11 @@
 
   /* Cortexgarden theme variables - Enhanced */
   --background: #FFF9F5;
-  --foreground: #2B3A47;
+  --foreground: #ffffff;
   --primary: #8B8FBD;
   --secondary: #D0D8EF;
   --card-hover: #F5F0E8;
-  --border: #D9D0E3;
+  --border: rgba(255, 255, 255, 0.3);
   --shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.14);
 
@@ -120,12 +120,12 @@
   --dark-bg-primary: #0F1419;
   --dark-bg-secondary: #1A2332;
   --dark-bg-tertiary: #253449;
-  --dark-text-primary: #E8ECFF;
-  --dark-text-secondary: #B0BED9;
+  --dark-text-primary: #ffffff;
+  --dark-text-secondary: rgba(255, 255, 255, 0.85);
   --dark-highlight-color: #5B8FE3;
   --dark-accent-1: #3A5A8C;
   --dark-accent-2: #5B8FE3;
-  --dark-border-color: rgba(91, 143, 227, 0.25);
+  --dark-border-color: rgba(255, 255, 255, 0.25);
   --dark-card-bg: rgba(0, 0, 0, 0.08);
   --dark-card-bg-hover: rgba(0, 0, 0, 0.12);
   --dark-button-gradient: linear-gradient(135deg, #3A5A8C, #5B8FE3);
@@ -267,28 +267,28 @@ h6 {
 [data-theme="dark"],
 :root[data-theme="dark"] {
   background-color: transparent;
-  color: var(--dark-text-primary);
+  color: #ffffff;
   --main-bg-color: var(--dark-bg-primary);
   --secondary-bg-color: var(--dark-bg-secondary);
   --border-color: var(--dark-border-color);
-  --text-color: var(--dark-text-primary);
-  --text-secondary: var(--dark-text-secondary);
+  --text-color: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.85);
   --highlight-color: var(--dark-highlight-color);
   --accent-color-1: var(--dark-accent-1);
   --accent-color-2: var(--dark-accent-2);
   --glass-bg: rgba(0, 0, 0, 0.08);
-  --glass-border: 1px solid rgba(91, 143, 227, 0.35);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.25);
   --shadow-glow: var(--shadow-glow-dark);
   --button-gradient: var(--dark-button-gradient);
 
   --background: #0F1419;
-  --foreground: #E8ECFF;
+  --foreground: #ffffff;
   --primary: #5B8FE3;
   --secondary: #3A5A8C;
   --card-bg: var(--dark-card-bg);
   --card-bg-hover: var(--dark-card-bg-hover);
   --card-hover: #1A2332;
-  --border: #3A5A8C;
+  --border: rgba(255, 255, 255, 0.2);
   --shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.45);
 }

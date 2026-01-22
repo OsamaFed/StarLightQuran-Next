@@ -24,16 +24,11 @@
   margin-bottom: 0.75rem;
   line-height: 1.2;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color-2) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;
 }
 
 .darkMode .title {
-  background: linear-gradient(135deg, var(--dark-text-primary) 0%, var(--dark-highlight-color) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
+  color: #ffffff;
 }
 
 .subtitle {
@@ -45,7 +40,7 @@
 }
 
 .darkMode .subtitle {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .decorLine {
@@ -137,7 +132,7 @@
 }
 
 .darkMode .cardTitle {
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
 }
 
 .cardDescription {
@@ -147,7 +142,7 @@
 }
 
 .darkMode .cardDescription {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .cardShine {
@@ -179,7 +174,7 @@
 }
 
 .darkMode .sectionTitle {
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
 }
 
 .categoriesGrid {
@@ -236,7 +231,7 @@
 }
 
 .darkMode .categoryTitle {
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
 }
 
 .categoryCount {
@@ -247,7 +242,7 @@
 }
 
 .darkMode .categoryCount {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .adhkarList {
@@ -288,7 +283,7 @@
 }
 
 .darkMode .adhkarText {
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
 }
 
 .adhkarMeta {
@@ -381,7 +376,7 @@
 }
 
 .darkMode .endOfList span {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
   background: rgba(58, 123, 213, 0.1);
   border-color: rgba(58, 123, 213, 0.2);
 }
@@ -431,7 +426,7 @@
 .darkMode .searchInput {
   background: rgba(0, 0, 0, 0.08);
   border-color: rgba(255, 255, 255, 0.08);
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
 }
 
 .filterBarContainer {
@@ -496,14 +491,14 @@
 }
 
 .darkMode .filterButton {
-  border-color: rgba(58, 123, 213, 0.3);
-  color: var(--dark-text-secondary);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--text-secondary);
 }
 
 .darkMode .filterButton:hover {
   background: rgba(58, 123, 213, 0.2);
   border-color: var(--dark-accent-1);
-  color: var(--dark-text-primary);
+  color: var(--text-primary);
   box-shadow: 0 4px 12px rgba(58, 123, 213, 0.3);
 }
 

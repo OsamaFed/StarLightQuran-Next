@@ -21,7 +21,7 @@
   right: 12px;
   top: 50%;
   transform: translateY(-50%) rotate(-45deg);
-  stroke: var(--text-primary);
+  stroke: #ffffff;
   transition: all var(--transition-smooth);
   z-index: 2;
   pointer-events: none;
@@ -29,7 +29,7 @@
 
 .container:hover .arrow {
   transform: translateY(-50%) rotate(0deg);
-  stroke: var(--text-primary);
+  stroke: #ffffff;
 }
 
 :global(.darkMode) .arrow {
@@ -37,14 +37,14 @@
 }
 
 :global(.lightMode) .arrow {
-  stroke: #000000;
+  stroke: #ffffff;
 }
 
 .select {
   appearance: none;
   position: relative;
   background: transparent;
-  color: var(--text-primary);
+  color: #ffffff;
   border: none;
   outline: none;
   padding: 14px 44px 14px 16px;
@@ -63,7 +63,7 @@
 }
 
 :global(.lightMode) .select {
-  color: #000000;
+  color: #ffffff;
 }
 
 
