@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Aurora } from "@/components/ui";
+import { Aurora, Iridescence } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "StarLight Quran",
@@ -50,6 +50,15 @@ export default function RootLayout({
       <body>
         <div className="aurorabg">
           <Aurora />
+        </div>
+        <div className="iridescencebg">
+          <Iridescence 
+          color={[0.5, 0.6, 0.8]}
+          mouseReact
+          amplitude={0.1}
+          speed={0.4}
+
+          />
         </div>
         {children}
       </body>

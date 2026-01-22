@@ -101,8 +101,9 @@
   --accent-color-3: #D0D8EF;
   --border-color: rgba(139, 143, 197, 0.25);
   --highlight-color: #8B8FBD;
-  --card-bg: rgba(255, 255, 255, 0.5);
-  --card-bg-hover: rgba(255, 255, 255, 0.65);
+  --card-bg: rgba(255, 255, 255, 0.2);
+  --card-bg-hover: rgba(255, 255, 255, 0.3);
+  --card-backdrop: blur(12px);
   --button-gradient: linear-gradient(135deg, #9BA4C4, #8891BD);
 
   /* Cortexgarden theme variables - Enhanced */
@@ -201,6 +202,29 @@ body {
   z-index: 0;
   pointer-events: none;
   background-color: var(--main-bg-color);
+  opacity: 0;
+  transition: opacity var(--transition-slow);
+}
+
+.aurorabg.show-dark {
+  opacity: 1;
+}
+
+.iridescencebg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  background-color: var(--main-bg-color);
+  opacity: 1;
+  transition: opacity var(--transition-slow);
+}
+
+.iridescencebg.hide-light {
+  opacity: 0;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -267,6 +291,22 @@ h6 {
   --border: #3A5A8C;
   --shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+.darkMode .aurorabg {
+  opacity: 1;
+}
+
+.darkMode .iridescencebg {
+  opacity: 0;
+}
+
+body:not(.darkMode) .aurorabg {
+  opacity: 0;
+}
+
+body:not(.darkMode) .iridescencebg {
+  opacity: 1;
 }
 
 a {
@@ -436,4 +476,18 @@ select {
   50% { 
     border-color: var(--accent-color-2);
   }
+}
+
+/* Glass effect for cards in light mode */
+body:not(.darkMode) [style*="background: var(--card-bg)"],
+body:not(.darkMode) button,
+body:not(.darkMode) a {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Alternative: Add this to elements with data-glass attribute */
+[data-glass] {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
