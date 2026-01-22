@@ -7,31 +7,22 @@
   text-align: center;
   padding: 2rem 1.5rem;
   backdrop-filter: blur(12px);
-  border-radius: 1.5rem;
+  -webkit-backdrop-filter: blur(12px);
+  background: var(--glass-effect-bg);
+  border: 1px solid var(--glass-effect-border);
+  border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base), background var(--transition-base);
+  transition: transform var(--timing-base), box-shadow var(--timing-base), border-color var(--timing-base), background var(--timing-base);
   text-decoration: none;
   color: inherit;
   min-height: 160px;
 }
 
-:root[data-theme="dark"] .card,
-.darkMode .card {
-  background: rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(91, 143, 227, 0.25);
-}
-
 .card:hover:not(.disabled) {
   transform: translateY(-4px);
-  border-color: rgba(208, 216, 239, 0.7);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-}
-
-:root[data-theme="dark"] .card:hover:not(.disabled),
-.darkMode .card:hover:not(.disabled) {
-  background: rgba(0, 0, 0, 0.12);
-  border-color: rgba(91, 143, 227, 0.4);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  border-color: var(--brand-primary);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  background: var(--glass-effect-bg);
 }
 
 .card:active:not(.disabled) {
@@ -40,17 +31,13 @@
 
 .card:focus {
   outline: none;
-  box-shadow: 0 0 0 3px var(--primary), var(--shadow-lg);
-  border-color: var(--primary);
-}
-
-.card:focus:not(:focus-visible) {
-  box-shadow: var(--shadow);
+  box-shadow: 0 0 0 3px var(--brand-primary);
+  border-color: var(--brand-primary);
 }
 
 .card:focus-visible {
-  box-shadow: 0 0 0 3px var(--primary), var(--shadow-lg);
-  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--brand-primary);
+  border-color: var(--brand-primary);
 }
 
 .disabled {
@@ -64,11 +51,11 @@
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
-  background: var(--secondary);
-  color: var(--foreground);
+  background: var(--brand-soft);
+  color: var(--text-main);
   font-size: 0.75rem;
   padding: 0.25rem 0.625rem;
-  border-radius: 0.75rem;
+  border-radius: var(--radius-full);
   font-weight: 600;
 }
 
@@ -82,12 +69,12 @@
   font-size: 1.35rem;
   font-weight: 700;
   margin: 0 0 0.5rem 0;
-  color: #ffffff;
+  color: var(--global-text-color);
 }
 
 .description {
   font-size: 0.95rem;
-  color: #ffffff;
+  color: var(--global-text-color);
   opacity: 0.9;
   margin: 0;
   line-height: 1.5;
