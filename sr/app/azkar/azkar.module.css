@@ -70,9 +70,9 @@
 .mainCard {
   position: relative;
   background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  border: none;
   border-radius: var(--radius-xl);
   overflow: hidden;
   box-shadow: var(--shadow-md);
@@ -91,9 +91,9 @@
 
 .darkMode .mainCard {
   background: rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  border: none;
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
 }
 
 .darkMode .mainCard:hover {
@@ -132,7 +132,7 @@
 .cardTitle {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #ffffff;
   margin-bottom: 0.5rem;
 }
 
@@ -172,7 +172,7 @@
 .sectionTitle {
   font-size: 1.3rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #ffffff;
   margin-bottom: 1.5rem;
   text-align: center;
   letter-spacing: 0.2px;
@@ -196,9 +196,9 @@
 .categoryCard {
   position: relative;
   background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
+  border: none;
   border-radius: var(--radius-lg);
   padding: 1.25rem;
   overflow: hidden;
@@ -217,9 +217,9 @@
 
 .darkMode .categoryCard {
   background: rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  border: none;
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
 }
 
 .darkMode .categoryCard:hover {
@@ -230,7 +230,7 @@
 .categoryTitle {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #ffffff;
   line-height: 1.4;
   letter-spacing: 0.2px;
 }
@@ -241,7 +241,7 @@
 
 .categoryCount {
   font-size: 0.85rem;
-  color: var(--text-secondary);
+  color: var(--text-color-secondary);
   margin-top: 0.5rem;
   font-weight: 500;
 }
@@ -258,9 +258,9 @@
 
 .adhkarItem {
   background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  border: none;
   border-radius: var(--radius-lg);
   padding: 1.5rem;
   box-shadow: var(--shadow-md);
@@ -275,13 +275,13 @@
 
 .darkMode .adhkarItem {
   background: rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: none;
 }
 
 .adhkarText {
   font-size: 1.5rem;
   line-height: 2;
-  color: var(--text-primary);
+  color: var(--text-color-white);
   font-family: 'KoGaliModern', sans-serif;
   text-align: center;
   margin-bottom: 1rem;
@@ -377,7 +377,7 @@
   padding: 0.75rem 1.5rem;
   background: rgba(163, 171, 209, 0.1);
   border-radius: var(--radius-round);
-  border: 1px solid var(--border-color);
+  border: none;
 }
 
 .darkMode .endOfList span {
@@ -402,12 +402,12 @@
   padding: 0.875rem 1.25rem;
   font-size: 1rem;
   font-family: 'KoGaliModern', sans-serif;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: none;
   border-radius: var(--radius-round);
   background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: var(--text-primary);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  color: #ffffff;
   outline: none;
   transition: all var(--transition-base);
   text-align: right;
@@ -436,9 +436,9 @@
 
 .filterBarContainer {
   background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  border: none;
   border-radius: var(--radius-xl);
   padding: 0.75rem 1rem;
   display: flex;
@@ -460,7 +460,7 @@
   font-size: 0.9rem;
   font-family: 'KoGaliModern', sans-serif;
   font-weight: 600;
-  border: 2px solid var(--border-color);
+  border: none;
   border-radius: var(--radius-md);
   background: transparent;
   color: var(--text-secondary);

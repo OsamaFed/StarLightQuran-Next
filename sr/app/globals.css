@@ -113,6 +113,13 @@
   --timing-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --timing-smooth: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 
+  /* --- GLASS MORPHISM EFFECTS --- */
+  --glass-blur-xl: blur(24px);
+  --glass-blur-lg: blur(12px);
+  --glass-blur-md: blur(8px);
+  --glass-blur-sm: blur(6px);
+  --glass-effect: backdrop-filter: var(--glass-blur-lg); -webkit-backdrop-filter: var(--glass-blur-lg);
+  
   /* --- 2. SEMANTIC TOKENS (Light Theme - Defaults) --- */
   --bg-page: var(--_clr-lav-100);
   --bg-surface: var(--_clr-lav-200);
@@ -133,6 +140,11 @@
   
   /* Internal Global Overrides (Design Request: Always White Text) */
   --global-text-color: #ffffff;
+  
+  /* --- TEXT COLORS (Light Mode: Always White) --- */
+  --text-color-white: #ffffff;
+  --text-color-secondary: rgba(255, 255, 255, 0.6);
+  --text-color-dim: rgba(255, 255, 255, 0.5);
 
   /* Compatibility Mapping (Avoids breaking existing components) */
   --background: var(--bg-page);
@@ -262,4 +274,69 @@ button {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
+
+/* --- GLASS MORPHISM CLASSES --- */
+.glass-xl {
+  backdrop-filter: var(--glass-blur-xl);
+  -webkit-backdrop-filter: var(--glass-blur-xl);
+}
+
+.glass-lg {
+  backdrop-filter: var(--glass-blur-lg);
+  -webkit-backdrop-filter: var(--glass-blur-lg);
+}
+
+.glass-md {
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+}
+
+.glass-sm {
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
+}
+
+/* --- CARD BASE STYLES --- */
+.card-base {
+  background: var(--glass-effect-bg);
+  border-radius: var(--radius-lg);
+  transition: all var(--timing-base);
+}
+
+.card-elevated {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+}
+
+/* --- TEXT STYLES --- */
+.text-white {
+  color: var(--text-color-white);
+}
+
+.text-secondary {
+  color: var(--text-color-secondary);
+}
+
+.text-dim {
+  color: var(--text-color-dim);
+}
+
+/* --- TRANSITION CLASSES --- */
+.transition-smooth {
+  transition: all var(--timing-smooth);
+}
+
+.transition-base {
+  transition: all var(--timing-base);
+}
+
+.transition-fast {
+  transition: all var(--timing-fast);
+}
+
+
+```
 

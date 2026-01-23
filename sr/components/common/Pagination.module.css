@@ -33,8 +33,8 @@
   align-items: center;
   padding: 12px;
   background: var(--pagination-bg);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
   border: 1px solid var(--pagination-border);
   border-radius: var(--radius-xl);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -84,8 +84,8 @@
   height: 40px;
   border-radius: 10px;
   background: var(--pagination-number-bg);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
   color: var(--pagination-text);
   font-weight: 600;
   font-size: 0.95rem;
@@ -127,8 +127,8 @@
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
 }
 
 .pageSelect:hover {

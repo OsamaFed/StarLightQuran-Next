@@ -74,8 +74,8 @@
   height: 44px;
   border-radius: var(--radius-md);
   background: var(--glass-effect-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: var(--glass-blur-lg);
+  -webkit-backdrop-filter: var(--glass-blur-lg);
   border: 2px solid var(--border-default);
   color: var(--global-text-color);
   transition: transform var(--timing-fast), border-color var(--timing-fast), box-shadow var(--timing-fast);

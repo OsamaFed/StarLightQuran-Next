@@ -14,9 +14,9 @@
 
 .header {
   background: transparent;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--glass-effect-border);
+  backdrop-filter: var(--glass-blur-xl);
+  -webkit-backdrop-filter: var(--glass-blur-xl);
+  border: none;
   border-radius: var(--radius-lg);
   padding: 1rem;
   margin-bottom: 2rem;
@@ -66,9 +66,9 @@
 .searchAndSurahSection,
 .favoritesSection {
   background: transparent;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--glass-effect-border);
+  backdrop-filter: var(--glass-blur-xl);
+  -webkit-backdrop-filter: var(--glass-blur-xl);
+  border: none;
   border-radius: var(--radius-xl);
   display: flex;
   gap: 0.6rem;
@@ -94,9 +94,9 @@
   flex: 1;
   text-align: center;
   background: transparent;
-  backdrop-filter: blur(24px) !important;
-  -webkit-backdrop-filter: blur(24px) !important;
-  border: 1px solid var(--glass-effect-border) !important;
+  backdrop-filter: var(--glass-blur-xl) !important;
+  -webkit-backdrop-filter: var(--glass-blur-xl) !important;
+  border: none !important;
   border-radius: var(--radius-lg) !important;
   padding: 0.75rem 1.25rem !important;
 }
@@ -126,9 +126,9 @@
 
 .toolsSection > * {
   background: transparent;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--glass-effect-border);
+  backdrop-filter: var(--glass-blur-xl);
+  -webkit-backdrop-filter: var(--glass-blur-xl);
+  border: none;
   border-radius: var(--radius-xl);
   padding: 0.75rem 1.25rem;
 }
@@ -143,9 +143,9 @@
 
 .quranFrame {
   background: transparent;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--glass-effect-border);
+  backdrop-filter: var(--glass-blur-xl);
+  -webkit-backdrop-filter: var(--glass-blur-xl);
+  border: none;
   border-radius: var(--radius-lg);
   padding: 2rem;
   min-height: 400px;
@@ -166,20 +166,20 @@
 
 .versesContainer > div {
   background: transparent;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: var(--glass-blur-xl);
+  -webkit-backdrop-filter: var(--glass-blur-xl);
   border-radius: var(--radius-md);
   padding: 1.5rem;
-  border: 1px solid var(--glass-effect-border);
+  border: none;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
 }
 
 .introContainer,
 .waqfDropdownContainer {
   background: transparent;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--glass-effect-border);
+  backdrop-filter: var(--glass-blur-xl);
+  -webkit-backdrop-filter: var(--glass-blur-xl);
+  border: none;
   border-radius: var(--radius-md);
   padding: 2rem;
 }
@@ -223,9 +223,9 @@
   justify-content: center;
   gap: 1rem;
   background: transparent;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--glass-effect-border);
+  backdrop-filter: var(--glass-blur-xl);
+  -webkit-backdrop-filter: var(--glass-blur-xl);
+  border: none;
   border-radius: var(--radius-md);
   padding: 1rem 1.5rem;
   margin-bottom: 1.5rem;
@@ -244,7 +244,7 @@
 }
 
 .loadingText {
-  color: var(--text-dim);
+  color: #ffffff;
 }
 
 .errorText {
@@ -279,8 +279,8 @@
   -webkit-backdrop-filter: blur(24px);
   padding: 0.75rem 1rem;
   border-radius: var(--radius-xs);
-  border: 1px solid var(--glass-effect-border);
-  border-left: 3px solid rgba(82, 39, 255, 0.5);
+  border: none;
+  border-left: none;
 }
 
 .introFooter {

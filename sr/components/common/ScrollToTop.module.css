@@ -6,8 +6,8 @@
   height: 48px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: var(--glass-blur-lg);
+  -webkit-backdrop-filter: var(--glass-blur-lg);
   border: 1px solid rgba(212, 163, 115, 0.2);
   color: var(--text-primary);
   cursor: pointer;

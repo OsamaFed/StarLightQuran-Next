@@ -4,9 +4,9 @@
   left: 0;
   right: 0;
   background: var(--bg-surface-elevated);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border-default);
+  backdrop-filter: var(--glass-blur-lg);
+  -webkit-backdrop-filter: var(--glass-blur-lg);
+  border: none;
   border-radius: var(--radius-md);
   max-height: 250px;
   overflow-y: auto;
@@ -46,8 +46,8 @@
   padding: 10px 14px;
   cursor: pointer;
   transition: all var(--timing-fast);
-  color: var(--text-main);
-  border-bottom: 1px solid var(--border-default);
+  color: var(--text-color-white);
+  border-bottom: none;
   font-size: 0.95rem;
   display: flex;
   align-items: center;

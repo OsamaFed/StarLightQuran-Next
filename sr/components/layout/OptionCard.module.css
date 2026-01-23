@@ -6,8 +6,8 @@
   justify-content: center;
   text-align: center;
   padding: 2rem 1.5rem;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: var(--glass-blur-xl);
+  -webkit-backdrop-filter: var(--glass-blur-xl);
   background: transparent;
   border: 1px solid var(--glass-effect-border);
   border-radius: var(--radius-lg);
@@ -52,7 +52,7 @@
   top: 0.75rem;
   right: 0.75rem;
   background: var(--brand-soft);
-  color: var(--text-main);
+  color: var(--text-color-white);
   font-size: 0.75rem;
   padding: 0.25rem 0.625rem;
   border-radius: var(--radius-full);

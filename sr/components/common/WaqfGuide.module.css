@@ -22,7 +22,7 @@
   align-items: center;
   padding: 10px;
   background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(4px);
+  backdrop-filter: var(--glass-blur-sm);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: var(--radius-md);
   transition: all 0.2s ease;

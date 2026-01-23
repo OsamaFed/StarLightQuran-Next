@@ -5,9 +5,9 @@
   border-radius: var(--radius-lg);
   position: relative;
   background: var(--glass-effect-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-effect-border);
+  backdrop-filter: var(--glass-blur-lg);
+  -webkit-backdrop-filter: var(--glass-blur-lg);
+  border: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   animation: fadeInUp 0.5s ease-out backwards;
   animation-delay: calc(var(--verse-index, 0) * 0.05s);
@@ -22,10 +22,10 @@
   width: 56px;
   height: 56px;
   background: var(--glass-effect-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-effect-border);
-  color: var(--text-dim);
+  backdrop-filter: var(--glass-blur-lg);
+  -webkit-backdrop-filter: var(--glass-blur-lg);
+  border: none;
+  color: var(--text-color-white);
   border-radius: var(--radius-full);
   margin: 0 0 0 16px;
   font-size: 1.25rem;
@@ -85,11 +85,11 @@
   margin-top: 20px;
   padding: 20px;
   background: var(--glass-effect-bg);
-  border-right: 4px solid var(--brand-secondary);
+  border-right: none;
   border-radius: var(--radius-md);
   font-size: 0.95rem;
   line-height: 1.8;
-  color: var(--text-dim);
+  color: var(--text-color-white);
   animation: fadeInScale 0.3s ease-out;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
