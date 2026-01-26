@@ -22,6 +22,13 @@ interface VerseSpeedDialProps {
   surahId: number;
 }
 
+// Constants
+const LONG_PRESS_DELAY = 350;
+const MOVE_THRESHOLD = 10;
+const COPY_FEEDBACK_DURATION = 1000;
+const FAVORITE_FEEDBACK_DURATION = 500;
+const TAFSIR_LOADING_TIMEOUT = 2000;
+
 // Helper: Close menu and clear global state
 const closeMenuAndClear = (verseId: string) => {
   if ((window as any).__currentVerseSpeedDialOpenId === verseId) {
@@ -30,81 +37,85 @@ const closeMenuAndClear = (verseId: string) => {
 };
 
 async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
-  const html2canvas = (await import("html2canvas")).default;
-  const clone = el.cloneNode(true) as HTMLElement;
-  clone.setAttribute("dir", "rtl");
-  clone.style.direction = "rtl";
-  
-  // Hide speed dial buttons in the clone
-  const speedDialButtons = clone.querySelectorAll('[data-verse-speedial], [class*="SpeedDial"]');
-  speedDialButtons.forEach((btn) => {
-    (btn as HTMLElement).style.display = "none";
-  });
-
-  const rect = el.getBoundingClientRect();
-  const width = rect.width;
-  const height = rect.height;
-  
-  clone.style.width = `${width}px`;
-  clone.style.height = `${height}px`;
-  clone.style.boxSizing = "border-box";
-  clone.style.margin = "0";
-  clone.style.padding = clone.style.padding || "20px";
-  // Ensure text is readable with proper color
-  clone.style.color = "inherit";
-
-  let isDarkMode = false;
-  let exportBg: string | null = null;
-  let gradientBg: string = "";
-  
   try {
-    const theme = document.documentElement.getAttribute("data-theme") || (document.body.classList.contains("darkMode") ? "dark" : "light");
-    isDarkMode = theme === "dark";
-    const computedBg = getComputedStyle(document.documentElement).getPropertyValue("--background") || "";
-    
-    if (isDarkMode) {
-      exportBg = computedBg.trim() || "#0D1B2A";
-      gradientBg = "radial-gradient(circle at 20% 30%, rgba(74, 144, 226, 0.25) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(147, 112, 219, 0.25) 0%, transparent 50%)";
-    } else {
-      // Improved light mode with better contrast and warm tones
-      exportBg = "#FAF6F3";
-      gradientBg = "radial-gradient(circle at 20% 30%, rgba(139, 143, 197, 0.12) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(197, 163, 115, 0.12) 0%, transparent 50%), linear-gradient(135deg, rgba(255, 248, 240, 1) 0%, rgba(250, 245, 240, 1) 100%)";
-    }
-  } catch (e) {}
+    const html2canvas = (await import("html2canvas")).default;
+    const clone = el.cloneNode(true) as HTMLElement;
+    clone.setAttribute("dir", "rtl");
+    clone.style.direction = "rtl";
 
-  // Create container with improved background
-  const container = document.createElement("div");
-  container.style.position = "fixed";
-  container.style.left = "-9999px";
-  container.style.top = "0";
-  container.style.width = `${width}px`;
-  container.style.height = `${height}px`;
-  container.style.zIndex = "2147483647";
-  container.style.backgroundColor = exportBg || "#FAF6F3";
-  container.style.backgroundImage = gradientBg;
-  container.style.backgroundAttachment = "fixed";
-  container.style.overflow = "hidden";
-  
-  container.appendChild(clone);
-  document.body.appendChild(container);
-
-  try {
-    const canvas = await html2canvas(container, {
-      backgroundColor: exportBg || undefined,
-      scale: 4,
-      useCORS: true,
-      logging: false,
-      allowTaint: true,
-      imageTimeout: 5000,
-      windowHeight: height,
-      windowWidth: width,
+    // Hide speed dial buttons in the clone
+    const speedDialButtons = clone.querySelectorAll('[data-verse-speedial], [class*="SpeedDial"], [data-html2canvas-ignore="true"]');
+    speedDialButtons.forEach((btn) => {
+      (btn as HTMLElement).style.display = "none";
     });
-    const blob: Blob | null = await new Promise((resolve) =>
-      canvas.toBlob((b) => resolve(b), "image/png", 1)
-    );
-    return blob;
-  } finally {
-    container.remove();
+
+    const rect = el.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+
+    clone.style.width = `${width}px`;
+    clone.style.height = `${height}px`;
+    clone.style.boxSizing = "border-box";
+    clone.style.margin = "0";
+    clone.style.padding = clone.style.padding || "20px";
+    clone.style.color = "inherit";
+
+    let isDarkMode = false;
+    let exportBg: string = "#FAF6F3";
+    let gradientBg: string = "";
+
+    try {
+      const theme = document.documentElement.getAttribute("data-theme") || (document.body.classList.contains("darkMode") ? "dark" : "light");
+      isDarkMode = theme === "dark";
+      const computedBg = getComputedStyle(document.documentElement).getPropertyValue("--background") || "";
+
+      if (isDarkMode) {
+        exportBg = computedBg.trim() || "#0D1B2A";
+        gradientBg = "radial-gradient(circle at 20% 30%, rgba(74, 144, 226, 0.25) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(147, 112, 219, 0.25) 0%, transparent 50%)";
+      } else {
+        exportBg = "#FAF6F3";
+        gradientBg = "radial-gradient(circle at 20% 30%, rgba(139, 143, 197, 0.12) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(197, 163, 115, 0.12) 0%, transparent 50%), linear-gradient(135deg, rgba(255, 248, 240, 1) 0%, rgba(250, 245, 240, 1) 100%)";
+      }
+    } catch (e) {
+      console.error("Error detecting theme:", e);
+    }
+
+    const container = document.createElement("div");
+    container.style.position = "fixed";
+    container.style.left = "-9999px";
+    container.style.top = "0";
+    container.style.width = `${width}px`;
+    container.style.height = `${height}px`;
+    container.style.zIndex = "2147483647";
+    container.style.backgroundColor = exportBg;
+    container.style.backgroundImage = gradientBg;
+    container.style.backgroundAttachment = "fixed";
+    container.style.overflow = "hidden";
+
+    container.appendChild(clone);
+    document.body.appendChild(container);
+
+    try {
+      const canvas = await html2canvas(container, {
+        backgroundColor: exportBg,
+        scale: 4,
+        useCORS: true,
+        logging: false,
+        allowTaint: true,
+        imageTimeout: 5000,
+        windowHeight: height,
+        windowWidth: width,
+      });
+
+      return new Promise((resolve) => {
+        canvas.toBlob((blob) => resolve(blob), "image/png", 1);
+      });
+    } finally {
+      container.remove();
+    }
+  } catch (error) {
+    console.error("Error capturing element as blob:", error);
+    return null;
   }
 }
 
@@ -130,17 +141,26 @@ export default function VerseSpeedDial({
   const scrollTimeoutRef = useRef<number | null>(null);
   const startTouchRef = useRef<{ x: number; y: number; time: number } | null>(null);
   const isLongPressTriggeredRef = useRef(false);
+  const copyTimeoutRef = useRef<number | null>(null);
+  const favoriteTimeoutRef = useRef<number | null>(null);
+  const tafsirTimeoutRef = useRef<number | null>(null);
 
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (lastObjectUrlRef.current) {
         try {
           URL.revokeObjectURL(lastObjectUrlRef.current);
-        } catch {}
+        } catch (e) {
+          console.error("Error revoking object URL:", e);
+        }
         lastObjectUrlRef.current = null;
       }
       if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
       if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current);
+      if (copyTimeoutRef.current) window.clearTimeout(copyTimeoutRef.current);
+      if (favoriteTimeoutRef.current) window.clearTimeout(favoriteTimeoutRef.current);
+      if (tafsirTimeoutRef.current) window.clearTimeout(tafsirTimeoutRef.current);
       closeMenuAndClear(verseId);
     };
   }, [verseId]);
@@ -154,9 +174,11 @@ export default function VerseSpeedDial({
           setMenuVisible(false);
           closeMenuAndClear(verseId);
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error("Error handling other menu opened:", e);
+      }
     };
-    
+
     window.addEventListener('versespeeddial:opened', handleOtherMenuOpened as EventListener);
     return () => {
       window.removeEventListener('versespeeddial:opened', handleOtherMenuOpened as EventListener);
@@ -168,26 +190,38 @@ export default function VerseSpeedDial({
     const updateFavoriteStatus = () => {
       try {
         const raw = localStorage.getItem("favoriteVerses");
-        const favs = raw ? JSON.parse(raw) : [];
+        if (!raw) {
+          setIsFavorited(false);
+          return;
+        }
+        const favs = JSON.parse(raw);
+        if (!Array.isArray(favs)) {
+          setIsFavorited(false);
+          return;
+        }
         setIsFavorited(favs.some((v: any) => v.id === verseId));
-      } catch (e) {}
+      } catch (e) {
+        console.error("Error loading favorites:", e);
+        setIsFavorited(false);
+      }
     };
 
     updateFavoriteStatus();
-    
+
     const handler = (ev: Event) => {
       try {
         const favs = (ev as CustomEvent).detail?.favorites as any[] | undefined;
         if (Array.isArray(favs)) {
           setIsFavorited(favs.some((v) => v.id === verseId));
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error("Error handling favorite change:", e);
+      }
     };
 
     window.addEventListener("favoriteVerseChanged", handler as EventListener);
     return () => window.removeEventListener("favoriteVerseChanged", handler as EventListener);
   }, [verseId]);
-
 
   useEffect(() => {
     const handleScroll = () => {
@@ -203,9 +237,15 @@ export default function VerseSpeedDial({
     };
   }, []);
 
+  // Long press detection - محسّن للجوال
   useEffect(() => {
     const el = document.getElementById(verseId);
     if (!el) return;
+
+    // تحسين تجربة اللمس على الجوال
+    el.style.webkitTouchCallout = "none";
+    el.style.webkitUserSelect = "none";
+    el.style.userSelect = "none";
 
     const start = (e: Event) => {
       if (e instanceof TouchEvent && e.touches.length > 0) {
@@ -222,26 +262,39 @@ export default function VerseSpeedDial({
           time: Date.now(),
         };
       }
-      
+
       if (longPressTimer.current)
         window.clearTimeout(longPressTimer.current);
-      
+
       isLongPressTriggeredRef.current = false;
       setIsPressed(true);
-      
+
       longPressTimer.current = window.setTimeout(() => {
         const elapsed = Date.now() - (startTouchRef.current?.time || 0);
         if (elapsed < 200) return;
 
         const current = (window as any).__currentVerseSpeedDialOpenId;
         if (current && current !== verseId) return;
+
         (window as any).__currentVerseSpeedDialOpenId = verseId;
         isLongPressTriggeredRef.current = true;
         setMenuVisible(true);
+
+        // Haptic feedback على الجوال
+        if ('vibrate' in navigator) {
+          try {
+            navigator.vibrate(50);
+          } catch (e) {
+            console.error("Vibration not supported:", e);
+          }
+        }
+
         try {
           window.dispatchEvent(new CustomEvent('versespeeddial:opened', { detail: { verseId } }));
-        } catch (e) {}
-      }, 350) as unknown as number;
+        } catch (e) {
+          console.error("Error dispatching opened event:", e);
+        }
+      }, LONG_PRESS_DELAY) as unknown as number;
     };
 
     const cancel = () => {
@@ -255,15 +308,21 @@ export default function VerseSpeedDial({
 
     const handleTouchMove = (e: Event) => {
       if (!startTouchRef.current || isLongPressTriggeredRef.current) return;
-      
+
       if (e instanceof TouchEvent && e.touches.length > 0) {
         const touch = e.touches[0];
         const deltaX = Math.abs(touch.clientX - startTouchRef.current.x);
         const deltaY = Math.abs(touch.clientY - startTouchRef.current.y);
-        if (deltaX > 15 || deltaY > 15) {
+        if (deltaX > MOVE_THRESHOLD || deltaY > MOVE_THRESHOLD) {
           cancel();
         }
       }
+    };
+
+    // منع context menu على الجوال
+    const handleContextMenu = (e: Event) => {
+      e.preventDefault();
+      return false;
     };
 
     el.addEventListener("mousedown", start);
@@ -273,8 +332,13 @@ export default function VerseSpeedDial({
     el.addEventListener("touchend", cancel, { passive: true });
     el.addEventListener("touchcancel", cancel, { passive: true });
     el.addEventListener("touchmove", handleTouchMove, { passive: true });
+    el.addEventListener("contextmenu", handleContextMenu);
 
     return () => {
+      el.style.webkitTouchCallout = "";
+      el.style.webkitUserSelect = "";
+      el.style.userSelect = "";
+
       cancel();
       el.removeEventListener("mousedown", start);
       el.removeEventListener("mouseup", cancel);
@@ -283,6 +347,7 @@ export default function VerseSpeedDial({
       el.removeEventListener("touchend", cancel);
       el.removeEventListener("touchcancel", cancel);
       el.removeEventListener("touchmove", handleTouchMove);
+      el.removeEventListener("contextmenu", handleContextMenu);
     };
   }, [verseId]);
 
@@ -318,7 +383,7 @@ export default function VerseSpeedDial({
     checkTafsir();
     const mo = new MutationObserver(checkTafsir);
     mo.observe(document.body, { childList: true, subtree: true, attributes: true });
-    window.addEventListener("resize", checkTafsir);
+    window.addEventListener("resize", checkTafsir, { passive: true });
     return () => {
       mo.disconnect();
       window.removeEventListener("resize", checkTafsir);
@@ -327,7 +392,7 @@ export default function VerseSpeedDial({
 
   useEffect(() => {
     if (!menuVisible || !menuRef.current) return;
-    
+
     gsap.fromTo(
       menuRef.current,
       { opacity: 0, y: 20, scale: 0.8 },
@@ -337,13 +402,26 @@ export default function VerseSpeedDial({
 
   const handleCopy = () => {
     const text = `${verseText}\n\n${surahName}:${verseNumber}`;
-    navigator.clipboard?.writeText(text).then(() => {
+
+    if (!navigator.clipboard) {
+      console.error("Clipboard API not available");
+      return;
+    }
+
+    navigator.clipboard.writeText(text).then(() => {
       setIsCopying(true);
-      setTimeout(() => {
+
+      if (copyTimeoutRef.current) {
+        window.clearTimeout(copyTimeoutRef.current);
+      }
+
+      copyTimeoutRef.current = window.setTimeout(() => {
         setIsCopying(false);
         closeMenuAndClear(verseId);
         setMenuVisible(false);
-      }, 1000);
+      }, COPY_FEEDBACK_DURATION) as unknown as number;
+    }).catch((err) => {
+      console.error("Failed to copy text:", err);
     });
   };
 
@@ -351,7 +429,11 @@ export default function VerseSpeedDial({
     try {
       const raw = localStorage.getItem("favoriteVerses");
       let favs = raw ? JSON.parse(raw) : [];
-      
+
+      if (!Array.isArray(favs)) {
+        favs = [];
+      }
+
       const exists = favs.find((v: any) => v.id === verseId);
       if (exists) {
         favs = favs.filter((v: any) => v.id !== verseId);
@@ -364,43 +446,70 @@ export default function VerseSpeedDial({
           surahId,
         });
       }
-      
+
       localStorage.setItem("favoriteVerses", JSON.stringify(favs));
       setIsFavorited(!exists);
-      window.dispatchEvent(new CustomEvent("favoriteVerseChanged", { detail: { favorites: favs } }));
-      
-      setTimeout(() => {
+
+      try {
+        window.dispatchEvent(new CustomEvent("favoriteVerseChanged", { detail: { favorites: favs } }));
+      } catch (e) {
+        console.error("Error dispatching favorite change event:", e);
+      }
+
+      if (favoriteTimeoutRef.current) {
+        window.clearTimeout(favoriteTimeoutRef.current);
+      }
+
+      favoriteTimeoutRef.current = window.setTimeout(() => {
         closeMenuAndClear(verseId);
         setMenuVisible(false);
-      }, 500);
+      }, FAVORITE_FEEDBACK_DURATION) as unknown as number;
     } catch (e) {
-      console.error(e);
+      console.error("Error managing favorites:", e);
     }
   };
 
   const handleShare = async () => {
     try {
-      const verseElement = document.getElementById(verseId);
-      if (verseElement && "share" in navigator) {
-        await (navigator as any).share({
+      if ("share" in navigator) {
+        await navigator.share({
           title: `${surahName}:${verseNumber}`,
           text: verseText,
         });
       }
     } catch (err) {
-      console.error(err);
+      if ((err as Error).name !== "AbortError") {
+        console.error("Share failed:", err);
+      }
+    } finally {
+      setMenuVisible(false);
+      closeMenuAndClear(verseId);
     }
-    setMenuVisible(false);
   };
 
   const handleSavePhoto = async () => {
     try {
       setIsDownloading(true);
       const verseElement = document.getElementById(verseId);
-      if (!verseElement) return;
+      if (!verseElement) {
+        console.error("Verse element not found");
+        return;
+      }
 
       const blob = await captureElementAsBlob(verseElement);
-      if (!blob) return;
+      if (!blob) {
+        console.error("Failed to capture image blob");
+        return;
+      }
+
+      // تنظيف URL القديم
+      if (lastObjectUrlRef.current) {
+        try {
+          URL.revokeObjectURL(lastObjectUrlRef.current);
+        } catch (e) {
+          console.error("Error revoking old URL:", e);
+        }
+      }
 
       const url = URL.createObjectURL(blob);
       lastObjectUrlRef.current = url;
@@ -410,9 +519,21 @@ export default function VerseSpeedDial({
       link.download = `${surahName}_${verseNumber}.png`;
       document.body.appendChild(link);
       link.click();
-      link.remove();
+      document.body.removeChild(link);
+
+      // تنظيف URL بعد فترة قصيرة
+      setTimeout(() => {
+        if (lastObjectUrlRef.current === url) {
+          try {
+            URL.revokeObjectURL(url);
+          } catch (e) {
+            console.error("Error revoking URL:", e);
+          }
+          lastObjectUrlRef.current = null;
+        }
+      }, 100);
     } catch (err) {
-      console.error(err);
+      console.error("Error saving photo:", err);
     } finally {
       setIsDownloading(false);
       closeMenuAndClear(verseId);
@@ -424,9 +545,21 @@ export default function VerseSpeedDial({
     try {
       const ev = new CustomEvent("openTafsir", { detail: { verseId } });
       window.dispatchEvent(ev);
-    } catch (e) {}
+    } catch (e) {
+      console.error("Error dispatching tafsir event:", e);
+    }
+
     setIsTafsirLoading(true);
     setMenuVisible(false);
+    closeMenuAndClear(verseId);
+
+    // إيقاف loading بعد فترة معقولة
+    if (tafsirTimeoutRef.current) {
+      window.clearTimeout(tafsirTimeoutRef.current);
+    }
+    tafsirTimeoutRef.current = window.setTimeout(() => {
+      setIsTafsirLoading(false);
+    }, TAFSIR_LOADING_TIMEOUT) as unknown as number;
   };
 
   // Inform UI to hide/show inline tafsir buttons
@@ -434,37 +567,41 @@ export default function VerseSpeedDial({
     try {
       const ev = new CustomEvent(menuVisible ? "versespeeddial:hideInlineTafsir" : "versespeeddial:showInlineTafsir");
       window.dispatchEvent(ev);
-    } catch (e) {}
+    } catch (e) {
+      console.error("Error dispatching tafsir visibility event:", e);
+    }
   }, [menuVisible]);
 
   // Close when clicking outside
   useEffect(() => {
     if (!menuVisible) return;
-    
+
     const handler = (e: Event) => {
       if (isLongPressTriggeredRef.current && e.type === 'touchstart') {
         isLongPressTriggeredRef.current = false;
         return;
       }
-      
+
       const target = e.target as Node | null;
       const menuEl = menuRef.current;
       const verseEl = document.getElementById(verseId);
-      
+
       if ((menuEl?.contains(target || null)) || (verseEl?.contains(target || null))) return;
-      
+
       closeMenuAndClear(verseId);
       setMenuVisible(false);
       try {
         window.dispatchEvent(new CustomEvent('versespeeddial:closed', { detail: { verseId } }));
-      } catch (e) {}
+      } catch (e) {
+        console.error("Error dispatching closed event:", e);
+      }
     };
-    
+
     const timeoutId = window.setTimeout(() => {
       document.addEventListener('mousedown', handler);
       document.addEventListener('touchstart', handler);
     }, 100);
-    
+
     return () => {
       window.clearTimeout(timeoutId);
       document.removeEventListener('mousedown', handler);
@@ -478,6 +615,8 @@ export default function VerseSpeedDial({
         <div
           ref={menuRef}
           data-html2canvas-ignore="true"
+          role="toolbar"
+          aria-label="خيارات الآية"
           style={{
             position: "absolute",
             bottom: 6,
@@ -502,6 +641,7 @@ export default function VerseSpeedDial({
               onClick={handleOpenTafsir}
               aria-label="تفسير"
               size="small"
+              disabled={isTafsirLoading}
               data-tafsir-button
               sx={{
                 color: isDarkMode ? "white" : "var(--highlight-color)",
@@ -509,7 +649,8 @@ export default function VerseSpeedDial({
                 boxShadow: isDarkMode ? "0 4px 16px rgba(58,123,213,0.08)" : "var(--shadow-xs)",
                 border: "1px solid transparent",
                 backdropFilter: "blur(6px)",
-                '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' }
+                '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' },
+                '&:disabled': { opacity: 0.6 }
               }}
             >
               {isTafsirLoading ? (
@@ -523,6 +664,8 @@ export default function VerseSpeedDial({
           <Tooltip title={isFavorited ? "إزالة من المفضلة" : "إضافة للمفضلة"}>
             <IconButton
               onClick={handleAddToFavorites}
+              aria-label={isFavorited ? "إزالة من المفضلة" : "إضافة للمفضلة"}
+              size="small"
               sx={{
                 color: isFavorited ? "#ffd700" : (isDarkMode ? "white" : "#0b0b0b"),
                 bgcolor: "transparent",
@@ -536,6 +679,8 @@ export default function VerseSpeedDial({
           <Tooltip title="نسخ">
             <IconButton
               onClick={handleCopy}
+              aria-label="نسخ"
+              size="small"
               sx={{
                 color: isDarkMode ? "white" : "#0b0b0b",
                 bgcolor: "transparent",
@@ -543,9 +688,9 @@ export default function VerseSpeedDial({
               }}
             >
               {isCopying ? (
-                <CheckIcon sx={{ color: "#4caf50" }} />
+                <CheckIcon sx={{ color: "#4caf50" }} fontSize="small" />
               ) : (
-                <ContentCopyIcon />
+                <ContentCopyIcon fontSize="small" />
               )}
             </IconButton>
           </Tooltip>
@@ -553,29 +698,35 @@ export default function VerseSpeedDial({
           <Tooltip title="مشاركة">
             <IconButton
               onClick={handleShare}
+              aria-label="مشاركة"
+              size="small"
               sx={{
                 color: isDarkMode ? "white" : "#0b0b0b",
                 bgcolor: "transparent",
                 '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' }
               }}
             >
-              <ShareIcon />
+              <ShareIcon fontSize="small" />
             </IconButton>
           </Tooltip>
 
           <Tooltip title="حفظ صورة">
             <IconButton
               onClick={handleSavePhoto}
+              aria-label="حفظ صورة"
+              size="small"
+              disabled={isDownloading}
               sx={{
                 color: isDarkMode ? "white" : "#0b0b0b",
                 bgcolor: "transparent",
-                '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' }
+                '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' },
+                '&:disabled': { opacity: 0.6 }
               }}
             >
               {isDownloading ? (
                 <CircularProgress size={20} color="inherit" />
               ) : (
-                <SaveAltIcon />
+                <SaveAltIcon fontSize="small" />
               )}
             </IconButton>
           </Tooltip>
