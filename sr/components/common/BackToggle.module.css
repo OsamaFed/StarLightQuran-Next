@@ -22,7 +22,6 @@
 }
 
 .backButton:hover {
-  background: var(--button-gradient);
   color: white;
   border-color: transparent;
   box-shadow: var(--shadow-md);

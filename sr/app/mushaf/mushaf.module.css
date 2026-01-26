@@ -232,6 +232,7 @@
 }
 
 .surahName {
+  font-family: 'Amiri Quran', 'KoGaliModern', sans-serif;
   font-size: 1.35rem;
   font-weight: 700;
 }
@@ -352,6 +353,7 @@
   }
 
   .surahName {
+    font-family: 'Amiri Quran', 'KoGaliModern', sans-serif;
     font-size: 1.1rem;
   }
 

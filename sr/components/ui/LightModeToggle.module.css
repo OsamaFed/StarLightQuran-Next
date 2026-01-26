@@ -19,7 +19,6 @@
   transform: scale(1.05);
   border-color: var(--accent-color-2);
   box-shadow: var(--shadow-md);
-  background: var(--secondary-bg-color);
 }
 
 .toggle:focus {
