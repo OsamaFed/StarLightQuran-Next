@@ -50,18 +50,29 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
   clone.style.boxSizing = "border-box";
   clone.style.margin = "0";
   clone.style.padding = clone.style.padding || "20px";
+  // Ensure text is readable with proper color
+  clone.style.color = "inherit";
 
   let isDarkMode = false;
   let exportBg: string | null = null;
+  let gradientBg: string = "";
   
   try {
     const theme = document.documentElement.getAttribute("data-theme") || (document.body.classList.contains("darkMode") ? "dark" : "light");
     isDarkMode = theme === "dark";
     const computedBg = getComputedStyle(document.documentElement).getPropertyValue("--background") || "";
-    exportBg = isDarkMode ? (computedBg.trim() || "#0D1B2A") : "#FFF8F0";
+    
+    if (isDarkMode) {
+      exportBg = computedBg.trim() || "#0D1B2A";
+      gradientBg = "radial-gradient(circle at 20% 30%, rgba(74, 144, 226, 0.25) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(147, 112, 219, 0.25) 0%, transparent 50%)";
+    } else {
+      // Improved light mode with better contrast and warm tones
+      exportBg = "#FAF6F3";
+      gradientBg = "radial-gradient(circle at 20% 30%, rgba(139, 143, 197, 0.12) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(197, 163, 115, 0.12) 0%, transparent 50%), linear-gradient(135deg, rgba(255, 248, 240, 1) 0%, rgba(250, 245, 240, 1) 100%)";
+    }
   } catch (e) {}
 
-  // Create container with Aurora background
+  // Create container with improved background
   const container = document.createElement("div");
   container.style.position = "fixed";
   container.style.left = "-9999px";
@@ -69,10 +80,9 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
   container.style.width = `${width}px`;
   container.style.height = `${height}px`;
   container.style.zIndex = "2147483647";
-  container.style.backgroundColor = exportBg || "#FFF8F0";
-  container.style.backgroundImage = isDarkMode 
-    ? "radial-gradient(circle at 20% 30%, rgba(74, 144, 226, 0.25) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(147, 112, 219, 0.25) 0%, transparent 50%)"
-    : "radial-gradient(circle at 20% 30%, rgba(139, 143, 197, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(197, 163, 115, 0.15) 0%, transparent 50%)";
+  container.style.backgroundColor = exportBg || "#FAF6F3";
+  container.style.backgroundImage = gradientBg;
+  container.style.backgroundAttachment = "fixed";
   container.style.overflow = "hidden";
   
   container.appendChild(clone);
@@ -85,6 +95,9 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
       useCORS: true,
       logging: false,
       allowTaint: true,
+      imageTimeout: 5000,
+      windowHeight: height,
+      windowWidth: width,
     });
     const blob: Blob | null = await new Promise((resolve) =>
       canvas.toBlob((b) => resolve(b), "image/png", 1)
