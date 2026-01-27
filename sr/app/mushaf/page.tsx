@@ -39,7 +39,6 @@ export default function MushafPage() {
   const [showWaqfGuide, setShowWaqfGuide] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showResults, setShowResults] = useState(false);
-  const [pendingVerseScroll, setPendingVerseScroll] = useState<number | null>(null);
 
   const versesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -144,21 +143,20 @@ export default function MushafPage() {
         // Same surah - direct navigation
         if (currentSurah?.number === surahNumber) {
           goToVerse(verseNumber);
-          if (scrollIntoView) {
-            // Small delay to ensure page change is rendered
-            setTimeout(() => {
-              setPendingVerseScroll(verseNumber);
-            }, 50);
-          }
+          // Direct scroll with delay to ensure page update
+          setTimeout(() => {
+            scrollToVerseWithHighlight(verseNumber);
+          }, 500);
         } else {
           // Different surah - load it first, then navigate
           await loadSurah(surahNumber);
           
           // Navigate to the verse after surah is loaded
           goToVerse(verseNumber);
-          if (scrollIntoView) {
-            setPendingVerseScroll(verseNumber);
-          }
+          // Direct scroll with delay to ensure page update
+          setTimeout(() => {
+            scrollToVerseWithHighlight(verseNumber);
+          }, 500);
         }
       } catch (e) {
         console.error('Error navigating to verse:', e);
@@ -167,29 +165,7 @@ export default function MushafPage() {
 
     window.addEventListener('navigateToVerse', handleNavigateToVerse as EventListener);
     return () => window.removeEventListener('navigateToVerse', handleNavigateToVerse as EventListener);
-  }, [currentSurah?.number, loadSurah, goToVerse, setPendingVerseScroll]);
-
-  // Effect للـ scroll بعد تحميل الآيات
-  useEffect(() => {
-    if (pendingVerseScroll !== null && !loading && currentVerses.length > 0) {
-      // Wait for DOM to fully update
-      const timer = setTimeout(() => {
-        const verseElement = document.querySelector(
-          `[data-verse-number="${pendingVerseScroll}"]`
-        ) as HTMLElement;
-
-        if (verseElement) {
-          scrollToVerseWithHighlight(pendingVerseScroll);
-        } else {
-          console.warn(`Verse ${pendingVerseScroll} not found in DOM`);
-        }
-
-        setPendingVerseScroll(null);
-      }, 200);
-
-      return () => clearTimeout(timer);
-    }
-  }, [pendingVerseScroll, loading, currentVerses]);
+  }, [currentSurah?.number, loadSurah, goToVerse]);
 
   return (
     <div className={`${styles.wrapper} ${isDarkMode ? styles.darkMode : ""}`}>
