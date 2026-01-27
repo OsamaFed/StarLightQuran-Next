@@ -9,7 +9,7 @@
   backdrop-filter: var(--glass-blur-lg);
   -webkit-backdrop-filter: var(--glass-blur-lg);
   border: 1px solid rgba(212, 163, 115, 0.2);
-  color: var(--text-primary);
+  color: #ffffff;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -20,26 +20,13 @@
 }
 
 .scrollToTop:hover {
-  background: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
-  border-color: rgba(212, 163, 115, 0.3);
+  background: rgba(91, 143, 227, 0.2);
+  box-shadow: 0 6px 24px rgba(91, 143, 227, 0.3);
+  border-color: rgba(91, 143, 227, 0.3);
 }
 
 .scrollToTop:active {
   transform: scale(0.95);
-}
-
-.darkMode {
-  background: rgba(0, 0, 0, 0.08);
-  border-color: rgba(255, 255, 255, 0.05);
-  color: var(--dark-text-primary);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-}
-
-.darkMode:hover {
-  background: rgba(0, 0, 0, 0.12);
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 768px) {

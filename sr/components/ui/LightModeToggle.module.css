@@ -5,25 +5,26 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  background: var(--card-bg);
+  background: rgba(255, 255, 255, 0.08);
   backdrop-filter: var(--glass-blur-lg);
   -webkit-backdrop-filter: var(--glass-blur-lg);
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   cursor: pointer;
   transition: all var(--transition-base);
-  color: var(--text-primary);
+  color: #ffffff;
 }
 
 .toggle:hover {
   transform: scale(1.05);
-  border-color: var(--accent-color-2);
-  box-shadow: var(--shadow-md);
+  border-color: rgba(91, 143, 227, 0.5);
+  box-shadow: 0 4px 16px rgba(91, 143, 227, 0.3);
+  background: rgba(91, 143, 227, 0.1);
 }
 
 .toggle:focus {
   outline: none;
-  box-shadow: 0 0 0 2px var(--accent-color-2);
+  box-shadow: 0 0 0 2px rgba(91, 143, 227, 0.5);
 }
 
 .toggle:focus:not(:focus-visible) {
@@ -31,22 +32,11 @@
 }
 
 .toggle:focus-visible {
-  box-shadow: 0 0 0 2px var(--accent-color-2);
+  box-shadow: 0 0 0 2px rgba(91, 143, 227, 0.5);
 }
 
 .toggle:active {
   transform: scale(0.95);
-}
-
-:global(.darkMode) .toggle {
-  background: var(--dark-card-bg);
-  border-color: rgba(58, 123, 213, 0.3);
-  color: var(--dark-text-primary);
-}
-
-:global(.darkMode) .toggle:hover {
-  border-color: var(--dark-highlight-color);
-  background: var(--dark-bg-secondary);
 }
 
 .icon {

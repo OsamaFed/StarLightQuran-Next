@@ -172,8 +172,8 @@
   --bg-surface: var(--_clr-deep-200);
   --bg-surface-elevated: var(--_clr-deep-300);
   
-  --text-main: #E8ECFF;
-  --text-dim: #B0BED9;
+  --text-main: #ffffff;
+  --text-dim: #ffffff;
   
   --brand-primary: var(--_clr-blue-acc);
   --brand-secondary: var(--_clr-blue-acc-deep);
