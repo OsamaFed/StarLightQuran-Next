@@ -39,6 +39,10 @@ export default function MushafPage() {
   const [showWaqfGuide, setShowWaqfGuide] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showResults, setShowResults] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<{
+    surahNumber: number;
+    verseNumber: number;
+  } | null>(null);
 
   const versesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -68,23 +72,19 @@ export default function MushafPage() {
     setShowResults(value.length > 0);
   };
 
-  // دالة للـ scroll مع highlight
   const scrollToVerseWithHighlight = (verseNumber: number, retryCount = 0) => {
     const verseElement = document.querySelector(`[data-verse-number="${verseNumber}"]`) as HTMLElement;
 
     if (verseElement) {
-      // Smooth scroll to verse
       verseElement.scrollIntoView({ 
         behavior: 'smooth', 
         block: 'center',
         inline: 'nearest'
       });
 
-      // Apply highlight style with smooth transition
       verseElement.style.transition = 'background-color 0.3s ease-in-out';
       verseElement.style.backgroundColor = 'rgba(212, 163, 115, 0.3)';
 
-      // Remove highlight after 3 seconds
       const highlightTimeout = setTimeout(() => {
         verseElement.style.backgroundColor = '';
         verseElement.style.transition = 'background-color 0.3s ease-in-out';
@@ -93,30 +93,17 @@ export default function MushafPage() {
       return () => clearTimeout(highlightTimeout);
     } else {
       console.warn(`Verse element not found for verse number: ${verseNumber}, retry: ${retryCount}`);
-      
-      // تحقق من وجود الآية في الصفحة الحالية
-      const isVerseInCurrentPage = currentVerses.some(verse => verse.number === verseNumber);
-      
-      if (!isVerseInCurrentPage) {
-        console.log(`Verse ${verseNumber} not in current page, re-navigating...`);
-        goToVerse(verseNumber);
-        // Retry after re-navigation
-        setTimeout(() => scrollToVerseWithHighlight(verseNumber, retryCount + 1), 300);
-        return;
-      }
-      
-      // Retry logic: إعادة المحاولة حتى 3 مرات مع تأخير متزايد
+
       if (retryCount < 3) {
         setTimeout(() => {
           scrollToVerseWithHighlight(verseNumber, retryCount + 1);
-        }, 200 * (retryCount + 1)); // تأخير 200ms, 400ms, 600ms
+        }, 200 * (retryCount + 1));
       } else {
         console.error(`Failed to find verse ${verseNumber} after ${retryCount} retries`);
       }
     }
   };
 
-  // Handle navigation to favorite verse
   useEffect(() => {
     const handleNavigateToVerse = async (event: Event) => {
       try {
@@ -126,46 +113,56 @@ export default function MushafPage() {
           return;
         }
 
-        const { surahNumber, verseNumber, scrollIntoView = true } = detail;
+        const { surahNumber, verseNumber } = detail;
 
-        // Validate surah number
         if (isNaN(surahNumber) || surahNumber < 1 || surahNumber > 114) {
           console.error('Invalid surah number:', surahNumber);
           return;
         }
 
-        // Validate verse number
         if (isNaN(verseNumber) || verseNumber < 1) {
           console.error('Invalid verse number:', verseNumber);
           return;
         }
 
-        // Same surah - direct navigation
-        if (currentSurah?.number === surahNumber) {
-          goToVerse(verseNumber);
-          // Direct scroll with delay to ensure page update
-          setTimeout(() => {
-            scrollToVerseWithHighlight(verseNumber);
-          }, 500);
-        } else {
-          // Different surah - load it first, then navigate
+        if (currentSurah?.number !== surahNumber) {
           await loadSurah(surahNumber);
-          
-          // Navigate to the verse after surah is loaded
-          goToVerse(verseNumber);
-          // Direct scroll with delay to ensure page update
-          setTimeout(() => {
-            scrollToVerseWithHighlight(verseNumber);
-          }, 500);
         }
+
+        setPendingNavigation({ surahNumber, verseNumber });
+
       } catch (e) {
         console.error('Error navigating to verse:', e);
+        setPendingNavigation(null);
       }
     };
 
     window.addEventListener('navigateToVerse', handleNavigateToVerse as EventListener);
     return () => window.removeEventListener('navigateToVerse', handleNavigateToVerse as EventListener);
-  }, [currentSurah?.number, loadSurah, goToVerse]);
+  }, [currentSurah?.number, loadSurah]);
+
+  useEffect(() => {
+    if (!pendingNavigation || loading) return;
+
+    if (currentSurah?.number === pendingNavigation.surahNumber && currentVerses.length > 0) {
+      const { verseNumber } = pendingNavigation;
+
+      const verseExists = currentVerses.some(
+        verse => verse.number === verseNumber || verse.numberInSurah === verseNumber
+      );
+
+      if (!verseExists) {
+        goToVerse(verseNumber, true);
+      } else {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            scrollToVerseWithHighlight(verseNumber);
+            setPendingNavigation(null);
+          });
+        });
+      }
+    }
+  }, [currentSurah, currentVerses, loading, pendingNavigation, goToVerse]);
 
   return (
     <div className={`${styles.wrapper} ${isDarkMode ? styles.darkMode : ""}`}>

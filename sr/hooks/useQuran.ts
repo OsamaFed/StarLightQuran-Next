@@ -1,7 +1,5 @@
-
 import { useState, useCallback } from "react";
 import { SurahData, Ayah, ApiResponse } from "@/types";
-
 
 function removeBismillah(text: string, surahNumber: number): string {
   let cleanedText = text;
@@ -125,11 +123,14 @@ export function useQuran() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  const goToVerse = useCallback((verseNumber: number) => {
+  const goToVerse = useCallback((verseNumber: number, skipScroll = false) => {
     if (currentSurah && verseNumber > 0 && verseNumber <= currentSurah.ayahs.length) {
       const pageNumber = Math.ceil(verseNumber / VERSES_PER_PAGE);
       setCurrentPage(pageNumber);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (!skipScroll) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
   }, [currentSurah]);
 
