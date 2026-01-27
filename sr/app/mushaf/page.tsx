@@ -262,7 +262,7 @@ export default function MushafPage() {
                     <VerseCard
                       key={ayah.number}
                       ayah={ayah}
-                      verseNumber={(currentPage - 1) * 12 + index + 1}
+                      verseNumber={ayah.numberInSurah}
                       surahName={currentSurah.name}
                       surahId={currentSurah.number}
                       isDarkMode={isDarkMode}

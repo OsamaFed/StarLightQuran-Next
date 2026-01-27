@@ -25,7 +25,7 @@ const isValidSurahNumber = (num: number): boolean => {
 };
 
 const getSurahNumber = (verse: FavoriteVerse): number => {
-  const surahId = verse.surahId ?? parseInt(verse.id.split('-')[0]);
+  const surahId = verse.surahId ?? parseInt(verse.id.split('-')[1]);
   return isValidSurahNumber(surahId) ? surahId : MIN_SURAH;
 };
 

@@ -125,7 +125,7 @@
   --bg-surface: var(--_clr-lav-200);
   --bg-surface-elevated: var(--_clr-lav-300);
   
-  --text-main: var(--_clr-slate-900);
+  --text-main: var(--_clr-lav-100);
   --text-dim: var(--_clr-slate-700);
   
   --brand-primary: var(--_clr-lav-acc-deep);

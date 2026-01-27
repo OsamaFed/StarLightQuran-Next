@@ -33,7 +33,7 @@ export default function VerseCard({
       try {
         const detail = (ev as CustomEvent).detail;
         if (!detail || !detail.verseId) return;
-        const targetId = `verse-${ayah.number}`;
+        const targetId = `verse-${surahId}-${ayah.numberInSurah}`;
         if (detail.verseId !== targetId) return;
 
         if (showTafseer) {
@@ -99,8 +99,8 @@ export default function VerseCard({
 
   return (
     <div
-      id={`verse-${ayah.number}`}
-      data-verse-number={ayah.number}
+      id={`verse-${surahId}-${ayah.numberInSurah}`}
+      data-verse-number={ayah.numberInSurah}
       className={styles.verse}
       style={{ ...dynamicStyle, fontSize: `${fontSize}px` }}
     >
@@ -112,7 +112,7 @@ export default function VerseCard({
         </div>
       )}
       <VerseSpeedDial
-        verseId={`verse-${ayah.number}`}
+        verseId={`verse-${surahId}-${ayah.numberInSurah}`}
         verseText={ayah.text}
         verseNumber={verseNumber}
         surahName={surahName}

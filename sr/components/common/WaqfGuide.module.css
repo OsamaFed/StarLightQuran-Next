@@ -47,12 +47,12 @@
 .waqfSymbol {
   font-size: 1.5rem;
   font-weight: bold;
-  color: var(--accent-color-1);
+  color: var(--primary-color);
   margin-bottom: 5px;
   font-family: 'Othmani', 'Amiri Quran', serif;
 }
 
 .waqfName {
   font-size: 0.9rem;
-  color: var(--text-secondary);
+  color: var(--primary-color);
 }
