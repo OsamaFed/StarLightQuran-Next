@@ -1,58 +1,53 @@
-.waqfGuide {
-  text-align: center;
-  width: 100%;
-}
+        .waqfGuide, .waqfSymbol, .waqfName, .waqfTitle{
+          color: var(--primary-color);
+        }
 
-.waqfTitle {
-  font-size: 1.2rem;
-  margin-bottom: 20px;
-  color: var(--highlight-color);
-  font-weight: 700;
-}
+        .waqfGuide {
+          text-align: center;
+          width: 100%;
+        }
 
-.waqfGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 15px;
-}
+        .waqfTitle {
+          font-size: 1.2rem;
+          margin-bottom: 20px;
+          font-weight: 700;
+        }
 
-.waqfItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: var(--glass-blur-sm);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: var(--radius-md);
-  transition: all 0.2s ease;
-}
+        .waqfGrid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          gap: 15px;
+        }
 
-.waqfItem:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.1);
-}
+        .waqfItem {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 10px;
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: var(--glass-blur-sm);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          border-radius: var(--radius-md);
+          transition: all 0.2s ease;
+        }
 
-:global(.darkMode) .waqfItem {
-  background: rgba(0, 0, 0, 0.08);
-  border-color: rgba(255, 255, 255, 0.05);
-}
+        :global(.darkMode) .waqfItem {
+          background: rgba(0, 0, 0, 0.08);
+          border-color: rgba(255, 255, 255, 0.05);
+        }
 
-:global(.darkMode) .waqfItem:hover {
-  background: rgba(0, 0, 0, 0.12);
-  border-color: rgba(255, 255, 255, 0.1);
-}
+        :global(.darkMode) .waqfItem:hover {
+          background: rgba(0, 0, 0, 0.12);
+          border-color: rgba(255, 255, 255, 0.1);
+        }
 
-.waqfSymbol {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--primary-color);
-  margin-bottom: 5px;
-  font-family: 'Othmani', 'Amiri Quran', serif;
-}
+        .waqfSymbol {
+          font-size: 1.5rem;
+          font-weight: bold;
+          margin-bottom: 5px;
+          font-family: 'Othmani', 'Amiri Quran', serif;
+        }
 
-.waqfName {
-  font-size: 0.9rem;
-  color: var(--primary-color);
-}
+        .waqfName {
+          font-size: 0.9rem;
+        }
