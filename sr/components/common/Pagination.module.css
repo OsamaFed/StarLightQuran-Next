@@ -5,37 +5,14 @@
   padding: 0 12px;
 }
 
-/* Light Mode Styles */
-.lightMode {
-  --pagination-bg: rgba(255, 255, 255, 0.03);
-  --pagination-text: #000000;
-  --pagination-border: rgba(255, 255, 255, 0.1);
-  --pagination-btn-border: rgba(255, 255, 255, 0.04);
-  --pagination-btn-hover: rgba(255, 255, 255, 0.08);
-  --pagination-select-bg: rgba(255, 255, 255, 0.02);
-  --pagination-number-bg: rgba(255, 255, 255, 0.03);
-}
-
-/* Dark Mode Styles */
-.darkMode {
-  --pagination-bg: rgba(0, 0, 0, 0.08);
-  --pagination-text: #ffffff;
-  --pagination-border: rgba(255, 255, 255, 0.05);
-  --pagination-btn-border: rgba(255, 255, 255, 0.04);
-  --pagination-btn-hover: rgba(255, 255, 255, 0.1);
-  --pagination-select-bg: rgba(255, 255, 255, 0.05);
-  --pagination-number-bg: rgba(0, 0, 0, 0.08);
-}
-
 .card {
   display: flex;
   gap: 10px;
   align-items: center;
   padding: 12px;
-  background: var(--pagination-bg);
   backdrop-filter: var(--glass-blur-md);
   -webkit-backdrop-filter: var(--glass-blur-md);
-  border: 1px solid var(--pagination-border);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: var(--radius-xl);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
@@ -46,9 +23,9 @@
   gap: 8px;
   padding: 10px 14px;
   background: transparent;
-  border: 1px solid var(--pagination-btn-border);
+  border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: var(--radius-md);
-  color: var(--pagination-text);
+  color: #ffffff;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
@@ -56,7 +33,7 @@
 }
 
 .btn:hover:not(:disabled) {
-  background: var(--pagination-btn-hover);
+  background: rgba(255, 255, 255, 0.1);
   border-color: rgba(212, 163, 115, 0.4);
 }
 
@@ -83,10 +60,10 @@
   min-width: 40px;
   height: 40px;
   border-radius: 10px;
-  background: var(--pagination-number-bg);
+  background: rgba(0, 0, 0, 0.08);
   backdrop-filter: var(--glass-blur-sm);
   -webkit-backdrop-filter: var(--glass-blur-sm);
-  color: var(--pagination-text);
+  color: #ffffff;
   font-weight: 600;
   font-size: 0.95rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -99,7 +76,7 @@
   position: absolute;
   inset: -2px;
   border-radius: 10px;
-  border: 1px solid var(--pagination-border);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   opacity: 0.25;
   pointer-events: none;
 }
@@ -120,9 +97,9 @@
 .pageSelect {
   padding: 8px 10px;
   border-radius: 8px;
-  border: 1px solid var(--pagination-btn-border);
-  background: var(--pagination-select-bg);
-  color: var(--pagination-text);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
@@ -133,7 +110,7 @@
 
 .pageSelect:hover {
   border-color: rgba(212, 163, 115, 0.4);
-  background: var(--pagination-btn-hover);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .pageSelect:focus {
@@ -142,7 +119,6 @@
   box-shadow: 0 0 0 2px rgba(212, 163, 115, 0.1);
 }
 
-/* Ensure option styling in select */
 .pageSelect option {
   background: #1a1a1a;
   color: #ffffff;

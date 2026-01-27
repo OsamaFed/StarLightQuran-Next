@@ -34,8 +34,8 @@ export default function Home() {
       }, "-=0.8")
       .from(".option-card-anim", {
         y: 30,
-        autoAlpha: 0,
-        duration: 0.8,
+         autoAlpha: 0,
+        duration: 0.5,
         stagger: 0.2
       }, "-=0.5");
     });

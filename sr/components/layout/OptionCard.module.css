@@ -7,15 +7,14 @@
   text-align: center;
   padding: 2rem 1.5rem;
   backdrop-filter: var(--glass-blur-xl);
-  -webkit-backdrop-filter: var(--glass-blur-xl);
   background: transparent;
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: transform var(--timing-base), box-shadow var(--timing-base), border-color var(--timing-base), background var(--timing-base);
   text-decoration: none;
-  color: inherit;
-  min-height: 160px;
-}
+   color: inherit; 
+  min-height: 160px; 
+} 
 
 .card:hover:not(.disabled) {
   transform: translateY(-4px);
