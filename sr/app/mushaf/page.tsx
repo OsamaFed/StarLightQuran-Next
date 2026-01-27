@@ -70,7 +70,7 @@ export default function MushafPage() {
   };
 
   // دالة للـ scroll مع highlight
-  const scrollToVerseWithHighlight = (verseNumber: number) => {
+  const scrollToVerseWithHighlight = (verseNumber: number, retryCount = 0) => {
     const verseElement = document.querySelector(`[data-verse-number="${verseNumber}"]`) as HTMLElement;
 
     if (verseElement) {
@@ -93,13 +93,33 @@ export default function MushafPage() {
 
       return () => clearTimeout(highlightTimeout);
     } else {
-      console.warn(`Verse element not found for verse number: ${verseNumber}`);
+      console.warn(`Verse element not found for verse number: ${verseNumber}, retry: ${retryCount}`);
+      
+      // تحقق من وجود الآية في الصفحة الحالية
+      const isVerseInCurrentPage = currentVerses.some(verse => verse.number === verseNumber);
+      
+      if (!isVerseInCurrentPage) {
+        console.log(`Verse ${verseNumber} not in current page, re-navigating...`);
+        goToVerse(verseNumber);
+        // Retry after re-navigation
+        setTimeout(() => scrollToVerseWithHighlight(verseNumber, retryCount + 1), 300);
+        return;
+      }
+      
+      // Retry logic: إعادة المحاولة حتى 3 مرات مع تأخير متزايد
+      if (retryCount < 3) {
+        setTimeout(() => {
+          scrollToVerseWithHighlight(verseNumber, retryCount + 1);
+        }, 200 * (retryCount + 1)); // تأخير 200ms, 400ms, 600ms
+      } else {
+        console.error(`Failed to find verse ${verseNumber} after ${retryCount} retries`);
+      }
     }
   };
 
   // Handle navigation to favorite verse
   useEffect(() => {
-    const handleNavigateToVerse = (event: Event) => {
+    const handleNavigateToVerse = async (event: Event) => {
       try {
         const detail = (event as CustomEvent).detail;
         if (!detail?.surahNumber || detail.verseNumber === undefined) {
@@ -132,17 +152,13 @@ export default function MushafPage() {
           }
         } else {
           // Different surah - load it first, then navigate
-          loadSurah(surahNumber);
+          await loadSurah(surahNumber);
           
-          // Schedule navigation after surah loads and renders
-          const navTimeout = setTimeout(() => {
-            goToVerse(verseNumber);
-            if (scrollIntoView) {
-              setPendingVerseScroll(verseNumber);
-            }
-          }, 500);
-
-          return () => clearTimeout(navTimeout);
+          // Navigate to the verse after surah is loaded
+          goToVerse(verseNumber);
+          if (scrollIntoView) {
+            setPendingVerseScroll(verseNumber);
+          }
         }
       } catch (e) {
         console.error('Error navigating to verse:', e);
