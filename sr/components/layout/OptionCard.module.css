@@ -9,7 +9,6 @@
   backdrop-filter: var(--glass-blur-xl);
   -webkit-backdrop-filter: var(--glass-blur-xl);
   background: transparent;
-  border: 1px solid var(--glass-effect-border);
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: transform var(--timing-base), box-shadow var(--timing-base), border-color var(--timing-base), background var(--timing-base);

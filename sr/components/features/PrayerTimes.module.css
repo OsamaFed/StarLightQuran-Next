@@ -51,36 +51,17 @@
   font-size: 1.25rem;
 }
 
-.nextPrayerLabel {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-.darkMode .nextPrayerLabel {
-  color: var(--dark-text-secondary);
-}
-
-.nextPrayerName {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.darkMode .nextPrayerName {
-  color: var(--dark-text-primary);
-}
-
-.nextPrayerTime {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--accent-color-2);
-  font-family: 'KoGaliModern', sans-serif;
-  direction: ltr;
-}
-
-.darkMode .nextPrayerTime {
-  color: var(--dark-highlight-color);
+.nextPrayerLabel,
+.nextPrayerName,
+.nextPrayerTime,
+.cityName,
+.dropdownIcon,
+.dateText,
+.prayerName,
+.prayerTime,
+.loadingText,
+.errorText {
+  color: white;
 }
 
 .headerRight {
@@ -91,23 +72,13 @@
 
 .cityName {
   font-size: 0.85rem;
-  color: var(--text-secondary);
   font-weight: 500;
-}
-
-.darkMode .cityName {
-  color: var(--dark-text-secondary);
 }
 
 .dropdownIcon {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-secondary);
-}
-
-.darkMode .dropdownIcon {
-  color: var(--dark-text-secondary);
 }
 
 .expandedContent {
@@ -131,12 +102,7 @@
 .dateText {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--text-secondary);
   font-family: 'KoGaliModern', sans-serif;
-}
-
-.darkMode .dateText {
-  color: var(--dark-text-secondary);
 }
 
 .timesGrid {
@@ -197,24 +163,14 @@
 .prayerName {
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--text-primary);
   margin-bottom: 0.25rem;
-}
-
-.darkMode .prayerName {
-  color: var(--dark-text-primary);
 }
 
 .prayerTime {
   font-size: 0.95rem;
   font-weight: 700;
-  color: var(--accent-color-2);
   font-family: 'KoGaliModern', sans-serif;
   direction: ltr;
-}
-
-.darkMode .prayerTime {
-  color: var(--dark-highlight-color);
 }
 
 .loadingContainer {
@@ -242,12 +198,7 @@
 
 .loadingText {
   font-size: 0.95rem;
-  color: var(--text-secondary);
   margin: 0;
-}
-
-.darkMode .loadingText {
-  color: var(--dark-text-secondary);
 }
 
 .errorContainer {
@@ -261,12 +212,7 @@
 
 .errorText {
   font-size: 0.95rem;
-  color: var(--text-secondary);
   margin: 0;
-}
-
-.darkMode .errorText {
-  color: var(--dark-text-secondary);
 }
 
 .retryButton {
