@@ -1,15 +1,4 @@
-/**
- * STARLIGHT QURAN - GLOBAL DESIGN SYSTEM
- * Refactored by Senior Front-end Architect
- * 
- * Hierarchy:
- * 1. Base Tokens: Raw primitive values (colors, spacing, shadows)
- * 2. Semantic Tokens: Functional aliases that adapt to themes
- * 3. Reset & Global Styles
- */
 
-/* --- FONT OPTIMIZATION --- */
-/* Using 'swap' to improve FCP (First Contentful Paint) */
 @import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap');
 
 @font-face {

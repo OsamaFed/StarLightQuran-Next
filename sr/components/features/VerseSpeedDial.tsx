@@ -58,7 +58,7 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
     clone.style.boxSizing = "border-box";
     clone.style.margin = "0";
     clone.style.padding = clone.style.padding || "20px";
-    clone.style.color = "inherit";
+    clone.style.color = "#ffffff";
 
     let isDarkMode = false;
     let exportBg: string = "#FAF6F3";
@@ -73,8 +73,44 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
         exportBg = computedBg.trim() || "#0D1B2A";
         gradientBg = "radial-gradient(circle at 20% 30%, rgba(74, 144, 226, 0.25) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(147, 112, 219, 0.25) 0%, transparent 50%)";
       } else {
-        exportBg = "#FAF6F3";
-        gradientBg = "radial-gradient(circle at 20% 30%, rgba(139, 143, 197, 0.12) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(197, 163, 115, 0.12) 0%, transparent 50%), linear-gradient(135deg, rgba(255, 248, 240, 1) 0%, rgba(250, 245, 240, 1) 100%)";
+        // ══════════════════════════════════════════════════
+        // نفس ألوان الصورة الأولى بس أقوى وأعمق
+        // ══════════════════════════════════════════════════
+        exportBg = "#8B9FD4"; // أزرق-بنفسجي متوسط (أغمق من الأصلي)
+
+        gradientBg = `
+          radial-gradient(
+            ellipse 900px 700px at 15% 20%,
+            rgba(170, 140, 220, 0.85) 0%,
+            rgba(170, 140, 220, 0.5) 30%,
+            transparent 55%
+          ),
+          radial-gradient(
+            ellipse 850px 750px at 85% 80%,
+            rgba(120, 180, 225, 0.8) 0%,
+            rgba(145, 197, 235, 0.45) 35%,
+            transparent 55%
+          ),
+          radial-gradient(
+            ellipse 700px 900px at 50% 100%,
+            rgba(155, 145, 225, 0.7) 0%,
+            rgba(168, 155, 232, 0.35) 40%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 1000px 600px at 70% 30%,
+            rgba(135, 190, 230, 0.65) 0%,
+            transparent 50%
+          ),
+          linear-gradient(
+            135deg,
+            #9B87F5 0%,
+            #8B9FD4 25%,
+            #87C5EB 50%,
+            #A89BE8 75%,
+            #9B87F5 100%
+          )
+        `;
       }
     } catch (e) {
       console.error("Error detecting theme:", e);
@@ -118,6 +154,8 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
     return null;
   }
 }
+
+
 
 export default function VerseSpeedDial({
   verseId,
