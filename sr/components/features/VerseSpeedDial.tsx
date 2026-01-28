@@ -74,41 +74,41 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
         gradientBg = "radial-gradient(circle at 20% 30%, rgba(74, 144, 226, 0.25) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(147, 112, 219, 0.25) 0%, transparent 50%)";
       } else {
         // ══════════════════════════════════════════════════
-        // نفس ألوان الصورة الأولى بس أقوى وأعمق
+        // ألوان عميقة بدون شفافية / بهتان
         // ══════════════════════════════════════════════════
-        exportBg = "#8B9FD4"; // أزرق-بنفسجي متوسط (أغمق من الأصلي)
+        exportBg = "#4A5F8F"; // أزرق غامق
 
         gradientBg = `
           radial-gradient(
             ellipse 900px 700px at 15% 20%,
-            rgba(170, 140, 220, 0.85) 0%,
-            rgba(170, 140, 220, 0.5) 30%,
-            transparent 55%
+            rgba(80, 100, 160, 0.95) 0%,
+            rgba(80, 100, 160, 0.75) 30%,
+            rgba(60, 80, 140, 0.4) 55%
           ),
           radial-gradient(
             ellipse 850px 750px at 85% 80%,
-            rgba(120, 180, 225, 0.8) 0%,
-            rgba(145, 197, 235, 0.45) 35%,
-            transparent 55%
+            rgba(70, 110, 170, 0.9) 0%,
+            rgba(90, 130, 180, 0.6) 35%,
+            rgba(60, 100, 160, 0.3) 55%
           ),
           radial-gradient(
             ellipse 700px 900px at 50% 100%,
-            rgba(155, 145, 225, 0.7) 0%,
-            rgba(168, 155, 232, 0.35) 40%,
-            transparent 60%
+            rgba(85, 105, 155, 0.85) 0%,
+            rgba(75, 95, 150, 0.55) 40%,
+            rgba(50, 80, 130, 0.2) 60%
           ),
           radial-gradient(
             ellipse 1000px 600px at 70% 30%,
-            rgba(135, 190, 230, 0.65) 0%,
-            transparent 50%
+            rgba(75, 115, 165, 0.8) 0%,
+            rgba(60, 95, 150, 0.3) 50%
           ),
           linear-gradient(
             135deg,
-            #9B87F5 0%,
-            #8B9FD4 25%,
-            #87C5EB 50%,
-            #A89BE8 75%,
-            #9B87F5 100%
+            #3D4F7F 0%,
+            #4A5F8F 25%,
+            #5A6FA0 50%,
+            #4A5F8F 75%,
+            #3D4F7F 100%
           )
         `;
       }

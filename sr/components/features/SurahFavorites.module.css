@@ -32,6 +32,7 @@
   list-style: none;
   transition: color 0.2s ease;
   text-align: center;
+  font-family: 'Othmani', 'KoGaliModern', sans-serif;
 }
 
 .summary:hover {
@@ -44,14 +45,48 @@
 
 .list {
   margin-top: 8px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 12px;
+  padding-left: 0;
+}
+
+.list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+.list::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.list::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+:global(.darkMode) .list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+:global(.darkMode) .list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+:global(.darkMode) .list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 @media (max-width: 768px) {
   .list {
-    grid-template-columns: 1fr;
+    max-height: 300px;
   }
 }
 
@@ -74,13 +109,14 @@
 .name {
   background: transparent;
   border: none;
-  color: #ffffff; /* light mode: white text */
+  color: #ffffff;
   text-align: center;
   font-size: 0.95rem;
   cursor: pointer;
   flex: 1;
   padding: 0;
   text-decoration: none;
+  font-family: 'Othmani', 'KoGaliModern', sans-serif;
 }
 
 .remove {
@@ -104,8 +140,8 @@
 .empty {
   color: var(--text-secondary);
   padding: 6px 0;
-  grid-column: 1 / -1;
   text-align: center;
+  width: 100%;
 }
 
 :global(.darkMode) .name {
