@@ -6,7 +6,6 @@ import { useTheme } from "@/hooks/useTheme";
 import OptionCard from "@/components/layout/OptionCard";
 import LightModeToggle from "@/components/ui/LightModeToggle";
 import PrayerTimes from "@/components/features/PrayerTimes";
-import { Aurora } from "@/components/ui";
 import styles from "./page.module.css";
 import gsap from "gsap";
 
@@ -34,15 +33,9 @@ export default function Home() {
       }, "-=0.8")
       .from(".option-card-anim", {
         y: 30,
-<<<<<<< HEAD
          autoAlpha: 0,
         duration: 0.5,
         stagger: 0.2
-=======
-        autoAlpha: 0,
-        duration: 0.8,
-        stagger: 0.2,
->>>>>>> 720efaa (azkhar colors)
       }, "-=0.5");
     });
 
