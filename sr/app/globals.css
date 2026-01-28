@@ -214,7 +214,7 @@ body {
   overflow-x: hidden;
   position: relative;
   z-index: 1;
-  transition: background-color var(--timing-smooth), color var(--timing-smooth);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* --- BACKGROUND LAYERS --- */
