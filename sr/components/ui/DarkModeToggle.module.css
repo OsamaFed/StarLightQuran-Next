@@ -18,7 +18,7 @@
   cursor: pointer;
   inset: 0;
   background: linear-gradient(145deg, #C5CDEA, #A3ABD1);
-  transition: all var(--transition-smooth);
+  transition: background-color var(--timing-smooth), border-color var(--timing-smooth), box-shadow var(--timing-smooth), transform var(--timing-smooth);
   z-index: 0;
   overflow: hidden;
   box-shadow: var(--shadow-md), inset 0 1px 2px rgba(255, 255, 255, 0.5);
@@ -40,7 +40,7 @@
   left: 4px;
   bottom: 4px;
   background: linear-gradient(145deg, #FFD93D, #FF9F1C);
-  transition: all var(--transition-smooth);
+  transition: transform var(--timing-smooth), background var(--timing-smooth), box-shadow var(--timing-smooth);
   box-shadow: 
     0 2px 12px rgba(255, 159, 28, 0.5),
     inset -2px -2px 4px rgba(255, 140, 0, 0.3),
@@ -84,7 +84,7 @@
 /* Moon dots */
 .moonDot {
   opacity: 0;
-  transition: opacity var(--transition-smooth);
+  transition: opacity var(--timing-smooth);
   fill: #A0AEC0;
 }
 
@@ -211,7 +211,7 @@
 .stars {
   transform: translateY(-30px);
   opacity: 0;
-  transition: all var(--transition-smooth);
+  transition: transform var(--timing-smooth), opacity var(--timing-smooth);
 }
 
 .star {
