@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import gsap from "gsap";
 import styles from "./SurahFavorites.module.css";
 import { useTheme } from "@/hooks/useTheme";
 import CloseIcon from '@mui/icons-material/Close';
@@ -74,19 +73,6 @@ export default function VerseFavorites() {
     window.addEventListener(EVENT_NAME, handleFavoriteChange as EventListener);
     return () => window.removeEventListener(EVENT_NAME, handleFavoriteChange as EventListener);
   }, []);
-
-  // Animate favorites list on change
-  useEffect(() => {
-    if (listRef.current?.children.length) {
-      gsap.from(listRef.current.children, {
-        opacity: 0,
-        y: -6,
-        stagger: 0.04,
-        duration: 0.28,
-        ease: "power2.out"
-      });
-    }
-  }, [favorites]);
 
   // Cleanup timeout on unmount
   useEffect(() => {

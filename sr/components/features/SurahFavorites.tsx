@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
 import { surahs } from "@/data/surahs";
 import styles from "./SurahFavorites.module.css";
   import CloseIcon from '@mui/icons-material/Close';
@@ -49,14 +48,6 @@ export default function SurahFavorites({ onSelect }: { onSelect?: (id: number) =
   };
 
   const listRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    try {
-      if (listRef.current) {
-        gsap.from(listRef.current.children, { opacity: 1, y: 0, stagger: 0.04, duration: 0.28, ease: "none" });
-      }
-    } catch (e) {}
-  }, [favorites]);
 
   const favList = favorites
     .map((id) => surahs.find((s) => s.id === id))
