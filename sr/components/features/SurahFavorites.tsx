@@ -52,8 +52,14 @@ export default function SurahFavorites({ onSelect }: { onSelect?: (id: number) =
 
   useEffect(() => {
     try {
-      if (listRef.current) {
-        gsap.from(listRef.current.children, { opacity: 0, y: -6, stagger: 0.04, duration: 0.28, ease: "power2.out" });
+      if (listRef.current && favorites.length > 0) {
+        gsap.from(listRef.current.children, { 
+          opacity: 0, 
+          y: -10, 
+          stagger: 0.03, 
+          duration: 0.3, 
+          ease: "back.out(1.7)" 
+        });
       }
     } catch (e) {}
   }, [favorites]);

@@ -77,13 +77,13 @@ export default function VerseFavorites() {
 
   // Animate favorites list on change
   useEffect(() => {
-    if (listRef.current?.children.length) {
+    if (listRef.current?.children.length && favorites.length > 0) {
       gsap.from(listRef.current.children, {
         opacity: 0,
-        y: -6,
-        stagger: 0.04,
-        duration: 0.28,
-        ease: "power2.out"
+        y: -10,
+        stagger: 0.03,
+        duration: 0.3,
+        ease: "back.out(1.7)"
       });
     }
   }, [favorites]);
