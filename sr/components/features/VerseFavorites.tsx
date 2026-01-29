@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import gsap from "gsap";
 import styles from "./SurahFavorites.module.css";
 import { useTheme } from "@/hooks/useTheme";
 import CloseIcon from '@mui/icons-material/Close';
@@ -58,6 +59,19 @@ export default function VerseFavorites() {
   const listRef = useRef<HTMLDivElement | null>(null);
   const isNavigatingRef = useRef(false);
   const navigationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    try {
+      if (listRef.current && favorites.length > 0) {
+        gsap.from(listRef.current.children, {
+          y: 10,
+          stagger: 0.05,
+          duration: 0.4,
+          ease: "power2.out"
+        });
+      }
+    } catch (e) {}
+  }, [favorites]);
 
   // Initialize favorites from localStorage on mount
   useEffect(() => {
