@@ -26,7 +26,7 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd sr && npm run dev"
+args = "cd sr && npm install && npm run dev -- -p 5000 --hostname 0.0.0.0"
 waitForPort = 5000
 
 [deployment]
