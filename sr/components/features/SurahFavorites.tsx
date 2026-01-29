@@ -53,7 +53,7 @@ export default function SurahFavorites({ onSelect }: { onSelect?: (id: number) =
   useEffect(() => {
     try {
       if (listRef.current) {
-        gsap.from(listRef.current.children, { opacity: 0, y: -6, stagger: 0.04, duration: 0.28, ease: "power2.out" });
+        gsap.from(listRef.current.children, { opacity: 1, y: 0, stagger: 0.04, duration: 0.28, ease: "none" });
       }
     } catch (e) {}
   }, [favorites]);
@@ -72,17 +72,11 @@ export default function SurahFavorites({ onSelect }: { onSelect?: (id: number) =
           {favList.length === 0 && <div className={styles.empty}>لا توجد سور مفضلة بعد</div>}
           {favList.map((s) => (
             <div key={s.id} className={styles.item} onClick={(e) => handleItemClick(e, s.id)}>
-              <span className={styles.id}>{s.id}</span>
-              <span className={styles.name}>{s.name}</span>
-              <button 
-                className={styles.remove} 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggle(s.id);
-                }} 
-                title="إزالة من المفضلة"
-              >
-                <CloseIcon sx={{ fontSize: 14 }} />
+              <span className={styles.name}>
+                {s.id}. {s.name}
+              </span>
+              <button className={styles.remove} onClick={() => toggle(s.id)} title="إزالة من المفضلة">
+                <CloseIcon fontSize="small" />
               </button>
             </div>
           ))}
