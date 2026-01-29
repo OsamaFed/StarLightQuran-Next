@@ -123,13 +123,6 @@ const prevCategory = currentIndex > 0 ? allCategories[currentIndex - 1] : null
                 variants={itemVariants}
               >
                 <p className={styles.adhkarText}>{item.text}</p>
-                {item.count > 1 && (
-                  <div className={styles.adhkarMeta}>
-                    <span className={styles.countBadge}>
-                      التكرار: {item.count} مرات
-                    </span>
-                  </div>
-                )}
               </motion.div>
             ))}
           </motion.div>

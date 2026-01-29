@@ -122,13 +122,6 @@ export default function DuaCategoryPage() {
                 variants={itemVariants}
               >
                 <p className={styles.adhkarText}>{item.text}</p>
-                {item.count > 1 && (
-                  <div className={styles.adhkarMeta}>
-                    <span className={styles.countBadge}>
-                      التكرار: {item.count} مرات
-                    </span>
-                  </div>
-                )}
               </motion.div>
             ))}
           </motion.div>
