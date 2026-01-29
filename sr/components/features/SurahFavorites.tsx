@@ -72,11 +72,17 @@ export default function SurahFavorites({ onSelect }: { onSelect?: (id: number) =
           {favList.length === 0 && <div className={styles.empty}>لا توجد سور مفضلة بعد</div>}
           {favList.map((s) => (
             <div key={s.id} className={styles.item} onClick={(e) => handleItemClick(e, s.id)}>
-              <span className={styles.name}>
-                {s.id}. {s.name}
-              </span>
-              <button className={styles.remove} onClick={() => toggle(s.id)} title="إزالة من المفضلة">
-                <CloseIcon fontSize="small" />
+              <span className={styles.id}>{s.id}</span>
+              <span className={styles.name}>{s.name}</span>
+              <button 
+                className={styles.remove} 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggle(s.id);
+                }} 
+                title="إزالة من المفضلة"
+              >
+                <CloseIcon sx={{ fontSize: 14 }} />
               </button>
             </div>
           ))}
