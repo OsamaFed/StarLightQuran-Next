@@ -72,6 +72,9 @@ const ADHKAR_CATEGORY_PATTERNS = [
   'الصلاة على النبي'
 ];
 
+// Caching variable
+let cachedData: CategorizedData | null = null;
+
 function containsMorningKeywords(text: string): boolean {
   return MORNING_SPECIFIC_KEYWORDS.some(keyword => text.includes(keyword));
 }
@@ -86,11 +89,11 @@ function isMorningAndEveningCategory(category: string): boolean {
 
 function isDuaCategory(category: string): boolean {
   const lowerCategory = category.trim();
-  
+
   if (isExplicitAdhkarCategory(lowerCategory)) {
     return false;
   }
-  
+
   return lowerCategory.startsWith('دعاء') || 
          lowerCategory.startsWith('الدعاء') ||
          lowerCategory.includes('دعاء') ||
@@ -103,34 +106,36 @@ function isExplicitAdhkarCategory(category: string): boolean {
   if (GENERAL_ADHKAR_CATEGORIES.includes(category)) {
     return true;
   }
-  
+
   return ADHKAR_CATEGORY_PATTERNS.some(pattern => category.includes(pattern));
 }
 
-let memoizedData: CategorizedData | null = null;
-
 export function categorizeAdhkar(): CategorizedData {
-  if (memoizedData) return memoizedData;
+  // Return cached data if available
+  if (cachedData) {
+    return cachedData;
+  }
+
   const data = adhkarData as AdhkarCategory[];
-  
+
   const adhkarSabah: AdhkarCategory[] = [];
   const adhkarMasa: AdhkarCategory[] = [];
   const adhkarGeneral: AdhkarCategory[] = [];
   const duas: AdhkarCategory[] = [];
-  
+
   for (const item of data) {
     const category = item.category;
-    
+
     if (isMorningAndEveningCategory(category)) {
       const morningOnlyItems: typeof item.array = [];
       const eveningOnlyItems: typeof item.array = [];
       const sharedItems: typeof item.array = [];
-      
+
       for (const adhkar of item.array) {
         const text = adhkar.text;
         const hasMorning = containsMorningKeywords(text);
         const hasEvening = containsEveningKeywords(text);
-        
+
         if (hasMorning && hasEvening) {
           sharedItems.push(adhkar);
         } else if (hasMorning && !hasEvening) {
@@ -141,10 +146,10 @@ export function categorizeAdhkar(): CategorizedData {
           sharedItems.push(adhkar);
         }
       }
-      
+
       const sabahItems = [...sharedItems, ...morningOnlyItems];
       const masaItems = [...sharedItems, ...eveningOnlyItems];
-      
+
       if (sabahItems.length > 0) {
         adhkarSabah.push({
           ...item,
@@ -152,7 +157,7 @@ export function categorizeAdhkar(): CategorizedData {
           array: sabahItems
         });
       }
-      
+
       if (masaItems.length > 0) {
         adhkarMasa.push({
           ...item,
@@ -168,14 +173,18 @@ export function categorizeAdhkar(): CategorizedData {
       duas.push(item);
     }
   }
-  
-  memoizedData = {
+
+  const result = {
     adhkarSabah,
     adhkarMasa,
     adhkarGeneral: adhkarGeneral.sort((a, b) => a.category.localeCompare(b.category, 'ar')),
     duas: duas.sort((a, b) => a.category.localeCompare(b.category, 'ar'))
   };
-  return memoizedData;
+
+  // Cache the result
+  cachedData = result;
+
+  return result;
 }
 
 export function getAdhkarSabah(): AdhkarCategory[] {
@@ -190,13 +199,10 @@ export function getAdhkarGeneral(): AdhkarCategory[] {
   return categorizeAdhkar().adhkarGeneral;
 }
 
-let memoizedDuas: AdhkarCategory[] | null = null;
-
 export function getDuas(): AdhkarCategory[] {
-  if (memoizedDuas) return memoizedDuas;
   const categorized = categorizeAdhkar();
   const duas = categorized.duas;
-  
+
   const sampleDuas = [
     {
       id: 1001,
@@ -338,11 +344,10 @@ export function getDuas(): AdhkarCategory[] {
   ] as AdhkarCategory[];
 
   const combined = [...duas, ...sampleDuas];
-  
+
   // Filter out duplicates and sort by category name
   const uniqueDuas = Array.from(new Map(combined.map(item => [item.category, item])).values());
-  memoizedDuas = uniqueDuas.sort((a, b) => a.category.localeCompare(b.category, 'ar'));
-  return memoizedDuas;
+  return uniqueDuas.sort((a, b) => a.category.localeCompare(b.category, 'ar'));
 }
 
 export function getTotalItemsCount(categories: AdhkarCategory[]): number {
