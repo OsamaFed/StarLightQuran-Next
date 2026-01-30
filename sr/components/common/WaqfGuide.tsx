@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './WaqfGuide.module.css';
 
 interface WaqfGuideProps {

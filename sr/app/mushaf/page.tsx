@@ -5,12 +5,11 @@ import gsap from "gsap";
 import { surahs } from "@/data/surahs";
 import { useQuran } from "@/hooks/useQuran";
 import { useTheme } from "@/hooks/useTheme";
-import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { PageHeader } from "@/components/layout";
 import { SearchInput, Pagination, ScrollToTop } from "@/components/common";
 import { SurahSelector, VerseCard, SurahFavorites, SurahStarButton, SearchResults } from "@/components/features";
 import VerseFavorites from "@/components/features/VerseFavorites";
-import { FontControls, DarkModeToggle } from "@/components/ui";
+import { FontControls } from "@/components/ui";
 import { WaqfGuide } from "@/components/common";
 import styles from "./mushaf.module.css";
 
@@ -32,8 +31,6 @@ export default function MushafPage() {
     nextSurah,
     prevSurah,
   } = useQuran();
-
-  useScrollRestoration("quran", [loading, currentSurah]);
 
   const [fontSize, setFontSize] = useState(24);
   const [showWaqfGuide, setShowWaqfGuide] = useState(false);

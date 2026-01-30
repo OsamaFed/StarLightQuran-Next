@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import styles from "./SearchResults.module.css";
 
 interface Surah {

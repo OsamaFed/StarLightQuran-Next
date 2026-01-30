@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { useTheme } from "@/hooks/useTheme";
 import OptionCard from "@/components/layout/OptionCard";
 import LightModeToggle from "@/components/ui/LightModeToggle";
@@ -10,10 +9,8 @@ import styles from "./page.module.css";
 import gsap from "gsap";
 
 export default function Home() {
-  const router = useRouter();
   const { isDarkMode, toggleDarkMode } = useTheme();
   const headerRef = useRef(null);
-  const cardsRef = useRef(null);
   const prayerRef = useRef(null);
 
   useEffect(() => {
@@ -85,7 +82,7 @@ export default function Home() {
           <PrayerTimes isDarkMode={isDarkMode} />
         </div>
 
-        <div className={styles.cardsGrid} ref={cardsRef}>
+        <div className={styles.cardsGrid}>
           {sections.map((section, index) => (
             <div key={index} className="option-card-anim">
               <OptionCard
