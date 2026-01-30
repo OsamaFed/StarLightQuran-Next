@@ -107,7 +107,10 @@ function isExplicitAdhkarCategory(category: string): boolean {
   return ADHKAR_CATEGORY_PATTERNS.some(pattern => category.includes(pattern));
 }
 
+let memoizedData: CategorizedData | null = null;
+
 export function categorizeAdhkar(): CategorizedData {
+  if (memoizedData) return memoizedData;
   const data = adhkarData as AdhkarCategory[];
   
   const adhkarSabah: AdhkarCategory[] = [];
@@ -166,12 +169,13 @@ export function categorizeAdhkar(): CategorizedData {
     }
   }
   
-  return {
+  memoizedData = {
     adhkarSabah,
     adhkarMasa,
     adhkarGeneral: adhkarGeneral.sort((a, b) => a.category.localeCompare(b.category, 'ar')),
     duas: duas.sort((a, b) => a.category.localeCompare(b.category, 'ar'))
   };
+  return memoizedData;
 }
 
 export function getAdhkarSabah(): AdhkarCategory[] {
@@ -186,7 +190,10 @@ export function getAdhkarGeneral(): AdhkarCategory[] {
   return categorizeAdhkar().adhkarGeneral;
 }
 
+let memoizedDuas: AdhkarCategory[] | null = null;
+
 export function getDuas(): AdhkarCategory[] {
+  if (memoizedDuas) return memoizedDuas;
   const categorized = categorizeAdhkar();
   const duas = categorized.duas;
   
@@ -334,7 +341,8 @@ export function getDuas(): AdhkarCategory[] {
   
   // Filter out duplicates and sort by category name
   const uniqueDuas = Array.from(new Map(combined.map(item => [item.category, item])).values());
-  return uniqueDuas.sort((a, b) => a.category.localeCompare(b.category, 'ar'));
+  memoizedDuas = uniqueDuas.sort((a, b) => a.category.localeCompare(b.category, 'ar'));
+  return memoizedDuas;
 }
 
 export function getTotalItemsCount(categories: AdhkarCategory[]): number {
