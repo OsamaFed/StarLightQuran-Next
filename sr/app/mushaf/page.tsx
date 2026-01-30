@@ -221,7 +221,7 @@ export default function MushafPage() {
                     <li>مشاركة الآية مع غيرك</li>
                     <li>نسخ نص الآية</li>
                   </ul>
-                  <p className={styles.introFooter}>خذ وقتك مع الآيات… فالقرآن يُقرأ بتدبّر 🤍</p>
+                  <p className={styles.introFooter}>خذ وقتك مع الآيات… فالقرآن يُقرأ بتدبّر </p>
                 </div>
               )}
               {currentSurah && (
