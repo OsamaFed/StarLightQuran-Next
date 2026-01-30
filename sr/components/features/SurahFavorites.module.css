@@ -32,7 +32,7 @@
   list-style: none;
   transition: color 0.2s ease;
   text-align: center;
-  font-family: 'Amiri Quran', 'KoGaliModern', sans-serif;
+  font-family: 'KoGaliModern', sans-serif;
 }
 
 .summary:hover {
@@ -105,7 +105,7 @@
   flex: 1;
   padding: 0;
   text-decoration: none;
-  font-family: 'Amiri Quran', 'KoGaliModern', sans-serif;
+  font-family: 'Amiri Quran', serif;
 }
 
 .remove {
