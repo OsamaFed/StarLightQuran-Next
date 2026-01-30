@@ -184,7 +184,7 @@ export default function VerseFavorites() {
                 className={styles.name}
                 title={`اذهب إلى ${verse.surahName}:${verse.verseNumber}`}
               >
-                {verse.surahName}:{verse.verseNumber}
+                {verse.surahName.replace("سورة ", "").trim()}.{verse.verseNumber}
               </span>
               <button
                 className={styles.remove}
