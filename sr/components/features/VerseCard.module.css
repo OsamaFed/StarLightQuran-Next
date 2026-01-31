@@ -1,14 +1,14 @@
 .verse {
-  margin-bottom: 24px;
-  padding: 20px;
-  padding-bottom: 72px;
-  border-radius: var(--radius-lg);
+  margin-bottom: 32px;
+  padding: 32px;
+  padding-bottom: 80px;
+  border-radius: var(--radius-xl);
   position: relative;
   background: var(--glass-effect-bg);
   backdrop-filter: var(--glass-blur-lg);
   -webkit-backdrop-filter: var(--glass-blur-lg);
   border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   animation: fadeInUp 0.5s ease-out backwards;
   animation-delay: calc(var(--verse-index, 0) * 0.05s);
   user-select: none;
@@ -19,16 +19,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   background: var(--glass-effect-bg);
   backdrop-filter: var(--glass-blur-lg);
   -webkit-backdrop-filter: var(--glass-blur-lg);
   border: none;
   color: var(--text-color-white);
   border-radius: var(--radius-full);
-  margin: 0 0 0 16px;
-  font-size: 2rem;
+  margin: 0 0 0 20px;
+  font-size: 2.5rem;
   font-weight: bold;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   user-select: none;
@@ -48,7 +48,7 @@
 
 .verseText {
   display: inline;
-  line-height: 2.4;
+  line-height: 2.8;
   font-size: inherit;
   font-family: 'Othmani', 'Amiri Quran', 'Amiri', serif !important;
 }
@@ -57,15 +57,15 @@
   background: var(--brand-primary);
   color: #ffffff;
   border: none;
-  padding: 10px 20px;
+  padding: 12px 24px;
   border-radius: var(--radius-full);
   cursor: pointer;
   font-family: 'KoGaliModern', sans-serif;
   transition: all var(--timing-base);
-  font-size: 0.9rem;
+  font-size: 1rem;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
@@ -82,16 +82,16 @@
 }
 
 .tafseerText {
-  margin-top: 20px;
-  padding: 20px;
+  margin-top: 24px;
+  padding: 24px;
   background: var(--glass-effect-bg);
   border-right: none;
-  border-radius: var(--radius-md);
-  font-size: 0.95rem;
+  border-radius: var(--radius-lg);
+  font-size: 1.1rem;
   line-height: 1.8;
   color: var(--text-color-white);
   animation: fadeInScale 0.3s ease-out;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 }
 
 .contextMenu {
@@ -114,6 +114,19 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@media (max-width: 1024px) {
+  .verse {
+    padding: 24px;
+    padding-bottom: 72px;
+  }
+  
+  .verseNumber {
+    width: 56px;
+    height: 56px;
+    font-size: 2rem;
   }
 }
 
