@@ -73,45 +73,43 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
         exportBg = computedBg.trim() || "#0D1B2A";
         gradientBg = "radial-gradient(circle at 20% 30%, rgba(74, 144, 226, 0.25) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(147, 112, 219, 0.25) 0%, transparent 50%)";
       } else {
-        // ══════════════════════════════════════════════════
-        // ألوان عميقة بدون شفافية / بهتان
-        // ══════════════════════════════════════════════════
-        exportBg = "#4A5F8F"; // أزرق غامق
+        exportBg = "#6B7FB8";
 
         gradientBg = `
           radial-gradient(
             ellipse 900px 700px at 15% 20%,
-            rgba(80, 100, 160, 0.95) 0%,
-            rgba(80, 100, 160, 0.75) 30%,
-            rgba(60, 80, 140, 0.4) 55%
+            rgba(130, 100, 200, 0.85) 0%,
+            rgba(100, 130, 210, 0.65) 30%,
+            rgba(80, 150, 200, 0.35) 55%
           ),
           radial-gradient(
             ellipse 850px 750px at 85% 80%,
-            rgba(70, 110, 170, 0.9) 0%,
-            rgba(90, 130, 180, 0.6) 35%,
-            rgba(60, 100, 160, 0.3) 55%
+            rgba(140, 90, 180, 0.8) 0%,
+            rgba(110, 140, 220, 0.55) 35%,
+            rgba(90, 160, 210, 0.25) 55%
           ),
           radial-gradient(
             ellipse 700px 900px at 50% 100%,
-            rgba(85, 105, 155, 0.85) 0%,
-            rgba(75, 95, 150, 0.55) 40%,
-            rgba(50, 80, 130, 0.2) 60%
+            rgba(120, 110, 190, 0.75) 0%,
+            rgba(95, 145, 215, 0.5) 40%,
+            rgba(80, 155, 205, 0.2) 60%
           ),
           radial-gradient(
             ellipse 1000px 600px at 70% 30%,
-            rgba(75, 115, 165, 0.8) 0%,
-            rgba(60, 95, 150, 0.3) 50%
+            rgba(135, 95, 185, 0.7) 0%,
+            rgba(105, 150, 220, 0.3) 50%
           ),
           linear-gradient(
             135deg,
-            #3D4F7F 0%,
-            #4A5F8F 25%,
-            #5A6FA0 50%,
-            #4A5F8F 75%,
-            #3D4F7F 100%
+            #5B6FA8 0%,
+            #7B8FC8 25%,
+            #8BA0D5 50%,
+            #7B8FC8 75%,
+            #5B6FA8 100%
           )
         `;
       }
+
     } catch (e) {
       console.error("Error detecting theme:", e);
     }
