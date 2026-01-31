@@ -1,6 +1,6 @@
 .container {
   position: relative;
-  width: 200px;
+  width: 250px;
   background: transparent;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
@@ -11,8 +11,6 @@
   box-shadow: none;
   opacity: 1;
 }
-
-
 
 .arrow {
   width: 22px;
@@ -47,9 +45,9 @@
   color: white;
   border: none;
   outline: none;
-  padding: 14px 44px 14px 16px;
+  padding: 16px 48px 16px 20px;
   font-family: 'KoGaliModern', sans-serif;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
   border-radius: var(--radius-lg);
   width: 100%;
@@ -58,9 +56,11 @@
   transition: all var(--transition-base);
 }
 
-
-
-
+@media (max-width: 1024px) {
+  .container {
+    width: 200px;
+  }
+}
 
 @media (max-width: 768px) {
   .container {
