@@ -124,7 +124,7 @@
   color: #ffffff;
 }
 
-@media (max-width: 768px) {
+ @media (max-width: 768px) {
   .card {
     gap: 8px;
     padding: 10px;
@@ -138,8 +138,8 @@
   .pageSelect {
     padding: 6px 8px;
     font-size: 0.9rem;
-  }
-}
+  } 
+ } 
 
 @media (max-width: 480px) {
   .card {
