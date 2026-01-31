@@ -649,7 +649,7 @@ export default function VerseSpeedDial({
 
   return (
     <>
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', overflow: 'hidden', zIndex: 0 }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', overflow: 'hidden', borderRadius: 12, zIndex: 0 }}>
         {isDarkMode ? (
           <Iridescence color={[0.05, 0.1, 0.2]} speed={0.5} amplitude={0.05} />
         ) : (
@@ -663,9 +663,7 @@ export default function VerseSpeedDial({
           role="toolbar"
           aria-label="خيارات الآية"
           style={{
-            position: "absolute",
-            bottom: 6,
-            left: 6,
+            position: "relative",
             display: "flex",
             gap: 8,
             padding: 8,
