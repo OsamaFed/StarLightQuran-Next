@@ -13,6 +13,8 @@ import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import gsap from "gsap";
 import { useTheme } from "@/hooks/useTheme";
+import Aurora from "../ui/Aurora";
+import Iridescence from "../ui/Iridescence";
 
 interface VerseSpeedDialProps {
   verseId: string;
@@ -647,6 +649,13 @@ export default function VerseSpeedDial({
 
   return (
     <>
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', overflow: 'hidden', zIndex: 0 }}>
+        {isDarkMode ? (
+          <Iridescence color={[0.05, 0.1, 0.2]} speed={0.5} amplitude={0.05} />
+        ) : (
+          <Aurora colorStops={['#fdfbfb', '#ebedee', '#fdfbfb']} amplitude={0.2} blend={0.8} />
+        )}
+      </div>
       {menuVisible && (
         <div
           ref={menuRef}
