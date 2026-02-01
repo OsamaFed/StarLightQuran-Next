@@ -230,9 +230,9 @@ export default function VerseOfTheDay({
             >
               <p className={styles.verseText}>{verse.text}</p>
               <div className={styles.verseReference}>
-                <span className={styles.surahName}>{verse.surah.name}</span>
+                <span className={styles.surahName}>{verse.surah?.name || ""}</span>
                 <span className={styles.verseNumber}>
-                  {verse.numberInSurah}:{verse.surah.number}
+                  {verse.numberInSurah}:{verse.surah?.number || ""}
                 </span>
               </div>
             </motion.div>
