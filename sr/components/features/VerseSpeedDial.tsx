@@ -1,27 +1,25 @@
-"use client";
+“use client”;
 
-import { useState, useEffect, useRef } from "react";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
-import CircularProgress from "@mui/material/CircularProgress";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import ShareIcon from "@mui/icons-material/Share";
-import SaveAltIcon from "@mui/icons-material/SaveAlt";
-import CheckIcon from "@mui/icons-material/Check";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
-import StarIcon from "@mui/icons-material/Star";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
-import gsap from "gsap";
-import { useTheme } from "@/hooks/useTheme";
-import { Aurora, Iridescence } from "@/components/ui";
-import { createRoot } from 'react-dom/client';
+import { useState, useEffect, useRef } from “react”;
+import IconButton from “@mui/material/IconButton”;
+import Tooltip from “@mui/material/Tooltip”;
+import CircularProgress from “@mui/material/CircularProgress”;
+import ContentCopyIcon from “@mui/icons-material/ContentCopy”;
+import ShareIcon from “@mui/icons-material/Share”;
+import SaveAltIcon from “@mui/icons-material/SaveAlt”;
+import CheckIcon from “@mui/icons-material/Check”;
+import MenuBookIcon from “@mui/icons-material/MenuBook”;
+import StarIcon from “@mui/icons-material/Star”;
+import StarBorderIcon from “@mui/icons-material/StarBorder”;
+import gsap from “gsap”;
+import { useTheme } from “@/hooks/useTheme”;
 
 interface VerseSpeedDialProps {
-  verseId: string;
-  verseText: string;
-  verseNumber: number;
-  surahName: string;
-  surahId: number;
+verseId: string;
+verseText: string;
+verseNumber: number;
+surahName: string;
+surahId: number;
 }
 
 // Constants
@@ -33,706 +31,764 @@ const TAFSIR_LOADING_TIMEOUT = 2000;
 
 // Helper: Close menu and clear global state
 const closeMenuAndClear = (verseId: string) => {
-  if ((window as any).__currentVerseSpeedDialOpenId === verseId) {
-    delete (window as any).__currentVerseSpeedDialOpenId;
-  }
+if ((window as any).__currentVerseSpeedDialOpenId === verseId) {
+delete (window as any).__currentVerseSpeedDialOpenId;
+}
 };
 
-async function captureElementAsBlob(el: HTMLElement, isDarkMode: boolean): Promise<Blob | null> {
-  try {
-    const html2canvas = (await import("html2canvas")).default;
-    const clone = el.cloneNode(true) as HTMLElement;
-    clone.setAttribute("dir", "rtl");
-    clone.style.direction = "rtl";
+async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
+try {
+const html2canvas = (await import(“html2canvas”)).default;
+const clone = el.cloneNode(true) as HTMLElement;
+clone.setAttribute(“dir”, “rtl”);
+clone.style.direction = “rtl”;
 
-    // Hide speed dial buttons in the clone
-    const speedDialButtons = clone.querySelectorAll('[data-verse-speedial], [class*="SpeedDial"], [data-html2canvas-ignore="true"]');
-    speedDialButtons.forEach((btn) => {
-      (btn as HTMLElement).style.display = "none";
-    });
+```
+// Hide speed dial buttons in the clone
+const speedDialButtons = clone.querySelectorAll('[data-verse-speedial], [class*="SpeedDial"], [data-html2canvas-ignore="true"]');
+speedDialButtons.forEach((btn) => {
+  (btn as HTMLElement).style.display = "none";
+});
 
-    const rect = el.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
+const rect = el.getBoundingClientRect();
+const width = rect.width;
+const height = rect.height;
 
-    clone.style.width = `${width}px`;
-    clone.style.height = `${height}px`;
-    clone.style.boxSizing = "border-box";
-    clone.style.margin = "0";
-    clone.style.padding = clone.style.padding || "20px";
-    clone.style.color = "#ffffff";
+clone.style.width = `${width}px`;
+clone.style.height = `${height}px`;
+clone.style.boxSizing = "border-box";
+clone.style.margin = "0";
+clone.style.padding = clone.style.padding || "20px";
+clone.style.color = "inherit";
 
-    // إنشاء الـ container
-    const container = document.createElement("div");
-    container.style.position = "fixed";
-    container.style.left = "-9999px";
-    container.style.top = "0";
-    container.style.width = `${width}px`;
-    container.style.height = `${height}px`;
-    container.style.zIndex = "2147483647";
-    container.style.overflow = "hidden";
+let isDarkMode = false;
+let exportBg: string = "#FAF6F3";
+let gradientBg: string = "";
 
-    // إنشاء الـ background container
-    const backgroundContainer = document.createElement("div");
-    backgroundContainer.style.position = "absolute";
-    backgroundContainer.style.inset = "0";
-    backgroundContainer.style.zIndex = "-1";
+try {
+  const theme = document.documentElement.getAttribute("data-theme") || (document.body.classList.contains("darkMode") ? "dark" : "light");
+  isDarkMode = theme === "dark";
+  const computedBg = getComputedStyle(document.documentElement).getPropertyValue("--background") || "";
 
-    container.appendChild(backgroundContainer);
+  if (isDarkMode) {
+    exportBg = computedBg.trim() || "#0D1B2A";
+    gradientBg = "radial-gradient(circle at 20% 30%, rgba(74, 144, 226, 0.25) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(147, 112, 219, 0.25) 0%, transparent 50%)";
+  } else {
+    exportBg = "rgb(108, 122, 196)";
 
-    // رندر الـ component المناسب
-    const root = createRoot(backgroundContainer);
-    if (isDarkMode) {
-      root.render(<Aurora amplitude={0} />);
-    } else {
-      root.render(<Iridescence amplitude={0} />);
-    }
-
-    // انتظر الـ render
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    container.appendChild(clone);
-    document.body.appendChild(container);
-
-    try {
-      const canvas = await html2canvas(container, {
-        scale: 4,
-        useCORS: true,
-        logging: false,
-        allowTaint: true,
-        imageTimeout: 5000,
-        windowHeight: height,
-        windowWidth: width,
-      });
-
-      return new Promise((resolve) => {
-        canvas.toBlob((blob) => {
-          root.unmount();
-          resolve(blob);
-        }, "image/png", 1);
-      });
-    } finally {
-      container.remove();
-    }
-  } catch (error) {
-    console.error("Error capturing element as blob:", error);
-    return null;
+    gradientBg = `
+      radial-gradient(
+        circle at 20% 25%,
+        rgba(186, 157, 235, 0.85) 0%,
+        transparent 55%
+      ),
+      radial-gradient(
+        circle at 80% 75%,
+        rgba(145, 197, 235, 0.85) 0%,
+        transparent 60%
+      ),
+      linear-gradient(
+        135deg,
+        rgb(132, 158, 235) 0%,
+        rgb(108, 122, 196) 45%,
+        rgb(145, 197, 235) 100%
+      )
+    `;
   }
+} catch (e) {
+  console.error("Error detecting theme:", e);
+}
+
+const container = document.createElement("div");
+container.style.position = "fixed";
+container.style.left = "-9999px";
+container.style.top = "0";
+container.style.width = `${width}px`;
+container.style.height = `${height}px`;
+container.style.zIndex = "2147483647";
+container.style.backgroundColor = exportBg;
+container.style.backgroundImage = gradientBg;
+container.style.backgroundAttachment = "fixed";
+container.style.overflow = "hidden";
+
+container.appendChild(clone);
+document.body.appendChild(container);
+
+try {
+  const canvas = await html2canvas(container, {
+    backgroundColor: exportBg,
+    scale: 4,
+    useCORS: true,
+    logging: false,
+    allowTaint: true,
+    imageTimeout: 5000,
+    windowHeight: height,
+    windowWidth: width,
+  });
+
+  return new Promise((resolve) => {
+    canvas.toBlob((blob) => resolve(blob), "image/png", 1);
+  });
+} finally {
+  container.remove();
+}
+```
+
+} catch (error) {
+console.error(“Error capturing element as blob:”, error);
+return null;
+}
 }
 
 export default function VerseSpeedDial({
-  verseId,
-  verseText,
-  verseNumber,
-  surahName,
-  surahId,
+verseId,
+verseText,
+verseNumber,
+surahName,
+surahId,
 }: VerseSpeedDialProps) {
-  const { isDarkMode } = useTheme();
-  const lastObjectUrlRef = useRef<string | null>(null);
-  const [menuVisible, setMenuVisible] = useState(false);
-  const [isCopying, setIsCopying] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
-  const [isTafsirLoading, setIsTafsirLoading] = useState(false);
-  const [isTafsirOpen, setIsTafsirOpen] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
+const { isDarkMode } = useTheme();
+const lastObjectUrlRef = useRef<string | null>(null);
+const [menuVisible, setMenuVisible] = useState(false);
+const [isCopying, setIsCopying] = useState(false);
+const [isDownloading, setIsDownloading] = useState(false);
+const [isFavorited, setIsFavorited] = useState(false);
+const [isTafsirLoading, setIsTafsirLoading] = useState(false);
+const [isTafsirOpen, setIsTafsirOpen] = useState(false);
+const [isPressed, setIsPressed] = useState(false);
 
-  const menuRef = useRef<HTMLDivElement | null>(null);
-  const longPressTimer = useRef<number | null>(null);
-  const scrollTimeoutRef = useRef<number | null>(null);
-  const startTouchRef = useRef<{ x: number; y: number; time: number } | null>(null);
-  const isLongPressTriggeredRef = useRef(false);
-  const copyTimeoutRef = useRef<number | null>(null);
-  const favoriteTimeoutRef = useRef<number | null>(null);
-  const tafsirTimeoutRef = useRef<number | null>(null);
+const menuRef = useRef<HTMLDivElement | null>(null);
+const longPressTimer = useRef<number | null>(null);
+const scrollTimeoutRef = useRef<number | null>(null);
+const startTouchRef = useRef<{ x: number; y: number; time: number } | null>(null);
+const isLongPressTriggeredRef = useRef(false);
+const copyTimeoutRef = useRef<number | null>(null);
+const favoriteTimeoutRef = useRef<number | null>(null);
+const tafsirTimeoutRef = useRef<number | null>(null);
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (lastObjectUrlRef.current) {
-        try {
-          URL.revokeObjectURL(lastObjectUrlRef.current);
-        } catch (e) {
-          console.error("Error revoking object URL:", e);
-        }
-        lastObjectUrlRef.current = null;
-      }
-      if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
-      if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current);
-      if (copyTimeoutRef.current) window.clearTimeout(copyTimeoutRef.current);
-      if (favoriteTimeoutRef.current) window.clearTimeout(favoriteTimeoutRef.current);
-      if (tafsirTimeoutRef.current) window.clearTimeout(tafsirTimeoutRef.current);
-      closeMenuAndClear(verseId);
+// Cleanup on unmount
+useEffect(() => {
+return () => {
+if (lastObjectUrlRef.current) {
+try {
+URL.revokeObjectURL(lastObjectUrlRef.current);
+} catch (e) {
+console.error(“Error revoking object URL:”, e);
+}
+lastObjectUrlRef.current = null;
+}
+if (longPressTimer.current) window.clearTimeout(longPressTimer.current);
+if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current);
+if (copyTimeoutRef.current) window.clearTimeout(copyTimeoutRef.current);
+if (favoriteTimeoutRef.current) window.clearTimeout(favoriteTimeoutRef.current);
+if (tafsirTimeoutRef.current) window.clearTimeout(tafsirTimeoutRef.current);
+closeMenuAndClear(verseId);
+};
+}, [verseId]);
+
+// معالج لمنع فتح عدة قائمات في نفس الوقت
+useEffect(() => {
+const handleOtherMenuOpened = (ev: Event) => {
+try {
+const d = (ev as CustomEvent).detail;
+if (d?.verseId !== verseId && menuVisible) {
+setMenuVisible(false);
+closeMenuAndClear(verseId);
+}
+} catch (e) {
+console.error(“Error handling other menu opened:”, e);
+}
+};
+
+```
+window.addEventListener('versespeeddial:opened', handleOtherMenuOpened as EventListener);
+return () => {
+  window.removeEventListener('versespeeddial:opened', handleOtherMenuOpened as EventListener);
+};
+```
+
+}, [verseId, menuVisible]);
+
+// Load favorite status on mount
+useEffect(() => {
+const updateFavoriteStatus = () => {
+try {
+const raw = localStorage.getItem(“favoriteVerses”);
+if (!raw) {
+setIsFavorited(false);
+return;
+}
+const favs = JSON.parse(raw);
+if (!Array.isArray(favs)) {
+setIsFavorited(false);
+return;
+}
+setIsFavorited(favs.some((v: any) => v.id === verseId));
+} catch (e) {
+console.error(“Error loading favorites:”, e);
+setIsFavorited(false);
+}
+};
+
+```
+updateFavoriteStatus();
+
+const handler = (ev: Event) => {
+  try {
+    const favs = (ev as CustomEvent).detail?.favorites as any[] | undefined;
+    if (Array.isArray(favs)) {
+      setIsFavorited(favs.some((v) => v.id === verseId));
+    }
+  } catch (e) {
+    console.error("Error handling favorite change:", e);
+  }
+};
+
+window.addEventListener("favoriteVerseChanged", handler as EventListener);
+return () => window.removeEventListener("favoriteVerseChanged", handler as EventListener);
+```
+
+}, [verseId]);
+
+useEffect(() => {
+const handleScroll = () => {
+if (scrollTimeoutRef.current)
+window.clearTimeout(scrollTimeoutRef.current);
+scrollTimeoutRef.current = window.setTimeout(() => {}, 200) as unknown as number;
+};
+window.addEventListener(“scroll”, handleScroll, { passive: true });
+return () => {
+window.removeEventListener(“scroll”, handleScroll);
+if (scrollTimeoutRef.current)
+window.clearTimeout(scrollTimeoutRef.current);
+};
+}, []);
+
+// Long press detection - محسّن للجوال
+useEffect(() => {
+const el = document.getElementById(verseId);
+if (!el) return;
+
+```
+// تحسين تجربة اللمس على الجوال
+el.style.webkitTouchCallout = "none";
+el.style.webkitUserSelect = "none";
+el.style.userSelect = "none";
+
+const start = (e: Event) => {
+  if (e instanceof TouchEvent && e.touches.length > 0) {
+    const touch = e.touches[0];
+    startTouchRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+      time: Date.now(),
     };
-  }, [verseId]);
+  } else if (e instanceof MouseEvent) {
+    startTouchRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      time: Date.now(),
+    };
+  }
 
-  // معالج لمنع فتح عدة قائمات في نفس الوقت
-  useEffect(() => {
-    const handleOtherMenuOpened = (ev: Event) => {
+  if (longPressTimer.current)
+    window.clearTimeout(longPressTimer.current);
+
+  isLongPressTriggeredRef.current = false;
+  setIsPressed(true);
+
+  longPressTimer.current = window.setTimeout(() => {
+    const elapsed = Date.now() - (startTouchRef.current?.time || 0);
+    if (elapsed < 200) return;
+
+    const current = (window as any).__currentVerseSpeedDialOpenId;
+    if (current && current !== verseId) return;
+
+    (window as any).__currentVerseSpeedDialOpenId = verseId;
+    isLongPressTriggeredRef.current = true;
+    setMenuVisible(true);
+
+    // Haptic feedback على الجوال
+    if ('vibrate' in navigator) {
       try {
-        const d = (ev as CustomEvent).detail;
-        if (d?.verseId !== verseId && menuVisible) {
-          setMenuVisible(false);
-          closeMenuAndClear(verseId);
-        }
+        navigator.vibrate(50);
       } catch (e) {
-        console.error("Error handling other menu opened:", e);
+        console.error("Vibration not supported:", e);
       }
-    };
+    }
 
-    window.addEventListener('versespeeddial:opened', handleOtherMenuOpened as EventListener);
-    return () => {
-      window.removeEventListener('versespeeddial:opened', handleOtherMenuOpened as EventListener);
-    };
-  }, [verseId, menuVisible]);
+    try {
+      window.dispatchEvent(new CustomEvent('versespeeddial:opened', { detail: { verseId } }));
+    } catch (e) {
+      console.error("Error dispatching opened event:", e);
+    }
+  }, LONG_PRESS_DELAY) as unknown as number;
+};
 
-  // Load favorite status on mount
-  useEffect(() => {
-    const updateFavoriteStatus = () => {
-      try {
-        const raw = localStorage.getItem("favoriteVerses");
-        if (!raw) {
-          setIsFavorited(false);
-          return;
-        }
-        const favs = JSON.parse(raw);
-        if (!Array.isArray(favs)) {
-          setIsFavorited(false);
-          return;
-        }
-        setIsFavorited(favs.some((v: any) => v.id === verseId));
-      } catch (e) {
-        console.error("Error loading favorites:", e);
-        setIsFavorited(false);
-      }
-    };
+const cancel = () => {
+  if (longPressTimer.current) {
+    window.clearTimeout(longPressTimer.current);
+    longPressTimer.current = null;
+  }
+  setIsPressed(false);
+  startTouchRef.current = null;
+};
 
-    updateFavoriteStatus();
+const handleTouchMove = (e: Event) => {
+  if (!startTouchRef.current || isLongPressTriggeredRef.current) return;
 
-    const handler = (ev: Event) => {
-      try {
-        const favs = (ev as CustomEvent).detail?.favorites as any[] | undefined;
-        if (Array.isArray(favs)) {
-          setIsFavorited(favs.some((v) => v.id === verseId));
-        }
-      } catch (e) {
-        console.error("Error handling favorite change:", e);
-      }
-    };
-
-    window.addEventListener("favoriteVerseChanged", handler as EventListener);
-    return () => window.removeEventListener("favoriteVerseChanged", handler as EventListener);
-  }, [verseId]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (scrollTimeoutRef.current)
-        window.clearTimeout(scrollTimeoutRef.current);
-      scrollTimeoutRef.current = window.setTimeout(() => {}, 200) as unknown as number;
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (scrollTimeoutRef.current)
-        window.clearTimeout(scrollTimeoutRef.current);
-    };
-  }, []);
-
-  // Long press detection - محسّن للجوال
-  useEffect(() => {
-    const el = document.getElementById(verseId);
-    if (!el) return;
-
-    // تحسين تجربة اللمس على الجوال
-    el.style.webkitTouchCallout = "none";
-    el.style.webkitUserSelect = "none";
-    el.style.userSelect = "none";
-
-    const start = (e: Event) => {
-      if (e instanceof TouchEvent && e.touches.length > 0) {
-        const touch = e.touches[0];
-        startTouchRef.current = {
-          x: touch.clientX,
-          y: touch.clientY,
-          time: Date.now(),
-        };
-      } else if (e instanceof MouseEvent) {
-        startTouchRef.current = {
-          x: e.clientX,
-          y: e.clientY,
-          time: Date.now(),
-        };
-      }
-
-      if (longPressTimer.current)
-        window.clearTimeout(longPressTimer.current);
-
-      isLongPressTriggeredRef.current = false;
-      setIsPressed(true);
-
-      longPressTimer.current = window.setTimeout(() => {
-        const elapsed = Date.now() - (startTouchRef.current?.time || 0);
-        if (elapsed < 200) return;
-
-        const current = (window as any).__currentVerseSpeedDialOpenId;
-        if (current && current !== verseId) return;
-
-        (window as any).__currentVerseSpeedDialOpenId = verseId;
-        isLongPressTriggeredRef.current = true;
-        setMenuVisible(true);
-
-        // Haptic feedback على الجوال
-        if ('vibrate' in navigator) {
-          try {
-            navigator.vibrate(50);
-          } catch (e) {
-            console.error("Vibration not supported:", e);
-          }
-        }
-
-        try {
-          window.dispatchEvent(new CustomEvent('versespeeddial:opened', { detail: { verseId } }));
-        } catch (e) {
-          console.error("Error dispatching opened event:", e);
-        }
-      }, LONG_PRESS_DELAY) as unknown as number;
-    };
-
-    const cancel = () => {
-      if (longPressTimer.current) {
-        window.clearTimeout(longPressTimer.current);
-        longPressTimer.current = null;
-      }
-      setIsPressed(false);
-      startTouchRef.current = null;
-    };
-
-    const handleTouchMove = (e: Event) => {
-      if (!startTouchRef.current || isLongPressTriggeredRef.current) return;
-
-      if (e instanceof TouchEvent && e.touches.length > 0) {
-        const touch = e.touches[0];
-        const deltaX = Math.abs(touch.clientX - startTouchRef.current.x);
-        const deltaY = Math.abs(touch.clientY - startTouchRef.current.y);
-        if (deltaX > MOVE_THRESHOLD || deltaY > MOVE_THRESHOLD) {
-          cancel();
-        }
-      }
-    };
-
-    // منع context menu على الجوال
-    const handleContextMenu = (e: Event) => {
-      e.preventDefault();
-      return false;
-    };
-
-    el.addEventListener("mousedown", start);
-    el.addEventListener("mouseup", cancel);
-    el.addEventListener("mouseleave", cancel);
-    el.addEventListener("touchstart", start, { passive: true });
-    el.addEventListener("touchend", cancel, { passive: true });
-    el.addEventListener("touchcancel", cancel, { passive: true });
-    el.addEventListener("touchmove", handleTouchMove, { passive: true });
-    el.addEventListener("contextmenu", handleContextMenu);
-
-    return () => {
-      el.style.webkitTouchCallout = "";
-      el.style.webkitUserSelect = "";
-      el.style.userSelect = "";
-
+  if (e instanceof TouchEvent && e.touches.length > 0) {
+    const touch = e.touches[0];
+    const deltaX = Math.abs(touch.clientX - startTouchRef.current.x);
+    const deltaY = Math.abs(touch.clientY - startTouchRef.current.y);
+    if (deltaX > MOVE_THRESHOLD || deltaY > MOVE_THRESHOLD) {
       cancel();
-      el.removeEventListener("mousedown", start);
-      el.removeEventListener("mouseup", cancel);
-      el.removeEventListener("mouseleave", cancel);
-      el.removeEventListener("touchstart", start);
-      el.removeEventListener("touchend", cancel);
-      el.removeEventListener("touchcancel", cancel);
-      el.removeEventListener("touchmove", handleTouchMove);
-      el.removeEventListener("contextmenu", handleContextMenu);
-    };
-  }, [verseId]);
-
-  // Apply press/hover feedback on the verse element
-  useEffect(() => {
-    const el = document.getElementById(verseId) as HTMLElement | null;
-    if (!el) return;
-
-    if (isPressed) {
-      el.style.transition = "background-color 120ms ease";
-      el.style.backgroundColor = isDarkMode
-        ? "rgba(255,255,255,0.04)"
-        : "rgba(0,0,0,0.04)";
-    } else {
-      el.style.backgroundColor = "";
     }
+  }
+};
 
-    return () => {
-      if (el) el.style.backgroundColor = "";
-    };
-  }, [isPressed, verseId, isDarkMode]);
+// منع context menu على الجوال
+const handleContextMenu = (e: Event) => {
+  e.preventDefault();
+  return false;
+};
 
-  // Detect if a tafsir panel is present/open
-  useEffect(() => {
-    const checkTafsir = () => {
-      const candidate = document.querySelector(
-        "#tafsir, .tafsir, [data-tafsir], [data-tafsir-open]"
-      ) as HTMLElement | null;
-      const open = !!candidate && candidate.offsetHeight > 0 && candidate.offsetParent !== null;
-      setIsTafsirOpen(open);
-    };
+el.addEventListener("mousedown", start);
+el.addEventListener("mouseup", cancel);
+el.addEventListener("mouseleave", cancel);
+el.addEventListener("touchstart", start, { passive: true });
+el.addEventListener("touchend", cancel, { passive: true });
+el.addEventListener("touchcancel", cancel, { passive: true });
+el.addEventListener("touchmove", handleTouchMove, { passive: true });
+el.addEventListener("contextmenu", handleContextMenu);
 
-    checkTafsir();
-    const mo = new MutationObserver(checkTafsir);
-    mo.observe(document.body, { childList: true, subtree: true, attributes: true });
-    window.addEventListener("resize", checkTafsir, { passive: true });
-    return () => {
-      mo.disconnect();
-      window.removeEventListener("resize", checkTafsir);
-    };
-  }, []);
+return () => {
+  el.style.webkitTouchCallout = "";
+  el.style.webkitUserSelect = "";
+  el.style.userSelect = "";
 
-  useEffect(() => {
-    if (!menuVisible || !menuRef.current) return;
+  cancel();
+  el.removeEventListener("mousedown", start);
+  el.removeEventListener("mouseup", cancel);
+  el.removeEventListener("mouseleave", cancel);
+  el.removeEventListener("touchstart", start);
+  el.removeEventListener("touchend", cancel);
+  el.removeEventListener("touchcancel", cancel);
+  el.removeEventListener("touchmove", handleTouchMove);
+  el.removeEventListener("contextmenu", handleContextMenu);
+};
+```
 
-    gsap.fromTo(
-      menuRef.current,
-      { opacity: 0, y: 20, scale: 0.8 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.7)" }
-    );
-  }, [menuVisible]);
+}, [verseId]);
 
-  const handleCopy = () => {
-    const text = `${verseText}\n\n${surahName}:${verseNumber}`;
+// Apply press/hover feedback on the verse element
+useEffect(() => {
+const el = document.getElementById(verseId) as HTMLElement | null;
+if (!el) return;
 
-    if (!navigator.clipboard) {
-      console.error("Clipboard API not available");
-      return;
-    }
+```
+if (isPressed) {
+  el.style.transition = "background-color 120ms ease";
+  el.style.backgroundColor = isDarkMode
+    ? "rgba(255,255,255,0.04)"
+    : "rgba(0,0,0,0.04)";
+} else {
+  el.style.backgroundColor = "";
+}
 
-    navigator.clipboard.writeText(text).then(() => {
-      setIsCopying(true);
+return () => {
+  if (el) el.style.backgroundColor = "";
+};
+```
 
-      if (copyTimeoutRef.current) {
-        window.clearTimeout(copyTimeoutRef.current);
-      }
+}, [isPressed, verseId, isDarkMode]);
 
-      copyTimeoutRef.current = window.setTimeout(() => {
-        setIsCopying(false);
-        closeMenuAndClear(verseId);
-        setMenuVisible(false);
-      }, COPY_FEEDBACK_DURATION) as unknown as number;
-    }).catch((err) => {
-      console.error("Failed to copy text:", err);
-    });
-  };
+// Detect if a tafsir panel is present/open
+useEffect(() => {
+const checkTafsir = () => {
+const candidate = document.querySelector(
+“#tafsir, .tafsir, [data-tafsir], [data-tafsir-open]”
+) as HTMLElement | null;
+const open = !!candidate && candidate.offsetHeight > 0 && candidate.offsetParent !== null;
+setIsTafsirOpen(open);
+};
 
-  const handleAddToFavorites = () => {
-    try {
-      const raw = localStorage.getItem("favoriteVerses");
-      let favs = raw ? JSON.parse(raw) : [];
+```
+checkTafsir();
+const mo = new MutationObserver(checkTafsir);
+mo.observe(document.body, { childList: true, subtree: true, attributes: true });
+window.addEventListener("resize", checkTafsir, { passive: true });
+return () => {
+  mo.disconnect();
+  window.removeEventListener("resize", checkTafsir);
+};
+```
 
-      if (!Array.isArray(favs)) {
-        favs = [];
-      }
+}, []);
 
-      const exists = favs.find((v: any) => v.id === verseId);
-      if (exists) {
-        favs = favs.filter((v: any) => v.id !== verseId);
-      } else {
-        favs.push({
-          id: verseId,
-          verseNumber,
-          surahName,
-          text: verseText,
-          surahId,
-        });
-      }
+useEffect(() => {
+if (!menuVisible || !menuRef.current) return;
 
-      localStorage.setItem("favoriteVerses", JSON.stringify(favs));
-      setIsFavorited(!exists);
+```
+gsap.fromTo(
+  menuRef.current,
+  { opacity: 0, y: 20, scale: 0.8 },
+  { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.7)" }
+);
+```
 
-      try {
-        window.dispatchEvent(new CustomEvent("favoriteVerseChanged", { detail: { favorites: favs } }));
-      } catch (e) {
-        console.error("Error dispatching favorite change event:", e);
-      }
+}, [menuVisible]);
 
-      if (favoriteTimeoutRef.current) {
-        window.clearTimeout(favoriteTimeoutRef.current);
-      }
+const handleCopy = () => {
+const text = `${verseText}\n\n${surahName}:${verseNumber}`;
 
-      favoriteTimeoutRef.current = window.setTimeout(() => {
-        closeMenuAndClear(verseId);
-        setMenuVisible(false);
-      }, FAVORITE_FEEDBACK_DURATION) as unknown as number;
-    } catch (e) {
-      console.error("Error managing favorites:", e);
-    }
-  };
+```
+if (!navigator.clipboard) {
+  console.error("Clipboard API not available");
+  return;
+}
 
-  const handleShare = async () => {
-    try {
-      if ("share" in navigator) {
-        await navigator.share({
-          title: `${surahName}:${verseNumber}`,
-          text: verseText,
-        });
-      }
-    } catch (err) {
-      if ((err as Error).name !== "AbortError") {
-        console.error("Share failed:", err);
-      }
-    } finally {
-      setMenuVisible(false);
-      closeMenuAndClear(verseId);
-    }
-  };
+navigator.clipboard.writeText(text).then(() => {
+  setIsCopying(true);
 
-  const handleSavePhoto = async () => {
-    try {
-      setIsDownloading(true);
-      const verseElement = document.getElementById(verseId);
-      if (!verseElement) {
-        console.error("Verse element not found");
-        return;
-      }
+  if (copyTimeoutRef.current) {
+    window.clearTimeout(copyTimeoutRef.current);
+  }
 
-      const blob = await captureElementAsBlob(verseElement, isDarkMode);
-      if (!blob) {
-        console.error("Failed to capture image blob");
-        return;
-      }
-
-      // تنظيف URL القديم
-      if (lastObjectUrlRef.current) {
-        try {
-          URL.revokeObjectURL(lastObjectUrlRef.current);
-        } catch (e) {
-          console.error("Error revoking old URL:", e);
-        }
-      }
-
-      const url = URL.createObjectURL(blob);
-      lastObjectUrlRef.current = url;
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${surahName}_${verseNumber}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      // تنظيف URL بعد فترة قصيرة
-      setTimeout(() => {
-        if (lastObjectUrlRef.current === url) {
-          try {
-            URL.revokeObjectURL(url);
-          } catch (e) {
-            console.error("Error revoking URL:", e);
-          }
-          lastObjectUrlRef.current = null;
-        }
-      }, 100);
-    } catch (err) {
-      console.error("Error saving photo:", err);
-    } finally {
-      setIsDownloading(false);
-      closeMenuAndClear(verseId);
-      setMenuVisible(false);
-    }
-  };
-
-  const handleOpenTafsir = () => {
-    try {
-      const ev = new CustomEvent("openTafsir", { detail: { verseId } });
-      window.dispatchEvent(ev);
-    } catch (e) {
-      console.error("Error dispatching tafsir event:", e);
-    }
-
-    setIsTafsirLoading(true);
-    setMenuVisible(false);
+  copyTimeoutRef.current = window.setTimeout(() => {
+    setIsCopying(false);
     closeMenuAndClear(verseId);
+    setMenuVisible(false);
+  }, COPY_FEEDBACK_DURATION) as unknown as number;
+}).catch((err) => {
+  console.error("Failed to copy text:", err);
+});
+```
 
-    // إيقاف loading بعد فترة معقولة
-    if (tafsirTimeoutRef.current) {
-      window.clearTimeout(tafsirTimeoutRef.current);
-    }
-    tafsirTimeoutRef.current = window.setTimeout(() => {
-      setIsTafsirLoading(false);
-    }, TAFSIR_LOADING_TIMEOUT) as unknown as number;
-  };
+};
 
-  // Inform UI to hide/show inline tafsir buttons
-  useEffect(() => {
+const handleAddToFavorites = () => {
+try {
+const raw = localStorage.getItem(“favoriteVerses”);
+let favs = raw ? JSON.parse(raw) : [];
+
+```
+  if (!Array.isArray(favs)) {
+    favs = [];
+  }
+
+  const exists = favs.find((v: any) => v.id === verseId);
+  if (exists) {
+    favs = favs.filter((v: any) => v.id !== verseId);
+  } else {
+    favs.push({
+      id: verseId,
+      verseNumber,
+      surahName,
+      text: verseText,
+      surahId,
+    });
+  }
+
+  localStorage.setItem("favoriteVerses", JSON.stringify(favs));
+  setIsFavorited(!exists);
+
+  try {
+    window.dispatchEvent(new CustomEvent("favoriteVerseChanged", { detail: { favorites: favs } }));
+  } catch (e) {
+    console.error("Error dispatching favorite change event:", e);
+  }
+
+  if (favoriteTimeoutRef.current) {
+    window.clearTimeout(favoriteTimeoutRef.current);
+  }
+
+  favoriteTimeoutRef.current = window.setTimeout(() => {
+    closeMenuAndClear(verseId);
+    setMenuVisible(false);
+  }, FAVORITE_FEEDBACK_DURATION) as unknown as number;
+} catch (e) {
+  console.error("Error managing favorites:", e);
+}
+```
+
+};
+
+const handleShare = async () => {
+try {
+if (“share” in navigator) {
+await navigator.share({
+title: `${surahName}:${verseNumber}`,
+text: verseText,
+});
+}
+} catch (err) {
+if ((err as Error).name !== “AbortError”) {
+console.error(“Share failed:”, err);
+}
+} finally {
+setMenuVisible(false);
+closeMenuAndClear(verseId);
+}
+};
+
+const handleSavePhoto = async () => {
+try {
+setIsDownloading(true);
+const verseElement = document.getElementById(verseId);
+if (!verseElement) {
+console.error(“Verse element not found”);
+return;
+}
+
+```
+  const blob = await captureElementAsBlob(verseElement);
+  if (!blob) {
+    console.error("Failed to capture image blob");
+    return;
+  }
+
+  // تنظيف URL القديم
+  if (lastObjectUrlRef.current) {
     try {
-      const ev = new CustomEvent(menuVisible ? "versespeeddial:hideInlineTafsir" : "versespeeddial:showInlineTafsir");
-      window.dispatchEvent(ev);
+      URL.revokeObjectURL(lastObjectUrlRef.current);
     } catch (e) {
-      console.error("Error dispatching tafsir visibility event:", e);
+      console.error("Error revoking old URL:", e);
     }
-  }, [menuVisible]);
+  }
 
-  // Close when clicking outside
-  useEffect(() => {
-    if (!menuVisible) return;
+  const url = URL.createObjectURL(blob);
+  lastObjectUrlRef.current = url;
 
-    const handler = (e: Event) => {
-      if (isLongPressTriggeredRef.current && e.type === 'touchstart') {
-        isLongPressTriggeredRef.current = false;
-        return;
-      }
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${surahName}_${verseNumber}.png`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 
-      const target = e.target as Node | null;
-      const menuEl = menuRef.current;
-      const verseEl = document.getElementById(verseId);
-
-      if ((menuEl?.contains(target || null)) || (verseEl?.contains(target || null))) return;
-
-      closeMenuAndClear(verseId);
-      setMenuVisible(false);
+  // تنظيف URL بعد فترة قصيرة
+  setTimeout(() => {
+    if (lastObjectUrlRef.current === url) {
       try {
-        window.dispatchEvent(new CustomEvent('versespeeddial:closed', { detail: { verseId } }));
+        URL.revokeObjectURL(url);
       } catch (e) {
-        console.error("Error dispatching closed event:", e);
+        console.error("Error revoking URL:", e);
       }
-    };
+      lastObjectUrlRef.current = null;
+    }
+  }, 100);
+} catch (err) {
+  console.error("Error saving photo:", err);
+} finally {
+  setIsDownloading(false);
+  closeMenuAndClear(verseId);
+  setMenuVisible(false);
+}
+```
 
-    const timeoutId = window.setTimeout(() => {
-      document.addEventListener('mousedown', handler);
-      document.addEventListener('touchstart', handler);
-    }, 100);
+};
 
-    return () => {
-      window.clearTimeout(timeoutId);
-      document.removeEventListener('mousedown', handler);
-      document.removeEventListener('touchstart', handler);
-    };
-  }, [menuVisible, verseId]);
+const handleOpenTafsir = () => {
+try {
+const ev = new CustomEvent(“openTafsir”, { detail: { verseId } });
+window.dispatchEvent(ev);
+} catch (e) {
+console.error(“Error dispatching tafsir event:”, e);
+}
 
-  return (
-    <>
-      {menuVisible && (
-        <div
-          ref={menuRef}
-          data-html2canvas-ignore="true"
-          role="toolbar"
-          aria-label="خيارات الآية"
-          style={{
-            position: "absolute",
-            bottom: 6,
-            left: 6,
-            display: "flex",
-            gap: 8,
-            padding: 8,
-            borderRadius: 12,
-            zIndex: 50,
-            alignItems: 'center',
-            background: isDarkMode ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.4)',
-            border: isDarkMode ? '1px solid rgba(255,255,255,0.02)' : '1px solid rgba(255,255,255,0.1)',
-            boxShadow: isDarkMode ? '0 8px 30px rgba(0,0,0,0.25)' : '0 6px 20px rgba(255,255,255,0.15)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(6px)',
-            pointerEvents: 'auto',
-            minWidth: 140,
+```
+setIsTafsirLoading(true);
+setMenuVisible(false);
+closeMenuAndClear(verseId);
+
+// إيقاف loading بعد فترة معقولة
+if (tafsirTimeoutRef.current) {
+  window.clearTimeout(tafsirTimeoutRef.current);
+}
+tafsirTimeoutRef.current = window.setTimeout(() => {
+  setIsTafsirLoading(false);
+}, TAFSIR_LOADING_TIMEOUT) as unknown as number;
+```
+
+};
+
+// Inform UI to hide/show inline tafsir buttons
+useEffect(() => {
+try {
+const ev = new CustomEvent(menuVisible ? “versespeeddial:hideInlineTafsir” : “versespeeddial:showInlineTafsir”);
+window.dispatchEvent(ev);
+} catch (e) {
+console.error(“Error dispatching tafsir visibility event:”, e);
+}
+}, [menuVisible]);
+
+// Close when clicking outside
+useEffect(() => {
+if (!menuVisible) return;
+
+```
+const handler = (e: Event) => {
+  if (isLongPressTriggeredRef.current && e.type === 'touchstart') {
+    isLongPressTriggeredRef.current = false;
+    return;
+  }
+
+  const target = e.target as Node | null;
+  const menuEl = menuRef.current;
+  const verseEl = document.getElementById(verseId);
+
+  if ((menuEl?.contains(target || null)) || (verseEl?.contains(target || null))) return;
+
+  closeMenuAndClear(verseId);
+  setMenuVisible(false);
+  try {
+    window.dispatchEvent(new CustomEvent('versespeeddial:closed', { detail: { verseId } }));
+  } catch (e) {
+    console.error("Error dispatching closed event:", e);
+  }
+};
+
+const timeoutId = window.setTimeout(() => {
+  document.addEventListener('mousedown', handler);
+  document.addEventListener('touchstart', handler);
+}, 100);
+
+return () => {
+  window.clearTimeout(timeoutId);
+  document.removeEventListener('mousedown', handler);
+  document.removeEventListener('touchstart', handler);
+};
+```
+
+}, [menuVisible, verseId]);
+
+return (
+<>
+{menuVisible && (
+<div
+ref={menuRef}
+data-html2canvas-ignore=“true”
+role=“toolbar”
+aria-label=“خيارات الآية”
+style={{
+position: “absolute”,
+bottom: 6,
+left: 6,
+display: “flex”,
+gap: 8,
+padding: 8,
+borderRadius: 12,
+zIndex: 50,
+alignItems: ‘center’,
+background: isDarkMode ? ‘rgba(0,0,0,0.3)’ : ‘rgba(255,255,255,0.4)’,
+border: isDarkMode ? ‘1px solid rgba(255,255,255,0.02)’ : ‘1px solid rgba(255,255,255,0.1)’,
+boxShadow: isDarkMode ? ‘0 8px 30px rgba(0,0,0,0.25)’ : ‘0 6px 20px rgba(255,255,255,0.15)’,
+backdropFilter: ‘blur(12px)’,
+WebkitBackdropFilter: ‘blur(6px)’,
+pointerEvents: ‘auto’,
+minWidth: 140,
+}}
+>
+<Tooltip title="تفسير">
+<IconButton
+onClick={handleOpenTafsir}
+aria-label=“تفسير”
+size=“small”
+disabled={isTafsirLoading}
+data-tafsir-button
+sx={{
+color: isDarkMode ? “white” : “var(–highlight-color)”,
+bgcolor: “transparent”,
+boxShadow: isDarkMode ? “0 4px 16px rgba(58,123,213,0.08)” : “var(–shadow-xs)”,
+border: “1px solid transparent”,
+backdropFilter: “blur(6px)”,
+‘&:hover’: { bgcolor: isDarkMode ? ‘rgba(255,255,255,0.03)’ : ‘rgba(0,0,0,0.03)’ },
+‘&:disabled’: { opacity: 0.6 }
+}}
+>
+{isTafsirLoading ? (
+<CircularProgress size={18} color="inherit" />
+) : (
+<MenuBookIcon fontSize="small" />
+)}
+</IconButton>
+</Tooltip>
+
+```
+      <Tooltip title={isFavorited ? "إزالة من المفضلة" : "إضافة للمفضلة"}>
+        <IconButton
+          onClick={handleAddToFavorites}
+          aria-label={isFavorited ? "إزالة من المفضلة" : "إضافة للمفضلة"}
+          size="small"
+          sx={{
+            color: isFavorited ? "#ffd700" : (isDarkMode ? "white" : "#0b0b0b"),
+            bgcolor: "transparent",
+            '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' }
           }}
         >
-          <Tooltip title="تفسير">
-            <IconButton
-              onClick={handleOpenTafsir}
-              aria-label="تفسير"
-              size="small"
-              disabled={isTafsirLoading}
-              data-tafsir-button
-              sx={{
-                color: isDarkMode ? "white" : "var(--highlight-color)",
-                bgcolor: "transparent",
-                boxShadow: isDarkMode ? "0 4px 16px rgba(58,123,213,0.08)" : "var(--shadow-xs)",
-                border: "1px solid transparent",
-                backdropFilter: "blur(6px)",
-                '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' },
-                '&:disabled': { opacity: 0.6 }
-              }}
-            >
-              {isTafsirLoading ? (
-                <CircularProgress size={18} color="inherit" />
-              ) : (
-                <MenuBookIcon fontSize="small" />
-              )}
-            </IconButton>
-          </Tooltip>
+          {isFavorited ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
+        </IconButton>
+      </Tooltip>
 
-          <Tooltip title={isFavorited ? "إزالة من المفضلة" : "إضافة للمفضلة"}>
-            <IconButton
-              onClick={handleAddToFavorites}
-              aria-label={isFavorited ? "إزالة من المفضلة" : "إضافة للمفضلة"}
-              size="small"
-              sx={{
-                color: isFavorited ? "#ffd700" : (isDarkMode ? "white" : "#0b0b0b"),
-                bgcolor: "transparent",
-                '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' }
-              }}
-            >
-              {isFavorited ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
-            </IconButton>
-          </Tooltip>
+      <Tooltip title="نسخ">
+        <IconButton
+          onClick={handleCopy}
+          aria-label="نسخ"
+          size="small"
+          sx={{
+            color: isDarkMode ? "white" : "#0b0b0b",
+            bgcolor: "transparent",
+            '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' }
+          }}
+        >
+          {isCopying ? (
+            <CheckIcon sx={{ color: "#4caf50" }} fontSize="small" />
+          ) : (
+            <ContentCopyIcon fontSize="small" />
+          )}
+        </IconButton>
+      </Tooltip>
 
-          <Tooltip title="نسخ">
-            <IconButton
-              onClick={handleCopy}
-              aria-label="نسخ"
-              size="small"
-              sx={{
-                color: isDarkMode ? "white" : "#0b0b0b",
-                bgcolor: "transparent",
-                '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' }
-              }}
-            >
-              {isCopying ? (
-                <CheckIcon sx={{ color: "#4caf50" }} fontSize="small" />
-              ) : (
-                <ContentCopyIcon fontSize="small" />
-              )}
-            </IconButton>
-          </Tooltip>
+      <Tooltip title="مشاركة">
+        <IconButton
+          onClick={handleShare}
+          aria-label="مشاركة"
+          size="small"
+          sx={{
+            color: isDarkMode ? "white" : "#0b0b0b",
+            bgcolor: "transparent",
+            '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' }
+          }}
+        >
+          <ShareIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
 
-          <Tooltip title="مشاركة">
-            <IconButton
-              onClick={handleShare}
-              aria-label="مشاركة"
-              size="small"
-              sx={{
-                color: isDarkMode ? "white" : "#0b0b0b",
-                bgcolor: "transparent",
-                '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' }
-              }}
-            >
-              <ShareIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
+      <Tooltip title="حفظ صورة">
+        <IconButton
+          onClick={handleSavePhoto}
+          aria-label="حفظ صورة"
+          size="small"
+          disabled={isDownloading}
+          sx={{
+            color: isDarkMode ? "white" : "#0b0b0b",
+            bgcolor: "transparent",
+            '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' },
+            '&:disabled': { opacity: 0.6 }
+          }}
+        >
+          {isDownloading ? (
+            <CircularProgress size={20} color="inherit" />
+          ) : (
+            <SaveAltIcon fontSize="small" />
+          )}
+        </IconButton>
+      </Tooltip>
+    </div>
+  )}
+</>
+```
 
-          <Tooltip title="حفظ صورة">
-            <IconButton
-              onClick={handleSavePhoto}
-              aria-label="حفظ صورة"
-              size="small"
-              disabled={isDownloading}
-              sx={{
-                color: isDarkMode ? "white" : "#0b0b0b",
-                bgcolor: "transparent",
-                '&:hover': { bgcolor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' },
-                '&:disabled': { opacity: 0.6 }
-              }}
-            >
-              {isDownloading ? (
-                <CircularProgress size={20} color="inherit" />
-              ) : (
-                <SaveAltIcon fontSize="small" />
-              )}
-            </IconButton>
-          </Tooltip>
-        </div>
-      )}
-    </>
-  );
+);
 }
