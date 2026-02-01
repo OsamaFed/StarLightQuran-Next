@@ -13,8 +13,8 @@ import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import gsap from "gsap";
 import { useTheme } from "@/hooks/useTheme";
-import Aurora from "../ui/Aurora";
-import Iridescence from "../ui/Iridescence";
+import { Aurora, Iridescence } from "@/components/ui";
+import { createRoot } from 'react-dom/client';
 
 interface VerseSpeedDialProps {
   verseId: string;
@@ -38,7 +38,7 @@ const closeMenuAndClear = (verseId: string) => {
   }
 };
 
-async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
+async function captureElementAsBlob(el: HTMLElement, isDarkMode: boolean): Promise<Blob | null> {
   try {
     const html2canvas = (await import("html2canvas")).default;
     const clone = el.cloneNode(true) as HTMLElement;
@@ -62,60 +62,7 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
     clone.style.padding = clone.style.padding || "20px";
     clone.style.color = "#ffffff";
 
-    let isDarkMode = false;
-    let exportBg: string = "#FAF6F3";
-    let gradientBg: string = "";
-
-    try {
-      const theme = document.documentElement.getAttribute("data-theme") || (document.body.classList.contains("darkMode") ? "dark" : "light");
-      isDarkMode = theme === "dark";
-      const computedBg = getComputedStyle(document.documentElement).getPropertyValue("--background") || "";
-
-      if (isDarkMode) {
-        exportBg = computedBg.trim() || "#0D1B2A";
-        gradientBg = "radial-gradient(circle at 20% 30%, rgba(74, 144, 226, 0.25) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(147, 112, 219, 0.25) 0%, transparent 50%)";
-      } else {
-        exportBg = "#6B7FB8";
-
-        gradientBg = `
-          radial-gradient(
-            ellipse 900px 700px at 15% 20%,
-            rgba(130, 100, 200, 0.85) 0%,
-            rgba(100, 130, 210, 0.65) 30%,
-            rgba(80, 150, 200, 0.35) 55%
-          ),
-          radial-gradient(
-            ellipse 850px 750px at 85% 80%,
-            rgba(140, 90, 180, 0.8) 0%,
-            rgba(110, 140, 220, 0.55) 35%,
-            rgba(90, 160, 210, 0.25) 55%
-          ),
-          radial-gradient(
-            ellipse 700px 900px at 50% 100%,
-            rgba(120, 110, 190, 0.75) 0%,
-            rgba(95, 145, 215, 0.5) 40%,
-            rgba(80, 155, 205, 0.2) 60%
-          ),
-          radial-gradient(
-            ellipse 1000px 600px at 70% 30%,
-            rgba(135, 95, 185, 0.7) 0%,
-            rgba(105, 150, 220, 0.3) 50%
-          ),
-          linear-gradient(
-            135deg,
-            #5B6FA8 0%,
-            #7B8FC8 25%,
-            #8BA0D5 50%,
-            #7B8FC8 75%,
-            #5B6FA8 100%
-          )
-        `;
-      }
-
-    } catch (e) {
-      console.error("Error detecting theme:", e);
-    }
-
+    // إنشاء الـ container
     const container = document.createElement("div");
     container.style.position = "fixed";
     container.style.left = "-9999px";
@@ -123,17 +70,32 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
     container.style.width = `${width}px`;
     container.style.height = `${height}px`;
     container.style.zIndex = "2147483647";
-    container.style.backgroundColor = exportBg;
-    container.style.backgroundImage = gradientBg;
-    container.style.backgroundAttachment = "fixed";
     container.style.overflow = "hidden";
+
+    // إنشاء الـ background container
+    const backgroundContainer = document.createElement("div");
+    backgroundContainer.style.position = "absolute";
+    backgroundContainer.style.inset = "0";
+    backgroundContainer.style.zIndex = "-1";
+
+    container.appendChild(backgroundContainer);
+
+    // رندر الـ component المناسب
+    const root = createRoot(backgroundContainer);
+    if (isDarkMode) {
+      root.render(<Aurora amplitude={0} />);
+    } else {
+      root.render(<Iridescence amplitude={0} />);
+    }
+
+    // انتظر الـ render
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     container.appendChild(clone);
     document.body.appendChild(container);
 
     try {
       const canvas = await html2canvas(container, {
-        backgroundColor: exportBg,
         scale: 4,
         useCORS: true,
         logging: false,
@@ -144,7 +106,10 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
       });
 
       return new Promise((resolve) => {
-        canvas.toBlob((blob) => resolve(blob), "image/png", 1);
+        canvas.toBlob((blob) => {
+          root.unmount();
+          resolve(blob);
+        }, "image/png", 1);
       });
     } finally {
       container.remove();
@@ -154,8 +119,6 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
     return null;
   }
 }
-
-
 
 export default function VerseSpeedDial({
   verseId,
@@ -534,7 +497,7 @@ export default function VerseSpeedDial({
         return;
       }
 
-      const blob = await captureElementAsBlob(verseElement);
+      const blob = await captureElementAsBlob(verseElement, isDarkMode);
       if (!blob) {
         console.error("Failed to capture image blob");
         return;
@@ -649,13 +612,6 @@ export default function VerseSpeedDial({
 
   return (
     <>
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', overflow: 'hidden', borderRadius: 12, zIndex: 0 }}>
-        {isDarkMode ? (
-          <Iridescence color={[0.05, 0.1, 0.2]} speed={0.5} amplitude={0.05} />
-        ) : (
-          <Aurora colorStops={['#fdfbfb', '#ebedee', '#fdfbfb']} amplitude={0.2} blend={0.8} />
-        )}
-      </div>
       {menuVisible && (
         <div
           ref={menuRef}
@@ -663,7 +619,9 @@ export default function VerseSpeedDial({
           role="toolbar"
           aria-label="خيارات الآية"
           style={{
-            position: "relative",
+            position: "absolute",
+            bottom: 6,
+            left: 6,
             display: "flex",
             gap: 8,
             padding: 8,
