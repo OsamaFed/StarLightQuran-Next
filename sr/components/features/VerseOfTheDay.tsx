@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IconButton } from "@mui/material";
-import CasinoIcon from "@mui/icons-material/Casino";
 import styles from "./VerseOfTheDay.module.css";
 
 interface VerseData {
@@ -29,45 +28,23 @@ interface VerseOfTheDayProps {
   isDarkMode: boolean;
 }
 
+// ✅ الأيقونة الجديدة
+const ShuffleIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 15L21 18M21 18L18 21M21 18H18.5689C17.6297 18 17.1601 18 16.7338 17.8705C16.3564 17.7559 16.0054 17.5681 15.7007 17.3176C15.3565 17.0348 15.096 16.644 14.575 15.8626L14.3333 15.5M18 3L21 6M21 6L18 9M21 6H18.5689C17.6297 6 17.1601 6 16.7338 6.12945C16.3564 6.24406 16.0054 6.43194 15.7007 6.68236C15.3565 6.96523 15.096 7.35597 14.575 8.13744L9.42496 15.8626C8.90398 16.644 8.64349 17.0348 8.29933 17.3176C7.99464 17.5681 7.64357 17.7559 7.2662 17.8705C6.83994 18 6.37033 18 5.43112 18H3M3 6H5.43112C6.37033 6 6.83994 6 7.2662 6.12945C7.64357 6.24406 7.99464 6.43194 8.29933 6.68236C8.64349 6.96523 8.90398 7.35597 9.42496 8.13744L9.66667 8.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
 const getRandomVerse = async (): Promise<VerseData> => {
   try {
-    // Pick a random surah and verse, use caching to avoid repeated fetches
-    const randomSurah = Math.floor(Math.random() * 114) + 1;
+    const randomVerseNumber = Math.floor(Math.random() * 6236) + 1;
 
-    // fetch surah metadata with timeout
-    const surahResponse = await fetchWithTimeout(
-      `https://api.alquran.cloud/v1/surah/${randomSurah}`
+    const response = await fetch(
+      `https://api.alquran.cloud/v1/ayah/${randomVerseNumber}/quran-simple`
     );
-    if (!surahResponse.ok) throw new Error("Failed to fetch surah info");
-    const surahData = await surahResponse.json();
-    const numberOfAyahs = surahData?.data?.numberOfAyahs || 0;
-
-    if (!numberOfAyahs) throw new Error("Surah has no ayahs info");
-
-    const randomVerse = Math.floor(Math.random() * numberOfAyahs) + 1;
-    const cacheKey = `verse_${randomSurah}_${randomVerse}`;
-
-    // Return cached verse if exists
-    const cached = (typeof window !== "undefined" && localStorage.getItem(cacheKey)) || null;
-    if (cached) {
-      try {
-        return JSON.parse(cached) as VerseData;
-      } catch (e) {
-        localStorage.removeItem(cacheKey);
-      }
-    }
-
-    const response = await fetchWithTimeout(
-      `https://api.alquran.cloud/v1/surah/${randomSurah}/${randomVerse}`
-    );
-    if (!response.ok) throw new Error("Failed to fetch verse");
     const data = await response.json();
+
     if (data.code === 200) {
-      try {
-        if (typeof window !== "undefined") {
-          localStorage.setItem(cacheKey, JSON.stringify(data.data));
-        }
-      } catch (_) {}
       return data.data;
     }
     throw new Error("Failed to fetch verse");
@@ -79,42 +56,21 @@ const getRandomVerse = async (): Promise<VerseData> => {
 
 const getTodaysVerse = async (): Promise<VerseData> => {
   try {
-    // Use date to generate a consistent daily verse
     const today = new Date();
     const dayOfYear = Math.floor(
       (today.getTime() -
         new Date(today.getFullYear(), 0, 0).getTime()) /
         86400000
     );
-    
-    // 6236 is the total number of verses in Quran
+
     const verseNumber = (dayOfYear % 6236) + 1;
-    const cacheKey = `votd_${today.getFullYear()}-${
-      today.getMonth() + 1
-    }-${today.getDate()}`;
 
-    // Return cached daily verse if exists
-    const cached = (typeof window !== "undefined" && localStorage.getItem(cacheKey)) || null;
-    if (cached) {
-      try {
-        return JSON.parse(cached) as VerseData;
-      } catch (e) {
-        localStorage.removeItem(cacheKey);
-      }
-    }
-
-    const response = await fetchWithTimeout(
-      `https://api.alquran.cloud/v1/ayah/${verseNumber}`
+    const response = await fetch(
+      `https://api.alquran.cloud/v1/ayah/${verseNumber}/quran-simple`
     );
-    if (!response.ok) throw new Error("Failed to fetch today's verse");
     const data = await response.json();
-    
+
     if (data.code === 200) {
-      try {
-        if (typeof window !== "undefined") {
-          localStorage.setItem(cacheKey, JSON.stringify(data.data));
-        }
-      } catch (_) {}
       return data.data;
     }
     throw new Error("Failed to fetch verse");
@@ -123,20 +79,6 @@ const getTodaysVerse = async (): Promise<VerseData> => {
     throw error;
   }
 };
-
-// Helper fetch with timeout to avoid hanging requests
-async function fetchWithTimeout(input: RequestInfo, timeout = 10000) {
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeout);
-  try {
-    const res = await fetch(input, { signal: controller.signal });
-    clearTimeout(id);
-    return res;
-  } catch (err) {
-    clearTimeout(id);
-    throw err;
-  }
-}
 
 export default function VerseOfTheDay({
   isDarkMode,
@@ -185,15 +127,16 @@ export default function VerseOfTheDay({
       transition={{ duration: 0.5 }}
     >
       <div className={styles.header}>
-        <h2 className={styles.title}>آية اليوم</h2>
+        <h1 className={styles.title}>آية اليوم</h1>
         <IconButton
           onClick={handleRandomize}
           disabled={loading}
           className={styles.randomButton}
           size="small"
-          title="حصول على آية عشوائية"
+          title="الحصول على آية عشوائية"
+          aria-label="الحصول على آية عشوائية"
         >
-          <CasinoIcon />
+          <ShuffleIcon />
         </IconButton>
       </div>
 
@@ -230,10 +173,10 @@ export default function VerseOfTheDay({
             >
               <p className={styles.verseText}>{verse.text}</p>
               <div className={styles.verseReference}>
-                <span className={styles.surahName}>{verse.surah?.name || ""}</span>
                 <span className={styles.verseNumber}>
-                  {verse.numberInSurah}:{verse.surah?.number || ""}
+                  {verse.surah.number}:{verse.numberInSurah}
                 </span>
+                <span className={styles.surahName}>{verse.surah.name}</span>
               </div>
             </motion.div>
           ) : null}
