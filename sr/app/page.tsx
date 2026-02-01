@@ -4,14 +4,14 @@ import { useEffect, useRef } from "react";
 import { useTheme } from "@/hooks/useTheme";
 import OptionCard from "@/components/layout/OptionCard";
 import LightModeToggle from "@/components/ui/LightModeToggle";
-import PrayerTimes from "@/components/features/PrayerTimes";
+import VerseOfTheDay from "@/components/features/VerseOfTheDay";
 import styles from "./page.module.css";
 import gsap from "gsap";
 
 export default function Home() {
   const { isDarkMode, toggleDarkMode } = useTheme();
   const headerRef = useRef(null);
-  const prayerRef = useRef(null);
+  const verseRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -23,7 +23,7 @@ export default function Home() {
         autoAlpha: 0,
         duration: 1.2
       })
-      .from(prayerRef.current, {
+      .from(".verse-anim", {
         scale: 0.9,
         autoAlpha: 0,
         duration: 1
@@ -78,21 +78,23 @@ export default function Home() {
           </p>
         </header>
 
-        <div ref={prayerRef}>
-          <PrayerTimes isDarkMode={isDarkMode} />
-        </div>
+        <div className={styles.contentWrapper}>
+          <div className="verse-anim">
+            <VerseOfTheDay isDarkMode={isDarkMode} />
+          </div>
 
-        <div className={styles.cardsGrid}>
-          {sections.map((section, index) => (
-            <div key={index} className="option-card-anim">
-              <OptionCard
-                title={section.title}
-                description={section.description}
-                href={section.href}
-                emoji={section.emoji}
-              />
-            </div>
-          ))}
+          <div className={styles.cardsGrid}>
+            {sections.map((section, index) => (
+              <div key={index} className="option-card-anim">
+                <OptionCard
+                  title={section.title}
+                  description={section.description}
+                  href={section.href}
+                  emoji={section.emoji}
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         <footer className={styles.footer}>

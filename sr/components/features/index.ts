@@ -5,3 +5,4 @@ export { default as SurahFavorites } from './SurahFavorites';
 export { default as SurahStarButton } from './SurahStarButton';
 export { default as PrayerTimes } from './PrayerTimes';
 export { default as SearchResults } from './SearchResults';
+export { default as VerseOfTheDay } from './VerseOfTheDay';

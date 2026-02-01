@@ -44,12 +44,19 @@
   margin: 0;
 }
 
+.contentWrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  flex: 1;
+  margin-bottom: 60px;
+}
+
 .cardsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
   flex: 1;
-  margin-bottom: 60px;
 }
 
 .footer {
@@ -121,8 +128,24 @@
     margin-bottom: 40px;
   }
 
+  .contentWrapper {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
   .cardsGrid {
     gap: 20px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .contentWrapper {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  .cardsGrid {
+    grid-template-columns: 1fr;
   }
 }
 
