@@ -58,7 +58,7 @@ const getRandomVerse = async (): Promise<VerseData> => {
     }
 
     const response = await fetchWithTimeout(
-      `https://api.alquran.cloud/v1/surah/${randomSurah}/${randomVerse}`
+      `https://api.alquran.cloud/v1/surah/${randomSurah}/${randomVerse}?edition=quran-simple`
     );
     if (!response.ok) throw new Error("Failed to fetch verse");
     const data = await response.json();
@@ -104,7 +104,7 @@ const getTodaysVerse = async (): Promise<VerseData> => {
     }
 
     const response = await fetchWithTimeout(
-      `https://api.alquran.cloud/v1/ayah/${verseNumber}`
+      `https://api.alquran.cloud/v1/ayah/${verseNumber}?edition=quran-simple`
     );
     if (!response.ok) throw new Error("Failed to fetch today's verse");
     const data = await response.json();
@@ -228,7 +228,9 @@ export default function VerseOfTheDay({
               transition={{ duration: 0.3 }}
               className={styles.verseContent}
             >
-              <p className={styles.verseText}>{verse.text}</p>
+              <p className={styles.verseText} dir="rtl">
+                {verse.text}
+              </p>
               <div className={styles.verseReference}>
                 <span className={styles.surahName}>{verse.surah?.name || ""}</span>
                 <span className={styles.verseNumber}>
