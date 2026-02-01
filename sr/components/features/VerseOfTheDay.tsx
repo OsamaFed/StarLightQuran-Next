@@ -31,24 +31,43 @@ interface VerseOfTheDayProps {
 
 const getRandomVerse = async (): Promise<VerseData> => {
   try {
-    // Get a random surah (1-114)
+    // Pick a random surah and verse, use caching to avoid repeated fetches
     const randomSurah = Math.floor(Math.random() * 114) + 1;
-    // Get surah info first to know how many verses it has
-    const surahResponse = await fetch(
+
+    // fetch surah metadata with timeout
+    const surahResponse = await fetchWithTimeout(
       `https://api.alquran.cloud/v1/surah/${randomSurah}`
     );
+    if (!surahResponse.ok) throw new Error("Failed to fetch surah info");
     const surahData = await surahResponse.json();
-    const numberOfAyahs = surahData.data.numberOfAyahs;
-    
-    // Get a random verse from that surah
+    const numberOfAyahs = surahData?.data?.numberOfAyahs || 0;
+
+    if (!numberOfAyahs) throw new Error("Surah has no ayahs info");
+
     const randomVerse = Math.floor(Math.random() * numberOfAyahs) + 1;
-    
-    const response = await fetch(
+    const cacheKey = `verse_${randomSurah}_${randomVerse}`;
+
+    // Return cached verse if exists
+    const cached = (typeof window !== "undefined" && localStorage.getItem(cacheKey)) || null;
+    if (cached) {
+      try {
+        return JSON.parse(cached) as VerseData;
+      } catch (e) {
+        localStorage.removeItem(cacheKey);
+      }
+    }
+
+    const response = await fetchWithTimeout(
       `https://api.alquran.cloud/v1/surah/${randomSurah}/${randomVerse}`
     );
+    if (!response.ok) throw new Error("Failed to fetch verse");
     const data = await response.json();
-    
     if (data.code === 200) {
+      try {
+        if (typeof window !== "undefined") {
+          localStorage.setItem(cacheKey, JSON.stringify(data.data));
+        }
+      } catch (_) {}
       return data.data;
     }
     throw new Error("Failed to fetch verse");
@@ -70,13 +89,32 @@ const getTodaysVerse = async (): Promise<VerseData> => {
     
     // 6236 is the total number of verses in Quran
     const verseNumber = (dayOfYear % 6236) + 1;
-    
-    const response = await fetch(
+    const cacheKey = `votd_${today.getFullYear()}-${
+      today.getMonth() + 1
+    }-${today.getDate()}`;
+
+    // Return cached daily verse if exists
+    const cached = (typeof window !== "undefined" && localStorage.getItem(cacheKey)) || null;
+    if (cached) {
+      try {
+        return JSON.parse(cached) as VerseData;
+      } catch (e) {
+        localStorage.removeItem(cacheKey);
+      }
+    }
+
+    const response = await fetchWithTimeout(
       `https://api.alquran.cloud/v1/ayah/${verseNumber}`
     );
+    if (!response.ok) throw new Error("Failed to fetch today's verse");
     const data = await response.json();
     
     if (data.code === 200) {
+      try {
+        if (typeof window !== "undefined") {
+          localStorage.setItem(cacheKey, JSON.stringify(data.data));
+        }
+      } catch (_) {}
       return data.data;
     }
     throw new Error("Failed to fetch verse");
@@ -85,6 +123,20 @@ const getTodaysVerse = async (): Promise<VerseData> => {
     throw error;
   }
 };
+
+// Helper fetch with timeout to avoid hanging requests
+async function fetchWithTimeout(input: RequestInfo, timeout = 10000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  try {
+    const res = await fetch(input, { signal: controller.signal });
+    clearTimeout(id);
+    return res;
+  } catch (err) {
+    clearTimeout(id);
+    throw err;
+  }
+}
 
 export default function VerseOfTheDay({
   isDarkMode,

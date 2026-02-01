@@ -96,6 +96,8 @@
   color: var(--global-text-color);
   margin: 0 0 1.5rem 0;
   font-family: 'Arabic UI Text', 'Segoe UI', sans-serif;
+  direction: rtl;
+  text-align: right;
 }
 
 .verseReference {
