@@ -80,7 +80,7 @@ export default function Home() {
 
         <div className={styles.contentWrapper}>
           <div className="verse-anim">
-            <VerseOfTheDay isDarkMode={isDarkMode} />
+            <VerseOfTheDay />
           </div>
 
           <div className={styles.cardsGrid}>
