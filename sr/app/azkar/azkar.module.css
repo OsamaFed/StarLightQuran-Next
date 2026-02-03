@@ -283,7 +283,7 @@
   font-size: 1rem;
   font-family: 'KoGaliModern', sans-serif;
   border: none;
-  border-radius: var(--radius-round);
+  border-radius: var(--radius-xl);
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: var(--glass-blur-md);
   -webkit-backdrop-filter: var(--glass-blur-md);
