@@ -178,10 +178,10 @@ export default function VerseOfTheDay({
             >
               <p className={`${styles.verseText} ${isRandom ? styles.centeredVerseText : ""}`}>{verse.text ?? "لا توجد آية للعرض"}</p>
               <div className={styles.verseReference}>
+                <span className={styles.surahName}>{verse.surah.name}</span>
                 <span className={styles.verseNumber}>
                   {verse.numberInSurah}
                 </span>
-                <span className={styles.surahName}>{verse.surah.name}</span>
               </div>
             </motion.div>
           ) : null}
