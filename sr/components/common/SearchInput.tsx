@@ -6,11 +6,15 @@ import styles from "./SearchInput.module.css";
 interface SearchInputProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
+  debounceDelay?: number;
 }
 
-export default function SearchInput({ searchTerm, onSearchChange }: SearchInputProps) {
+export default function SearchInput({ searchTerm, onSearchChange, debounceDelay = 300 }: SearchInputProps) {
+  const [input, setInput] = useState(searchTerm);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    setInput(value);
     onSearchChange(value);
   };
 
@@ -37,7 +41,7 @@ export default function SearchInput({ searchTerm, onSearchChange }: SearchInputP
           type="text"
           className={styles.inputSearch}
           placeholder="ابحث عن سورة..."
-          value={searchTerm}
+          value={input}
           onChange={handleInputChange}
         />
       </div>
