@@ -2,7 +2,7 @@
 
 ## Overview
 
-StarLight Quran is an Arabic-language Islamic application built with Next.js that provides a comprehensive Quran reader experience. The app includes features for reading the Quran (Mushaf), morning/evening adhkar (Islamic remembrances), duas (supplications), and prayer times. The interface is fully RTL (right-to-left) with custom Arabic typography and supports dark/light theme modes.
+StarLight Quran is an Islamic web application built with Next.js 16 that provides a comprehensive Quran reader experience along with daily adhkar (remembrances) and duas (supplications). The app features Arabic RTL support, beautiful glassmorphism UI with light/dark themes, and smooth GSAP animations throughout.
 
 ## User Preferences
 
@@ -10,69 +10,70 @@ Preferred communication style: Simple, everyday language.
 
 ## System Architecture
 
-### Frontend Framework
-- **Next.js 16** with App Router architecture
-- **React 19** for UI components
-- **TypeScript** for type safety
-- Pages organized under `sr/app/` directory following Next.js conventions
+### Frontend Architecture
+- **Framework**: Next.js 16 with App Router
+- **Language**: TypeScript with strict mode
+- **Styling**: CSS Modules with Tailwind CSS integration, custom CSS variables for theming
+- **Animations**: GSAP for complex animations, Framer Motion for component transitions
+- **UI Components**: Material UI (MUI) for icons and some components, custom glassmorphism components
+- **WebGL Effects**: OGL library for Aurora and Iridescence background effects
 
-### Styling Approach
-- **Tailwind CSS 4** with PostCSS integration
-- **CSS Modules** for component-scoped styles (`.module.css` files)
-- Custom font family "KoGaliModern" loaded via `@font-face` declarations
-- Glass-morphism design patterns with backdrop blur effects
-- CSS custom properties for theming (dark/light mode support)
+### Application Structure
+- **App Router**: Uses Next.js 16 App Router with pages in `/app` directory
+- **Component Organization**: 
+  - `/components/common` - Reusable components (BackToggle, Pagination, ScrollToTop, SearchInput, WaqfGuide)
+  - `/components/features` - Feature-specific components (SurahSelector, VerseCard, PrayerTimes, etc.)
+  - `/components/layout` - Layout components (PageHeader, OptionCard)
+  - `/components/ui` - UI elements (LightModeToggle, FontControls, Aurora, Iridescence)
 
-### Animation Libraries
-- **GSAP** for complex page transitions and scroll animations
-- **Framer Motion** for component-level animations and micro-interactions
+### Data Management
+- **State Management**: React hooks (useState, useEffect, useCallback) with custom hooks
+- **Custom Hooks**: 
+  - `useTheme` - Dark/light mode with localStorage persistence via usehooks-ts
+  - `useQuran` - Surah loading and pagination logic
+  - `useSearch` - Search with debounce functionality
+- **Data Sources**: 
+  - Local JSON files for adhkar data (`/data/adhkar.json`)
+  - Static TypeScript files for surah metadata (`/data/surahs.ts`)
+  - External Quran API (api.alquran.cloud) for verse content and tafseer
 
-### WebGL Effects
-- **OGL** library for shader-based visual effects (Aurora and Iridescence components)
-- Custom GLSL shaders for background animations
+### API Routes
+- `/api/adhkar/sabah` - Morning adhkar
+- `/api/adhkar/masa` - Evening adhkar
+- `/api/adhkar/general` - General adhkar categories
+- `/api/duas` - Duas collection
 
-### Component Organization
-- `components/common/` - Reusable utilities (BackToggle, Pagination, ScrollToTop, SearchInput, WaqfGuide)
-- `components/features/` - Domain-specific components (PrayerTimes, SurahSelector, VerseCard, etc.)
-- `components/layout/` - Page structure components (PageHeader, OptionCard)
-- `components/ui/` - UI primitives (toggles, font controls, visual effects)
+### Theming System
+- CSS custom properties for colors, spacing, and effects
+- Light/dark mode toggle with body class switching
+- Glassmorphism effects using backdrop-filter
+- Custom Arabic font (KoGaliModern) with multiple weights
 
-### State Management
-- React hooks for local state (`useState`, `useEffect`, `useCallback`)
-- Custom hooks in `hooks/` directory:
-  - `useTheme` - Dark/light mode with localStorage persistence
-  - `useQuran` - Quran data fetching and pagination logic
-  - `useScrollRestoration` - Scroll position management (currently disabled)
-
-### Data Layer
-- Static JSON data in `sr/data/` directory:
-  - `adhkar.json` - Islamic remembrances with Arabic text and audio paths
-  - `surahs.ts` - Surah metadata (names, verse counts, revelation type)
-- API routes under `sr/app/api/` for categorized data access
-- External Quran API: `api.alquran.cloud` for verse text and tafseer
-
-### Routing Structure
-- `/` - Home page with prayer times and navigation cards
-- `/mushaf` - Quran reader with surah selection and verse display
-- `/azkar` - Adhkar categories (sabah, masa, general)
-- `/duas` - Dua categories
+### Key Features
+- Quran reader with surah selection, verse pagination, and tafseer
+- Verse favorites system with localStorage persistence
+- Morning/evening adhkar with categorization
+- Prayer times with geolocation
+- Verse of the day feature
+- Font size controls for accessibility
+- Share/copy/save verse functionality
 
 ## External Dependencies
 
-### UI Component Library
-- **Material UI (@mui/material)** - Icons and utility components (IconButton, Tooltip, CircularProgress)
-- **Lucide React** - Icon set (referenced in root package.json)
+### Third-Party APIs
+- **Quran API**: `api.alquran.cloud` - Fetches surah content, verses, and tafseer
+- **Prayer Times API**: Aladhan API (implied by PrayerTimes component with geolocation)
 
-### Date/Time
-- **dayjs** - Lightweight date manipulation for prayer times
+### Key NPM Packages
+- `@mui/material` & `@mui/icons-material` - Material UI components and icons
+- `@emotion/react` & `@emotion/styled` - Styling for MUI
+- `framer-motion` - Animation library
+- `gsap` - Advanced animations
+- `ogl` - WebGL rendering for background effects
+- `dayjs` - Date/time manipulation
+- `html2canvas` - Screenshot functionality for verse sharing
+- `usehooks-ts` - Utility hooks (useLocalStorage, useDebounce)
 
-### Image Export
-- **html2canvas** and **dom-to-image-more** - Verse sharing as images
-
-### External APIs
-- **AlQuran Cloud API** (`api.alquran.cloud/v1/surah/`) - Quran text retrieval
-- **Aladhan API** (referenced in PrayerTimes component) - Prayer time calculations based on geolocation
-
-### Font Resources
-- Google Fonts: Amiri Quran for Quranic text
-- Custom KoGaliModern font family (OTF files in `/fonts/`)
+### Fonts
+- Google Fonts: Amiri Quran (Arabic Quranic text)
+- Custom: KoGaliModern (multiple weights, stored in `/public/fonts`)
