@@ -113,6 +113,13 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.centeredVerseText {
+  text-align: center;
+  direction: rtl;
+  width: auto;
+  display: inline-block;
+}
+
 .verseReference {
   display: flex;
   justify-content: center;
@@ -173,7 +180,7 @@
 
 @media (max-width: 768px) {
   .verseCard {
-    padding: 1.25rem 1rem;
+    padding: 1rem 0.75rem;
     min-height: 200px;
   }
 
@@ -192,5 +199,17 @@
 
   .content {
     min-height: 140px;
+  }
+}
+
+@media (max-width: 420px) {
+  .verseCard {
+    padding: 0.75rem 0.6rem;
+    min-height: 160px;
+  }
+
+  .verseText {
+    font-size: 1rem;
+    line-height: 1.8;
   }
 }

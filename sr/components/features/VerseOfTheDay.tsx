@@ -86,11 +86,15 @@ export default function VerseOfTheDay({
   const [verse, setVerse] = useState<VerseData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const [isRandom, setIsRandom] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const loadTodaysVerse = async () => {
       setLoading(true);
       setError(null);
+      setIsRandom(false);
       try {
         const todaysVerse = await getTodaysVerse();
         setVerse(todaysVerse);
@@ -108,6 +112,7 @@ export default function VerseOfTheDay({
   const handleRandomize = async () => {
     setLoading(true);
     setError(null);
+    setIsRandom(true);
     try {
       const randomVerse = await getRandomVerse();
       setVerse(randomVerse);
@@ -121,7 +126,7 @@ export default function VerseOfTheDay({
 
   return (
     <motion.div
-      className={`${styles.verseCard} ${isDarkMode ? styles.dark : ""}`}
+      className={`${styles.verseCard} ${mounted && isDarkMode ? styles.dark : ""}`}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
@@ -171,10 +176,10 @@ export default function VerseOfTheDay({
               transition={{ duration: 0.3 }}
               className={styles.verseContent}
             >
-              <p className={styles.verseText}>{verse.text ?? "لا توجد آية للعرض"}</p>
+              <p className={`${styles.verseText} ${isRandom ? styles.centeredVerseText : ""}`}>{verse.text ?? "لا توجد آية للعرض"}</p>
               <div className={styles.verseReference}>
                 <span className={styles.verseNumber}>
-                  {verse.surah.number}:{verse.numberInSurah}
+                  {verse.numberInSurah}
                 </span>
                 <span className={styles.surahName}>{verse.surah.name}</span>
               </div>
