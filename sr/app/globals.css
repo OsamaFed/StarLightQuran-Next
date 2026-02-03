@@ -128,7 +128,7 @@
   --gradient-action: linear-gradient(135deg, var(--_clr-lav-acc), var(--_clr-lav-acc-deep));
   
   /* Internal Global Overrides (Design Request: Always White Text) */
-  --global-text-color: #ffffff;
+  --global-text-color: #ffffff !important;
   
   /* --- TEXT COLORS (Light Mode: Always White) --- */
   --text-color-white: #ffffff;
