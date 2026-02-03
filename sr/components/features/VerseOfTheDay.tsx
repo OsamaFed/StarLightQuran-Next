@@ -164,14 +164,14 @@ export default function VerseOfTheDay({
             </motion.div>
           ) : verse ? (
             <motion.div
-              key={verse.number}
+              key={`${verse.surah?.number ?? "s"}_${verse.numberInSurah ?? 0}_$${verse.number ?? 0}`}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
               className={styles.verseContent}
             >
-              <p className={styles.verseText}>{verse.text}</p>
+              <p className={styles.verseText}>{verse.text ?? "لا توجد آية للعرض"}</p>
               <div className={styles.verseReference}>
                 <span className={styles.verseNumber}>
                   {verse.surah.number}:{verse.numberInSurah}
