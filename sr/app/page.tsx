@@ -67,7 +67,7 @@ export default function Home() {
     >
 
       <div className={styles.toggleWrapper}>
-        <LightModeToggle isDarkMode={isDarkMode} onToggle={toggleDarkMode} />
+        <LightModeToggle />
       </div>
 
       <div className={styles.container}>
