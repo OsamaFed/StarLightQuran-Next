@@ -38,19 +38,44 @@ export default function CategoryPage() {
   useEffect(() => {
     async function fetchAdhkar() {
       try {
-        const res = await fetch("/api/adhkar/general");
-        const data: ApiResponse = await res.json();
-        if (data.success) {
-          setAllCategories(data.data);
-          const categoryData = data.data.find(
-            (cat) => cat.category === category
-          );
-          if (categoryData) {
-            setAdhkar(categoryData.array);
-            const index = data.data.findIndex(
+        // Handle special endpoints for sabah/masa while still using
+        // the general list for navigation. For other categories use
+        // the general endpoint only.
+        if (category === "sabah" || category === "masa") {
+          const [generalRes, specificRes] = await Promise.all([
+            fetch("/api/adhkar/general"),
+            fetch(`/api/adhkar/${category}`),
+          ]);
+
+          const generalData: ApiResponse = await generalRes.json();
+          const specificData: ApiResponse = await specificRes.json();
+
+          if (generalData.success) {
+            setAllCategories(generalData.data);
+            const index = generalData.data.findIndex(
               (cat) => cat.category === category
             );
             setCurrentIndex(index);
+          }
+
+          if (specificData.success && specificData.data.length > 0) {
+            setAdhkar(specificData.data[0].array);
+          }
+        } else {
+          const res = await fetch("/api/adhkar/general");
+          const data: ApiResponse = await res.json();
+          if (data.success) {
+            setAllCategories(data.data);
+            const categoryData = data.data.find(
+              (cat) => cat.category === category
+            );
+            if (categoryData) {
+              setAdhkar(categoryData.array);
+              const index = data.data.findIndex(
+                (cat) => cat.category === category
+              );
+              setCurrentIndex(index);
+            }
           }
         }
       } catch (error) {

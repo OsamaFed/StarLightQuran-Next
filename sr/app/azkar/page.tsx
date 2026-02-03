@@ -55,13 +55,11 @@ const adhkarCategoryToFilter: Record<string, AdhkarFilterKey> = {
 const mainCards = [
   {
     title: "أذكار الصباح",
-    description: "أذكار تُقال في الصباح",
     link: "/azkar/sabah",
     gradient: "linear-gradient(135deg, #f6d365 0%, #fda085 100%)",
   },
   {
     title: "أذكار المساء",
-    description: "أذكار تُقال في المساء",
     link: "/azkar/masa",
     gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
   },
@@ -237,7 +235,6 @@ export default function AzkarPage() {
                   <div className={styles.cardGradient} style={{ background: card.gradient }} />
                   <div className={styles.cardContent}>
                     <h2 className={styles.cardTitle}>{card.title}</h2>
-                    <p className={styles.cardDescription}>{card.description}</p>
                   </div>
                   <div className={styles.cardShine} />
                 </div>
