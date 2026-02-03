@@ -100,7 +100,7 @@ export default function Home() {
         <footer className={styles.footer}>
           <div className={styles.socialIcons}>
             <a
-              href="https://github.com"
+         href="https://github.com/OsamaFed"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.socialLink}
