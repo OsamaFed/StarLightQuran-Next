@@ -1,17 +1,19 @@
 "use client";
 
 import styles from "./LightModeToggle.module.css";
+import { useTheme } from "../../hooks/useTheme";
 
-interface LightModeToggleProps {
-  isDarkMode: boolean;
-  onToggle: () => void;
-}
+export default function LightModeToggle() {
+  const { isDarkMode, toggleDarkMode, mounted } = useTheme();
 
-export default function LightModeToggle({ isDarkMode, onToggle }: LightModeToggleProps) {
+  if (!mounted) {
+    return <div className={styles.togglePlaceholder} />;
+  }
+
   return (
     <button
       className={styles.toggle}
-      onClick={onToggle}
+      onClick={toggleDarkMode}
       type="button"
       aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
     >

@@ -5,10 +5,15 @@ import { useLocalStorage } from "usehooks-ts";
 
 export function useTheme() {
   const [isDarkMode, setIsDarkMode] = useLocalStorage("darkMode", false);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setIsLoaded(true);
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    
     const applyTheme = (isDark: boolean) => {
       if (isDark) {
         document.body.classList.add("darkMode");
@@ -19,11 +24,11 @@ export function useTheme() {
       }
     };
     applyTheme(isDarkMode);
-  }, [isDarkMode]);
+  }, [isDarkMode, mounted]);
 
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode((prev) => !prev);
   }, [setIsDarkMode]);
 
-  return { isDarkMode, toggleDarkMode, isLoaded };
+  return { isDarkMode, toggleDarkMode, mounted };
 }
