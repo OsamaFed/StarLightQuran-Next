@@ -34,7 +34,7 @@ const closeMenuAndClear = (verseId: string) => {
   }
 };
 
-async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
+async function captureElementAsBlob(el: HTMLElement, surahName?: string): Promise<Blob | null> {
   try {
     const html2canvas = (await import("html2canvas")).default;
     const clone = el.cloneNode(true) as HTMLElement;
@@ -112,19 +112,57 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
       console.error("Error detecting theme:", e);
     }
 
+    const headerHeight = surahName ? 56 : 0;
+    const footerHeight = 32;
+    const totalHeight = height + headerHeight + footerHeight;
+
     const container = document.createElement("div");
     container.style.position = "fixed";
     container.style.left = "-9999px";
     container.style.top = "0";
     container.style.width = `${width}px`;
-    container.style.height = `${height}px`;
+    container.style.height = `${totalHeight}px`;
     container.style.zIndex = "2147483647";
     container.style.backgroundColor = exportBg;
     container.style.backgroundImage = gradientBg;
     container.style.backgroundAttachment = "fixed";
     container.style.overflow = "hidden";
 
+    // If surahName provided, add a title header above the cloned element
+    if (surahName) {
+      const titleEl = document.createElement("div");
+      titleEl.style.width = "100%";
+      titleEl.style.boxSizing = "border-box";
+      titleEl.style.padding = "12px 20px 8px 20px";
+      titleEl.style.textAlign = "center";
+      titleEl.style.fontFamily = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial';
+      titleEl.style.fontSize = "18px";
+      titleEl.style.fontWeight = "300";
+      titleEl.style.letterSpacing = "0.2px";
+      titleEl.style.margin = "0";
+      titleEl.style.color = isDarkMode ? 'rgba(255,255,255,0.95)' : 'rgba(0,0,0,0.9)';
+      titleEl.textContent = surahName;
+
+      container.appendChild(titleEl);
+    }
+
     container.appendChild(clone);
+
+    // add a subtle footer brand
+    const footerEl = document.createElement("div");
+    footerEl.style.width = "100%";
+    footerEl.style.boxSizing = "border-box";
+    footerEl.style.padding = "6px 20px 12px 20px";
+    footerEl.style.textAlign = "center";
+    footerEl.style.fontFamily = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial';
+    footerEl.style.fontSize = "12px";
+    footerEl.style.fontWeight = "300";
+    footerEl.style.margin = "0";
+    footerEl.style.color = isDarkMode ? 'rgba(255,255,255,0.75)' : 'rgba(11,11,11,0.65)';
+    footerEl.style.opacity = '0.95';
+    footerEl.textContent = 'StarlighQuran';
+
+    container.appendChild(footerEl);
     document.body.appendChild(container);
 
     try {
@@ -135,7 +173,7 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
         logging: false,
         allowTaint: true,
         imageTimeout: 5000,
-        windowHeight: height,
+        windowHeight: totalHeight,
         windowWidth: width,
       });
 
@@ -519,7 +557,7 @@ export default function VerseSpeedDial({
         return;
       }
 
-      const blob = await captureElementAsBlob(verseElement);
+      const blob = await captureElementAsBlob(verseElement, surahName);
       if (!blob) {
         console.error("Failed to capture image blob");
         return;
@@ -538,7 +576,8 @@ export default function VerseSpeedDial({
 
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${surahName}_${verseNumber}.png`;
+      const safeSurah = (surahName || "surah").replace(/[^\w\-]+/g, "_").replace(/_+/g, "_").replace(/^_|_$/g, "");
+      link.download = `${safeSurah}-${verseNumber}.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
