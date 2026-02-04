@@ -80,7 +80,9 @@ export default function Home() {
 
         <div className={styles.contentWrapper}>
           <div className="verse-anim">
-            <VerseOfTheDay />
+            <VerseOfTheDay
+              isDarkMode={isDarkMode}
+              />
           </div>
 
           <div className={styles.cardsGrid}>
@@ -111,7 +113,7 @@ export default function Home() {
               </svg>
             </a>
             <a
-              href="#"
+              href="https://www.instagram.com/iiqrex/"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.socialLink}
@@ -124,7 +126,7 @@ export default function Home() {
               </svg>
             </a>
             <a
-              href="#"
+              href="https://www.instagram.com/starlightquran/"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.socialLink}

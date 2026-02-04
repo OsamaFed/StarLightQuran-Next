@@ -41,6 +41,9 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
     clone.setAttribute("dir", "rtl");
     clone.style.direction = "rtl";
 
+    
+    
+
     const speedDialButtons = clone.querySelectorAll('[data-verse-speedial], [class*="SpeedDial"], [data-html2canvas-ignore="true"]');
     speedDialButtons.forEach((btn) => {
       (btn as HTMLElement).style.display = "none";
