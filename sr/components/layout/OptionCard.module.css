@@ -16,6 +16,12 @@
   min-height: 160px; 
 } 
 
+.card:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(91,143,227,0.22), 0 8px 24px rgba(0,0,0,0.12);
+  border-color: var(--brand-primary);
+}
+
 .card:hover:not(.disabled) {
   transform: translateY(-4px);
   border-color: var(--brand-primary);
@@ -68,6 +74,11 @@
   font-weight: 700;
   margin: 0 0 0.5rem 0;
   color: var(--global-text-color);
+}
+
+.emoji[aria-hidden="true"] {
+  display: inline-block;
+  line-height: 1;
 }
 
 .description {

@@ -7,7 +7,6 @@
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: var(--glass-blur-lg);
-  -webkit-backdrop-filter: var(--glass-blur-lg);
   border: 1px solid rgba(212, 163, 115, 0.2);
   color: #ffffff;
   cursor: pointer;

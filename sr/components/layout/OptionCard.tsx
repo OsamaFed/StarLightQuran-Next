@@ -46,7 +46,7 @@ export default function OptionCard({
   const cardContent = (
     <>
       {comingSoon && <span className={styles.badge}>قريباً</span>}
-      {emoji && <span className={styles.emoji}>{emoji}</span>}
+      {emoji && <span className={styles.emoji} aria-hidden="true">{emoji}</span>}
       <h3 className={styles.title}>{title}</h3>
       <p className={styles.description}>{description}</p>
     </>
@@ -58,6 +58,7 @@ export default function OptionCard({
         href={href}
         className={cardClasses}
         role="link"
+        aria-label={title}
         onClick={handleClick}
       >
         {cardContent}
@@ -69,6 +70,7 @@ export default function OptionCard({
     <div
       className={cardClasses}
       role="button"
+      aria-label={title}
       aria-disabled={disabled}
       tabIndex={disabled ? -1 : 0}
       onClick={handleClick}

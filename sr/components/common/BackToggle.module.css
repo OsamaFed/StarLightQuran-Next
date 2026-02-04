@@ -12,7 +12,6 @@
   font-weight: 600;
   background: var(--card-bg);
   backdrop-filter: var(--glass-blur-lg);
-  -webkit-backdrop-filter: var(--glass-blur-lg);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   cursor: pointer;
