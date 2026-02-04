@@ -112,7 +112,8 @@ async function captureElementAsBlob(el: HTMLElement, surahName?: string): Promis
       console.error("Error detecting theme:", e);
     }
 
-    const headerHeight = surahName ? 56 : 0;
+    const displaySurahName = surahName ? String(surahName).replace(/^\s*سورة\s+/iu, "") : surahName;
+    const headerHeight = displaySurahName ? 56 : 0;
     const footerHeight = 32;
     const totalHeight = height + headerHeight + footerHeight;
 
@@ -129,19 +130,21 @@ async function captureElementAsBlob(el: HTMLElement, surahName?: string): Promis
     container.style.overflow = "hidden";
 
     // If surahName provided, add a title header above the cloned element
-    if (surahName) {
+    if (displaySurahName) {
       const titleEl = document.createElement("div");
       titleEl.style.width = "100%";
       titleEl.style.boxSizing = "border-box";
       titleEl.style.padding = "12px 20px 8px 20px";
       titleEl.style.textAlign = "center";
-      titleEl.style.fontFamily = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial';
+      titleEl.style.direction = "rtl";
+      titleEl.setAttribute("dir", "rtl");
+      titleEl.style.fontFamily = "'Othmani', 'Amiri Quran', 'Amiri', serif, Inter, system-ui, -apple-system, 'Segoe UI', Roboto";
       titleEl.style.fontSize = "18px";
       titleEl.style.fontWeight = "300";
       titleEl.style.letterSpacing = "0.2px";
       titleEl.style.margin = "0";
       titleEl.style.color = isDarkMode ? 'rgba(255,255,255,0.95)' : 'rgba(0,0,0,0.9)';
-      titleEl.textContent = surahName;
+      titleEl.textContent = displaySurahName;
 
       container.appendChild(titleEl);
     }
@@ -576,7 +579,8 @@ export default function VerseSpeedDial({
 
       const link = document.createElement("a");
       link.href = url;
-      const safeSurah = (surahName || "surah").replace(/[^\w\-]+/g, "_").replace(/_+/g, "_").replace(/^_|_$/g, "");
+      const displayLabel = (surahName || "surah").replace(/^\s*سورة\s+/iu, "");
+      const safeSurah = String(displayLabel).replace(/[^\w\-]+/g, "_").replace(/_+/g, "_").replace(/^_|_$/g, "");
       link.download = `${safeSurah}-${verseNumber}.png`;
       document.body.appendChild(link);
       link.click();

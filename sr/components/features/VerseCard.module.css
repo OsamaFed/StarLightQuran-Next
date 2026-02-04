@@ -19,8 +19,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   background: var(--glass-effect-bg);
   backdrop-filter: var(--glass-blur-lg);
   -webkit-backdrop-filter: var(--glass-blur-lg);
@@ -28,7 +28,7 @@
   color: var(--text-color-white);
   border-radius: var(--radius-full);
   margin: 0 0 0 16px;
-  font-size: 2rem;
+  font-size: 2.25rem;
   font-weight: bold;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   user-select: none;
@@ -125,9 +125,9 @@
   }
 
   .verseNumber {
-    width: 46px;
-    height: 46px;
-    font-size: 1.05rem;
+    width: 52px;
+    height: 52px;
+    font-size: 1.25rem;
     margin: 0 0 0 12px;
   }
 
