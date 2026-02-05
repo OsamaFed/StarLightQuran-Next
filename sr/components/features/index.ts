@@ -6,3 +6,4 @@ export { default as SurahStarButton } from './SurahStarButton';
 export { default as PrayerTimes } from './PrayerTimes';
 export { default as SearchResults } from './SearchResults';
 export { default as VerseOfTheDay } from './VerseOfTheDay';
+export { default as AudioPlayer } from './AudioPlayer';

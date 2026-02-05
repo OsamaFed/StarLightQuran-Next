@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Aurora, Iridescence } from "@/components/ui";
+import { AudioProvider } from "@/contexts/AudioContext";
 
 export const metadata: Metadata = {
   title: "StarLight Quran",
@@ -48,23 +49,25 @@ export default function RootLayout({
       </head>
 
       <body>
-        <div className="aurorabg">
-          <Aurora
-            blend={0.2}
-            amplitude={1.0}
-            speed={0.4}
-          />
-        </div>
-        <div className="iridescencebg">
-          <Iridescence 
-          color={[0.5, 0.6, 0.8]}
-          mouseReact
-          amplitude={0.1}
-          speed={0.1}
+        <AudioProvider>
+          <div className="aurorabg">
+            <Aurora
+              blend={0.2}
+              amplitude={1.0}
+              speed={0.4}
+            />
+          </div>
+          <div className="iridescencebg">
+            <Iridescence 
+            color={[0.5, 0.6, 0.8]}
+            mouseReact
+            amplitude={0.1}
+            speed={0.1}
 
-          />
-        </div>
-        {children}
+            />
+          </div>
+          {children}
+        </AudioProvider>
       </body>
     </html>
   );

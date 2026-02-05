@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useTheme } from "@/hooks/useTheme";
 import PageHeader from "@/components/layout/PageHeader";
+import { AudioPlayer } from "@/components/features";
 import styles from "../../azkar/azkar.module.css";
 
 interface DuaItem {
@@ -122,6 +123,18 @@ export default function DuaCategoryPage() {
                 variants={itemVariants}
               >
                 <p className={styles.adhkarText}>{item.text}</p>
+                {item.count && (
+                  <p className={styles.adhkarCount}>
+                    عدد المرات: <strong>{item.count}</strong>
+                  </p>
+                )}
+                {item.audio && (
+                  <AudioPlayer
+                    audioPath={item.audio}
+                    isDarkMode={isDarkMode}
+                    size="small"
+                  />
+                )}
               </motion.div>
             ))}
           </motion.div>

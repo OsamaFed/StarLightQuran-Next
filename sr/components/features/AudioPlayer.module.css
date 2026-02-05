@@ -1,0 +1,167 @@
+.audioPlayer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-radius: 24px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.audioPlayer.darkMode {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.audioPlayer.small {
+  padding: 6px 10px;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  flex: none;
+}
+
+.playButton {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  padding: 0;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.playButton:hover {
+  transform: scale(1.12);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.5), rgba(118, 75, 162, 0.5));
+  border-color: rgba(102, 126, 234, 0.6);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.25);
+}
+
+.playButton:active {
+  transform: scale(0.95);
+}
+
+.playButton svg {
+  width: 16px;
+  height: 16px;
+}
+
+.audioPlayer.small .playButton {
+  width: 28px;
+  height: 28px;
+}
+
+.audioPlayer.small .playButton svg {
+  width: 14px;
+  height: 14px;
+}
+
+.progressContainer {
+  flex: none;
+  width: 100px;
+  min-width: 0;
+}
+
+.progressBar {
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+}
+
+.darkMode .progressBar {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.progressBar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+}
+
+.progressBar::-webkit-slider-thumb:hover {
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}
+
+.progressBar::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+}
+
+.progressBar::-moz-range-thumb:hover {
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}
+
+.time {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  min-width: 35px;
+  text-align: right;
+}
+
+.darkMode .time {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 768px) {
+  .audioPlayer {
+    padding: 6px 10px;
+    gap: 8px;
+  }
+
+  .playButton {
+    width: 30px;
+    height: 30px;
+  }
+
+  .time {
+    font-size: 9px;
+    min-width: 30px;
+  }
+}
