@@ -9,11 +9,12 @@ import styles from "./page.module.css";
 import gsap from "gsap";
 
 export default function Home() {
-  const { isDarkMode, toggleDarkMode } = useTheme();
+  const { isDarkMode, mounted } = useTheme();
   const headerRef = useRef(null);
   const verseRef = useRef(null);
 
   useEffect(() => {
+    if (!mounted) return;
     const ctx = gsap.context(() => {
       // Intro Animation
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -62,8 +63,8 @@ export default function Home() {
 
   return (
     <div
-      className={`${styles.pageWrapper} ${isDarkMode ? styles.darkMode : ""}`}
-      data-theme={isDarkMode ? "dark" : "light"}
+      className={`${styles.pageWrapper} ${mounted && isDarkMode ? styles.darkMode : ""}`}
+      data-theme={mounted && isDarkMode ? "dark" : "light"}
     >
 
       <div className={styles.toggleWrapper}>
