@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useTheme } from "@/hooks/useTheme";
 import PageHeader from "@/components/layout/PageHeader";
 import { AudioPlayer } from "@/components/features";
+import FontControls from "@/components/ui/FontControls";
 import styles from "../azkar.module.css";
 
 interface AdhkarItem {
@@ -35,6 +36,7 @@ export default function CategoryPage() {
   const [loading, setLoading] = useState(true);
   const [allCategories, setAllCategories] = useState<AdhkarCategory[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [fontSize, setFontSize] = useState(3.2);
 
   useEffect(() => {
     async function fetchAdhkar() {
@@ -115,8 +117,16 @@ const prevCategory = currentIndex > 0 ? allCategories[currentIndex - 1] : null
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className={styles.title}>{category}</h1>
-          <p className={styles.subtitle}>{adhkar.length} ذكر</p>
+          <div className={styles.titleRow}>
+            <div>
+              <h1 className={styles.title}>{category}</h1>
+              <p className={styles.subtitle}>{adhkar.length} ذكر</p>
+            </div>
+            <FontControls
+              onIncrease={() => setFontSize((s) => Math.min(6, +(s + 0.2).toFixed(2)))}
+              onDecrease={() => setFontSize((s) => Math.max(1.2, +(s - 0.2).toFixed(2)))}
+            />
+          </div>
           <div className={styles.decorLine} />
         </motion.header>
 
@@ -145,7 +155,7 @@ const prevCategory = currentIndex > 0 ? allCategories[currentIndex - 1] : null
                 className={styles.adhkarItem}
                 variants={itemVariants}
               >
-                <p className={styles.adhkarText}>{item.text}</p>
+                <p className={styles.adhkarText} style={{ fontSize: `${fontSize}rem` }}>{item.text}</p>
                 {item.count && (
                   <p className={styles.adhkarCount}>
                     عدد المرات: <strong>{item.count}</strong>
