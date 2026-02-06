@@ -5,21 +5,13 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: var(--glass-blur-lg);
-  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   cursor: pointer;
   transition: all var(--transition-base);
   color: #ffffff;
 }
 
-.toggle:hover {
-  transform: scale(1.05);
-  border-color: rgba(91, 143, 227, 0.5);
-  box-shadow: 0 4px 16px rgba(91, 143, 227, 0.3);
-  background: rgba(91, 143, 227, 0.1);
-}
+
 
 .toggle:focus {
   outline: none;
