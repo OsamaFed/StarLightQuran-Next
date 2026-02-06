@@ -228,11 +228,12 @@
 }
 
 .adhkarText {
-  font-size: 1.5rem;
+  font-size: 2rem;
   line-height: 2;
   color: #ffffff;
   font-family: 'KoGaliModern', sans-serif;
   text-align: center;
+  font-weight: 600;
 }
 
 .adhkarCount {

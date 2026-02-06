@@ -39,9 +39,6 @@ export default function CategoryPage() {
   useEffect(() => {
     async function fetchAdhkar() {
       try {
-        // Handle special endpoints for sabah/masa while still using
-        // the general list for navigation. For other categories use
-        // the general endpoint only.
         if (category === "sabah" || category === "masa") {
           const [generalRes, specificRes] = await Promise.all([
             fetch("/api/adhkar/general"),
