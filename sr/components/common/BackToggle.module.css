@@ -10,9 +10,6 @@
   font-family: 'KoGaliModern', sans-serif;
   font-size: 0.95rem;
   font-weight: 600;
-  background: var(--card-bg);
-  backdrop-filter: var(--glass-blur-lg);
-  border: 1px solid var(--border-color);
   border-radius: 12px;
   cursor: pointer;
   transition: all var(--transition-base);
@@ -21,9 +18,6 @@
 }
 
 .backButton:hover {
-  color: white;
-  border-color: transparent;
-  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
