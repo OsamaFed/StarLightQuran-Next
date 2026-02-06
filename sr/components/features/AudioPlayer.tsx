@@ -20,6 +20,7 @@ export default function AudioPlayer({
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [showProgress, setShowProgress] = useState(false);
 
   const audioId = useId();
   const { currentAudioId, setCurrentAudioId, stopAllAudio, registerAudio } =
@@ -47,6 +48,7 @@ export default function AudioPlayer({
       } else {
         audioRef.current.play();
         setIsPlaying(true);
+        setShowProgress(true);
         // سجل معرف هذا الصوت كالحالي
         setCurrentAudioId(audioId);
         registerAudio(audioId, audioRef);
@@ -90,7 +92,7 @@ export default function AudioPlayer({
     <motion.div
       className={`${styles.audioPlayer} ${
         isDarkMode ? styles.darkMode : ""
-      } ${isSmall ? styles.small : ""}`}
+      } ${isSmall ? styles.small : ""} ${isSmall && !showProgress ? styles.playButtonOnly : ""}`}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -120,17 +122,19 @@ export default function AudioPlayer({
           )}
         </button>
 
-        <div className={styles.progressContainer}>
-          <input
-            type="range"
-            min="0"
-            max={!isNaN(duration) ? duration : 0}
-            value={currentTime}
-            onChange={handleProgressChange}
-            className={styles.progressBar}
-            aria-label="مؤشر التقدم"
-          />
-        </div>
+        {showProgress && (
+          <div className={styles.progressContainer}>
+            <input
+              type="range"
+              min="0"
+              max={!isNaN(duration) ? duration : 0}
+              value={currentTime}
+              onChange={handleProgressChange}
+              className={styles.progressBar}
+              aria-label="مؤشر التقدم"
+            />
+          </div>
+        )}
 
         {!isSmall && (
           <span className={styles.time}>

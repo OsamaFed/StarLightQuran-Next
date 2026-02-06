@@ -152,11 +152,13 @@ const prevCategory = currentIndex > 0 ? allCategories[currentIndex - 1] : null
                   </p>
                 )}
                 {item.audio && (
-                  <AudioPlayer
-                    audioPath={item.audio}
-                    isDarkMode={isDarkMode}
-                    size="small"
-                  />
+                  <div className={styles.adhkarAudio}>
+                    <AudioPlayer
+                      audioPath={item.audio}
+                      isDarkMode={isDarkMode}
+                      size="small"
+                    />
+                  </div>
                 )}
               </motion.div>
             ))}
