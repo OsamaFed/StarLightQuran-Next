@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useTheme } from "@/hooks/useTheme";
 import PageHeader from "@/components/layout/PageHeader";
 import { AudioPlayer } from "@/components/features";
+import FontControls from "@/components/ui/FontControls";
 import styles from "../../azkar/azkar.module.css";
 
 interface DuaItem {
@@ -35,6 +36,7 @@ export default function DuaCategoryPage() {
   const [loading, setLoading] = useState(true);
   const [allCategories, setAllCategories] = useState<DuaCategory[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [fontSize, setFontSize] = useState(3.2);
 
   useEffect(() => {
     async function fetchDuas() {
@@ -92,8 +94,16 @@ export default function DuaCategoryPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className={styles.title}>{category}</h1>
-          <p className={styles.subtitle}>{duas.length} دعاء</p>
+          <div className={styles.titleRow}>
+            <div>
+              <h1 className={styles.title}>{category}</h1>
+              <p className={styles.subtitle}>{duas.length} دعاء</p>
+            </div>
+            <FontControls
+              onIncrease={() => setFontSize((s) => Math.min(6, +(s + 0.2).toFixed(2)))}
+              onDecrease={() => setFontSize((s) => Math.max(1.2, +(s - 0.2).toFixed(2)))}
+            />
+          </div>
           <div className={styles.decorLine} />
         </motion.header>
 
@@ -122,7 +132,7 @@ export default function DuaCategoryPage() {
                 className={styles.adhkarItem}
                 variants={itemVariants}
               >
-                <p className={styles.adhkarText}>{item.text}</p>
+                <p className={styles.adhkarText} style={{ fontSize: `${fontSize}rem` }}>{item.text}</p>
                 {item.count && (
                   <p className={styles.adhkarCount}>
                     عدد المرات: <strong>{item.count}</strong>

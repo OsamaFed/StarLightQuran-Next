@@ -42,6 +42,7 @@ export default function MushafPage() {
   } | null>(null);
 
   const versesContainerRef = useRef<HTMLDivElement>(null);
+  const introRef = useRef<HTMLDivElement | null>(null);
 
   const filteredSurahs = searchTerm.length > 0
     ? surahs.filter((surah) =>
@@ -137,6 +138,23 @@ export default function MushafPage() {
     window.addEventListener('navigateToVerse', handleNavigateToVerse as EventListener);
     return () => window.removeEventListener('navigateToVerse', handleNavigateToVerse as EventListener);
   }, [currentSurah?.number, loadSurah]);
+
+  useEffect(() => {
+    if (introRef.current && !currentSurah && !loading && !error) {
+      try {
+        const nodes = Array.from(introRef.current.children) as HTMLElement[];
+        gsap.from(nodes, {
+          y: 18,
+          opacity: 0,
+          stagger: 0.12,
+          duration: 0.6,
+          ease: "power3.out",
+        });
+      } catch (e) {
+        // ignore animation errors in SSR or unexpected states
+      }
+    }
+  }, [currentSurah, loading, error]);
 
   useEffect(() => {
     if (!pendingNavigation || loading) return;
