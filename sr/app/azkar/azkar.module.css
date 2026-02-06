@@ -150,44 +150,39 @@
 
 .categoriesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
 }
 
 .cardLink {
   text-decoration: none;
   display: block;
-  height: 100%;
 }
 
 .categoryCard {
   position: relative;
   background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: var(--glass-blur-md);
-  -webkit-backdrop-filter: var(--glass-blur-md);
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
   border: none;
-  border-radius: var(--radius-xl);
-  padding: 2rem 1.5rem;
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
   transition: all var(--transition-smooth);
   text-align: center;
-  height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  min-height: 44px;
 }
 
 .categoryCard:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-6px);
-  background: rgba(255, 255, 255, 0.08);
-  border: none;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  background: rgba(91, 143, 227, 0.1);
+  border-color: rgba(91, 143, 227, 0.3);
 }
 
 .categoryTitle {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: #ffffff;
   line-height: 1.4;
