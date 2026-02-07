@@ -44,7 +44,7 @@ async function captureElementAsBlob(el: HTMLElement): Promise<Blob | null> {
     
     
 
-    const speedDialButtons = clone.querySelectorAll('[data-verse-speedial], [class*="SpeedDial"], [data-html2canvas-ignore="true"]');
+    const speedDialButtons = clone.querySelectorAll('[data-verse-speeddial], [class*="SpeedDial"], [data-html2canvas-ignore="true"]');
     speedDialButtons.forEach((btn) => {
       (btn as HTMLElement).style.display = "none";
     });
@@ -272,8 +272,8 @@ export default function VerseSpeedDial({
     const el = document.getElementById(verseId);
     if (!el) return;
 
-    el.style.webkitTouchCallout = "none";
-    el.style.webkitUserSelect = "none";
+    el.style.setProperty("-webkit-touch-callout", "none");
+    el.style.setProperty("-webkit-user-select", "none");
     el.style.userSelect = "none";
 
     const start = (e: Event) => {
@@ -362,8 +362,8 @@ export default function VerseSpeedDial({
     el.addEventListener("contextmenu", handleContextMenu);
 
     return () => {
-      el.style.webkitTouchCallout = "";
-      el.style.webkitUserSelect = "";
+      el.style.removeProperty("-webkit-touch-callout");
+      el.style.removeProperty("-webkit-user-select");
       el.style.userSelect = "";
 
       cancel();
