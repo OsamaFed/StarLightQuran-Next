@@ -36,7 +36,7 @@ export default function CategoryPage() {
   const [loading, setLoading] = useState(true);
   const [allCategories, setAllCategories] = useState<AdhkarCategory[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [fontSize, setFontSize] = useState(3.2);
+  const [fontSize, setFontSize] = useState(1.8);
 
   useEffect(() => {
     async function fetchAdhkar() {

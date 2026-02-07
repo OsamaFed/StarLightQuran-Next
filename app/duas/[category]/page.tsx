@@ -36,7 +36,7 @@ export default function DuaCategoryPage() {
   const [loading, setLoading] = useState(true);
   const [allCategories, setAllCategories] = useState<DuaCategory[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [fontSize, setFontSize] = useState(3.2);
+  const [fontSize, setFontSize] = useState(1.8);
 
   useEffect(() => {
     async function fetchDuas() {
