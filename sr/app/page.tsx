@@ -15,30 +15,36 @@ export default function Home() {
 
   useEffect(() => {
     if (!mounted) return;
-    const ctx = gsap.context(() => {
-      // Intro Animation
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      
-      tl.from(headerRef.current, {
-        y: -50,
-        autoAlpha: 0,
-        duration: 1.2
-      })
-      .from(".verse-anim", {
-        scale: 0.9,
-        autoAlpha: 0,
-        duration: 1
-      }, "-=0.8")
-      .from(".option-card-anim", {
-        y: 30,
-         autoAlpha: 0,
-        duration: 0.5,
-        stagger: 0.2
-      }, "-=0.5");
-    });
+    
+    // Use a small timeout to ensure DOM is ready after mounting
+    const timeoutId = setTimeout(() => {
+      const ctx = gsap.context(() => {
+        // Intro Animation
+        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        
+        tl.from(headerRef.current, {
+          y: -50,
+          autoAlpha: 0,
+          duration: 1.2
+        })
+        .from(".verse-anim", {
+          scale: 0.9,
+          autoAlpha: 0,
+          duration: 1
+        }, "-=0.8")
+        .from(".option-card-anim", {
+          y: 30,
+          autoAlpha: 0,
+          duration: 0.5,
+          stagger: 0.2
+        }, "-=0.5");
+      });
 
-    return () => ctx.revert();
-  }, []);
+      return () => ctx.revert();
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
+  }, [mounted]);
 
   const sections = [
     {
