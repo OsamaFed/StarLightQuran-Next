@@ -131,17 +131,6 @@ export default function VerseOfTheDay({
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <IconButton
-        onClick={handleRandomize}
-        disabled={loading}
-        className={styles.randomButtonTop}
-        size="small"
-        title="الحصول على آية عشوائية"
-        aria-label="الحصول على آية عشوائية"
-      >
-        <ShuffleIcon />
-      </IconButton>
-
       <div className={styles.header}>
        
       </div>
@@ -182,6 +171,16 @@ export default function VerseOfTheDay({
                 <span className={styles.surahName}>{verse.surah.name}</span>
                 <span className={styles.verseNumber}>
                   {verse.numberInSurah}
+                  <IconButton
+                    onClick={handleRandomize}
+                    disabled={loading}
+                    className={styles.randomButton}
+                    size="small"
+                    title="الحصول على آية عشوائية"
+                    aria-label="الحصول على آية عشوائية"
+                  >
+                    <ShuffleIcon />
+                  </IconButton>
                 </span>
               </div>
             </motion.div>
