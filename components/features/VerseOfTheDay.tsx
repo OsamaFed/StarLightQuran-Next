@@ -131,18 +131,19 @@ export default function VerseOfTheDay({
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
     >
+      <IconButton
+        onClick={handleRandomize}
+        disabled={loading}
+        className={styles.randomButtonTop}
+        size="small"
+        title="الحصول على آية عشوائية"
+        aria-label="الحصول على آية عشوائية"
+      >
+        <ShuffleIcon />
+      </IconButton>
+
       <div className={styles.header}>
-        <h1 className={styles.title}>آية اليوم</h1>
-        <IconButton
-          onClick={handleRandomize}
-          disabled={loading}
-          className={styles.randomButton}
-          size="small"
-          title="الحصول على آية عشوائية"
-          aria-label="الحصول على آية عشوائية"
-        >
-          <ShuffleIcon />
-        </IconButton>
+       
       </div>
 
       <div className={styles.content}>
